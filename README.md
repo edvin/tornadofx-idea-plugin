@@ -1,4 +1,4 @@
-![TornadoFX Logo](graphics/tornado-fx-logo.png?raw=true "TornadoFX")
+![TornadoFX Logo](https://raw.githubusercontent.com/edvin/tornadofx/master/graphics/tornado-fx-logo.png?raw=true "TornadoFX")
 
 # TornadoFX IntelliJ IDEA Plugin
 
