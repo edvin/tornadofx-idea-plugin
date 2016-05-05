@@ -1,0 +1,52 @@
+<idea-plugin version="2">
+    <id>no.tornado.tornadofx.idea</id>
+    <name>TornadoFX Plugin</name>
+    <version>1.0</version>
+    <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
+
+    <description><![CDATA[
+      TornadoFX support for IntelliJ IDEA.
+    ]]></description>
+
+    <change-notes><![CDATA[
+
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+
+    <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/TornadoFX Maven App.zip" category="true"/>
+        <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->
+
+        <intentionAction>
+            <className>no.tornado.tornadofx.idea.intentions.FXPropertyConverter</className>
+            <category>Kotlin</category>
+        </intentionAction>
+
+        <intentionAction>
+            <className>no.tornado.tornadofx.idea.intentions.AddTableViewColumns</className>
+            <category>Kotlin</category>
+        </intentionAction>
+
+        <configurationType implementation="no.tornado.tornadofx.idea.configurations.TornadoFXConfigurationType"/>
+
+    </extensions>
+
+    <project-components>
+        <component>
+            <implementation-class>no.tornado.tornadofx.idea.intentions.FXPropertyConverter</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+    </actions>
+
+</idea-plugin>
