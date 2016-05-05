@@ -2,7 +2,7 @@
 
 # TornadoFX IntelliJ IDEA Plugin
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/no.tornado/tornadofx/badge.svg)](https://search.maven.org/#search|ga|1|no.tornado.tornadofx)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/no.tornado/tornadofx-idea-plugin/badge.svg)](https://search.maven.org/#search|ga|1|no.tornado.tornadofx-idea-plugin)
 [![Apache License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 **Requires TornadoFX 1.4.6**
