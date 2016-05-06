@@ -1,11 +1,11 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX Plugin</name>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
-
+    <description>TornadoFX Run configurations, project templates and intentions for TornadoFX.</description>
     <description><![CDATA[
-      TornadoFX support for IntelliJ IDEA.
+      TornadoFX support
     ]]></description>
 
     <change-notes><![CDATA[
