@@ -6,9 +6,13 @@
 
 **Requires TornadoFX 1.4.6**
 
+## Download
+
+This plugin is available in the [JetBrains Plugin Repository](https://plugins.jetbrains.com/plugin/8339) so you can download it directly from your IDE. 
+
 ## Work in progress
 
-This plugin is alpha release at best, and is a work in progress. An announcement will be made when it's ready for prime time, but any feedback is much appreciated.
+This plugin is is a work in progress. Please report any [issues](https://github.com/edvin/tornadofx-idea-plugin/issues)
 
 ### Features
 
