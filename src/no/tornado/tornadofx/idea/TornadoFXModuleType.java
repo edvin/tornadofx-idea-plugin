@@ -24,11 +24,11 @@ public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> impl
 	}
 
 	public Icon getBigIcon() {
-		return ACTION_ICON;
+		return ACTION;
 	}
 
 	public Icon getNodeIcon(@Deprecated boolean isOpened) {
-		return ACTION_ICON;
+		return ACTION;
 	}
 
 

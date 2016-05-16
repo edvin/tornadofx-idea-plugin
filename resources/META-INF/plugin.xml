@@ -41,6 +41,10 @@
 
         <configurationType implementation="no.tornado.tornadofx.idea.configurations.TornadoFXConfigurationType"/>
 
+        <internalFileTemplate name="TornadoFX Code View"/>
+        <internalFileTemplate name="TornadoFX FXML View"/>
+        <internalFileTemplate name="TornadoFX FXML ViewResource"/>
+
     </extensions>
 
     <project-components>
@@ -50,6 +54,10 @@
     </project-components>
 
     <actions>
+        <action id="createNewView" class="no.tornado.tornadofx.idea.NewViewAction" text="TornadoFX View"
+                description="Generate a new TornadoFX View" icon="/icons/action.png">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="Kotlin.NewFile"/>
+        </action>
     </actions>
 
 </idea-plugin>

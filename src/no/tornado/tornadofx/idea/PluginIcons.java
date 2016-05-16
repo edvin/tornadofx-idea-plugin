@@ -5,5 +5,5 @@ import com.intellij.openapi.util.IconLoader;
 import javax.swing.*;
 
 public interface PluginIcons {
-  Icon ACTION_ICON = IconLoader.getIcon("/icons/action.png");
+	Icon ACTION = IconLoader.getIcon("/icons/action.png");
 }

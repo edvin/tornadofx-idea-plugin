@@ -1,0 +1,14 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME}
+
+#end
+import javafx.scene.layout.BorderPane
+import tornadofx.View
+
+#parse("File Header.java")
+class ${NAME} : View() {
+	override val root : BorderPane by fxml()
+
+	init {
+
+	}
+}
