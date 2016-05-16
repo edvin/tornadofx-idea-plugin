@@ -16,7 +16,6 @@ import com.intellij.ui.ToolbarDecorator
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptor
 import org.jetbrains.kotlin.idea.codeInsight.KtFunctionPsiElementCellRenderer
-import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*

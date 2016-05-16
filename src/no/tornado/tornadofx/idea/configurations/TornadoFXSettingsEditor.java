@@ -66,11 +66,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		myModuleSelector = new ConfigurationModuleSelector(project, myModule.getComponent());
 		myJrePathEditor.setDefaultJreSelector(DefaultJreSelector.fromSourceRootsDependencies(myModule.getComponent(), getViewClassField()));
 		myCommonProgramParameters.setModuleContext(myModuleSelector.getModule());
-		myModule.getComponent().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				myCommonProgramParameters.setModuleContext(myModuleSelector.getModule());
-			}
-		});
+		myModule.getComponent().addActionListener(e -> myCommonProgramParameters.setModuleContext(myModuleSelector.getModule()));
 		createClassBrowser(project, myModuleSelector, View).setField(getViewClassField());
 		createClassBrowser(project, myModuleSelector, App).setField(getAppClassField());
 		myVersionDetector = new JreVersionDetector();
