@@ -54,7 +54,7 @@
     </project-components>
 
     <actions>
-        <action id="createNewView" class="no.tornado.tornadofx.idea.NewViewAction" text="TornadoFX View"
+        <action id="createNewView" class="no.tornado.tornadofx.idea.actions.NewViewAction" text="TornadoFX View"
                 description="Generate a new TornadoFX View" icon="/icons/action.png">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="Kotlin.NewFile"/>
         </action>

@@ -140,7 +140,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 	}
 
 	private void createUIComponents() {
-		myViewClass = new LabeledComponent<EditorTextFieldWithBrowseButton>();
+		myViewClass = new LabeledComponent<>();
 		myViewClass.setComponent(new EditorTextFieldWithBrowseButton(myProject, true, new JavaCodeFragment.VisibilityChecker() {
 			public Visibility isDeclarationVisible(PsiElement declaration, PsiElement place) {
 				return (declaration instanceof PsiClass && isViewClass((PsiClass) declaration))
@@ -148,7 +148,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 			}
 		}));
 
-		myAppClass = new LabeledComponent<EditorTextFieldWithBrowseButton>();
+		myAppClass = new LabeledComponent<>();
 		myAppClass.setComponent(new EditorTextFieldWithBrowseButton(myProject, true, new JavaCodeFragment.VisibilityChecker() {
 			public Visibility isDeclarationVisible(PsiElement declaration, PsiElement place) {
 				return (declaration instanceof PsiClass && isAppClass((PsiClass) declaration))
@@ -160,20 +160,16 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		JPanel panel = new JPanel(new FlowLayout());
 		ButtonGroup typeGroup = new ButtonGroup();
 		appButton = new JBRadioButton("Application");
-		appButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				myAppClass.setVisible(true);
-				myViewClass.setVisible(false);
-				fireEditorStateChanged();
-			}
+		appButton.addActionListener(e -> {
+			myAppClass.setVisible(true);
+			myViewClass.setVisible(false);
+			fireEditorStateChanged();
 		});
 		viewButton = new JBRadioButton("View");
-		viewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				myAppClass.setVisible(false);
-				myViewClass.setVisible(true);
-				fireEditorStateChanged();
-			}
+		viewButton.addActionListener(e -> {
+			myAppClass.setVisible(false);
+			myViewClass.setVisible(true);
+			fireEditorStateChanged();
 		});
 		typeGroup.add(appButton);
 		typeGroup.add(viewButton);
@@ -215,11 +211,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 	ClassBrowser createClassBrowser(final Project project,
 	                                final ConfigurationModuleSelector moduleSelector,
 	                                final TornadoFXConfiguration.RunType runType) {
-		final ClassFilter classFilter = new ClassFilter() {
-			public boolean isAccepted(final PsiClass aClass) {
-				return runType == View ? isViewClass(aClass) : isAppClass(aClass);
-			}
-		};
+		final ClassFilter classFilter = aClass -> runType == TornadoFXConfiguration.RunType.View ? isViewClass(aClass) : isAppClass(aClass);
 		return new MyClassBrowser(project, moduleSelector, "Choose " + runType + " Class") {
 			protected ClassFilter createFilter(final Module module) {
 				return classFilter;
