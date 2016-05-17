@@ -1,12 +1,12 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME}
 
 #end
-import javafx.scene.layout.BorderPane
+import ${fqRootType}
 import tornadofx.View
 
 #parse("File Header.java")
 class ${NAME} : View() {
-	override val root = BorderPane()
+	override val root = ${rootType}()
 
 	init {
 

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX Plugin</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>TornadoFX Run configurations, project templates and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,7 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.0.2</h4>
+        <h4>1.0.3 - 2016-05-17</h4>
+        <ul>
+            <li>Add view class based on FXML or Code</li>
+        </li>
+        <h4>1.0.2 - 2016-05-16</h4>
         <ul>
             <li>Fixed missing source dir annotation for Maven template</li>
         </li>

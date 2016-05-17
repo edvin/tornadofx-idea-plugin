@@ -18,6 +18,10 @@ Please report any [issues](https://github.com/edvin/tornadofx-idea-plugin/issues
 
 Run a TornadoFX Application or a View ad hoc
 
+#### Add View
+
+- Create new View class based on Code or FXML automatically
+ 
 #### Intentions
 
 - Convert field members to JavaFX Properties

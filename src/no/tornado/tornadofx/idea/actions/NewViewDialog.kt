@@ -69,8 +69,10 @@ class NewViewDialog(val project: Project) : DialogWrapper(project) {
     override fun createCenterPanel() = myPanel
 
     fun isParentClass(psiClass: PsiClass): Boolean {
+        if (psiClass.qualifiedName?.startsWith("com.sun.") ?: false) return false
+
         for (supa in psiClass.supers) {
-            if ("javafx.scene.Parent" == supa.qualifiedName)
+            if ("javafx.scene.Parent" == supa.qualifiedName && !(supa.qualifiedName?.startsWith("com.sun.") ?: false))
                 return true
 
             val superIs = isParentClass(supa)
