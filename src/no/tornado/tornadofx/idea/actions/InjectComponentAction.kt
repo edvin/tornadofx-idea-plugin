@@ -14,6 +14,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorTextFieldWithBrowseButton
+import no.tornado.tornadofx.idea.FXTools.Companion.isComponent
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.idea.util.ShortenReferences
@@ -73,19 +74,7 @@ class InjectComponentAction : AnAction() {
         val psiFacade = JavaPsiFacade.getInstance(e.project)
         val psiClass = psiFacade.findClass(ktClass.fqName.toString(), e.project!!.allScope())!!
 
-        e.presentation.isEnabled = isTornadoFXComponent(psiClass)
-    }
-
-    fun isTornadoFXComponent(psiClass: PsiClass): Boolean {
-        for (supa in psiClass.supers)
-            if ("tornadofx.Component" == supa.qualifiedName) {
-                return true
-            } else {
-                val superIs = isTornadoFXComponent(supa)
-                if (superIs) return true
-            }
-
-        return false
+        e.presentation.isEnabled = isComponent(psiClass)
     }
 
     inner class ComponentBrowser(project: Project) : ClassBrowser(project, "Select Component to Inject") {
@@ -97,7 +86,7 @@ class InjectComponentAction : AnAction() {
         override fun findClass(className: String) = JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
         override fun getFilter(): ClassFilter.ClassFilterWithScope = object : ClassFilter.ClassFilterWithScope {
             override fun getScope() = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(project.allModules().first())
-            override fun isAccepted(psiClass: PsiClass) = isTornadoFXComponent(psiClass)
+            override fun isAccepted(psiClass: PsiClass) = isComponent(psiClass)
         }
 
         fun requestComponentClass(): String? = showDialog()
