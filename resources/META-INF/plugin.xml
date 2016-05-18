@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX Plugin</name>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>TornadoFX Run configurations, project templates and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,6 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.0.4 - 2016-05-18</h4>
+        <ul>
+            <li>Inject Component generator</li>
+        </ul>
         <h4>1.0.3 - 2016-05-17</h4>
         <ul>
             <li>Add view class based on FXML or Code</li>
@@ -61,6 +65,10 @@
         <action id="createNewView" class="no.tornado.tornadofx.idea.actions.NewViewAction" text="TornadoFX View"
                 description="Generate a new TornadoFX View" icon="/icons/action.png">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="Kotlin.NewFile"/>
+        </action>
+        <action id="injectResource" class="no.tornado.tornadofx.idea.actions.InjectComponentAction" text="Inject TornadoFX Component"
+                description="Inject TornadoFX Component into the current Component" icon="/icons/action.png">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
     </actions>
 

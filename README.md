@@ -21,6 +21,10 @@ Run a TornadoFX Application or a View ad hoc
 #### Add View
 
 - Create new View class based on Code or FXML automatically
+
+#### Inject Component
+
+- Search for Components (View, Fragment, Controller) and create injected val
  
 #### Intentions
 

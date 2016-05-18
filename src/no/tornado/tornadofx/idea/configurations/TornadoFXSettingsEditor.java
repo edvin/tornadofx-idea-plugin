@@ -180,16 +180,24 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 
 	public static boolean isViewClass(PsiClass psiClass) {
 		for (PsiClass supa : psiClass.getSupers())
-			if ("tornadofx.View".equals(supa.getQualifiedName()))
+			if ("tornadofx.View".equals(supa.getQualifiedName())) {
 				return true;
+			} else {
+				boolean superIs = isViewClass(supa);
+				if (superIs) return true;
+			}
 
 		return false;
 	}
 
 	public static boolean isAppClass(PsiClass psiClass) {
 		for (PsiClass supa : psiClass.getSupers())
-			if ("tornadofx.App".equals(supa.getQualifiedName()))
+			if ("tornadofx.App".equals(supa.getQualifiedName())) {
 				return true;
+			} else {
+				boolean superIs = isAppClass(supa);
+				if (superIs) return true;
+			}
 
 		return false;
 	}
