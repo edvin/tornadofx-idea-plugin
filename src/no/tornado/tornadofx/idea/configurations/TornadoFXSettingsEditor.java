@@ -74,7 +74,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		createClassBrowser(project, myModuleSelector, App).setField(getAppClassField());
 		myVersionDetector = new JreVersionDetector();
 
-		myAnchor = UIUtil.mergeComponentsWithAnchor(myViewClass, myAppClass, myDevOptions, myCommonProgramParameters, myJrePathEditor, myModule);
+		myAnchor = UIUtil.mergeComponentsWithAnchor(myViewClass, myAppClass, myDevOptions, typeWrapper, myCommonProgramParameters, myJrePathEditor, myModule);
 	}
 
 	public void applyEditorTo(final TornadoFXConfiguration configuration) throws ConfigurationException {
@@ -166,7 +166,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		}));
 
 		typeWrapper = new LabeledComponent<EditorTextFieldWithBrowseButton>();
-		JPanel panel = new JPanel(new FlowLayout());
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ButtonGroup typeGroup = new ButtonGroup();
 		appButton = new JBRadioButton("Application");
 		appButton.addActionListener(e -> {
@@ -189,7 +189,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		liveViewsButton = new JBCheckBox("Live Views");
 		liveStylesheetsButton = new JBCheckBox("Live Stylesheets");
 		dumpStylesheetsButton = new JBCheckBox("Dump Stylesheets");
-		JPanel devPanel = new JPanel(new FlowLayout());
+		JPanel devPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		devPanel.add(liveViewsButton);
 		devPanel.add(liveStylesheetsButton);
 		devPanel.add(dumpStylesheetsButton);
