@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX Plugin</name>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>TornadoFX Run configurations, project templates and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,6 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.0.5 - 2016-05-18</h4>
+        <ul>
+            <li>Dev mod options in Run Config: Live Views / Live Stylesheets</li>
+        </ul>
         <h4>1.0.4 - 2016-05-18</h4>
         <ul>
             <li>Inject Component generator</li>

@@ -25,6 +25,12 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     var RUN_TYPE = RunType.App
     @JvmField
     var VIEW_CLASS_NAME: String? = null
+    @JvmField
+    var LIVE_STYLESHEETS: Boolean = false
+    @JvmField
+    var DUMP_STYLESHEETS: Boolean = false
+    @JvmField
+    var LIVE_VIEWS: Boolean = false
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment) = ViewCommandLineState(environment)
 
@@ -64,6 +70,15 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
             if (RUN_TYPE == RunType.View)
                 params.programParametersList.add("--view-class=$VIEW_CLASS_NAME")
 
+            if (LIVE_VIEWS)
+                params.programParametersList.add("--live-views")
+
+            if (LIVE_STYLESHEETS)
+                params.programParametersList.add("--live-stylesheets")
+
+            if (DUMP_STYLESHEETS)
+                params.programParametersList.add("--dump-stylesheets")
+
             return params
         }
     }
@@ -72,6 +87,15 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
         super.readExternal(element)
         VIEW_CLASS_NAME = element.getAttributeValue("view-class")
         RUN_TYPE = RunType.valueOf(element.getAttributeValue("run-type"))
+        element.getAttributeValue("live-stylesheets")?.apply {
+            LIVE_STYLESHEETS = "true".equals(this)
+        }
+        element.getAttributeValue("live-views")?.apply {
+            LIVE_VIEWS = "true".equals(this)
+        }
+        element.getAttributeValue("dump-stylesheets")?.apply {
+            DUMP_STYLESHEETS = "true".equals(this)
+        }
     }
 
     @Throws(WriteExternalException::class)
@@ -79,8 +103,10 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
         super.writeExternal(element)
         element.setAttribute("run-type", RUN_TYPE.toString())
 
-        if (VIEW_CLASS_NAME != null)
-            element.setAttribute("view-class", VIEW_CLASS_NAME)
+        if (VIEW_CLASS_NAME != null) element.setAttribute("view-class", VIEW_CLASS_NAME)
+        element.setAttribute("live-views", LIVE_VIEWS.toString())
+        element.setAttribute("live-stylesheets", LIVE_STYLESHEETS.toString())
+        element.setAttribute("dump-stylesheets", DUMP_STYLESHEETS.toString())
     }
 
 }

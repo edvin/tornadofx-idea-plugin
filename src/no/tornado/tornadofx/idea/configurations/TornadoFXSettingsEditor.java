@@ -31,6 +31,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.EditorTextFieldWithBrowseButton;
 import com.intellij.ui.PanelWithAnchor;
+import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBRadioButton;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +39,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import static no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.App;
 import static no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.View;
@@ -55,11 +54,15 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 	private JrePathEditor myJrePathEditor;
 	private JCheckBox myShowSwingInspectorCheckbox;
 	private LabeledComponent typeWrapper;
+	private LabeledComponent myDevOptions;
 	private final JreVersionDetector myVersionDetector;
 	private final Project myProject;
 	private JComponent myAnchor;
 	private JBRadioButton appButton;
 	private JBRadioButton viewButton;
+	private JBCheckBox liveViewsButton;
+	private JBCheckBox liveStylesheetsButton;
+	private JBCheckBox dumpStylesheetsButton;
 
 	public TornadoFXSettingsEditor(final Project project) {
 		myProject = project;
@@ -71,7 +74,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		createClassBrowser(project, myModuleSelector, App).setField(getAppClassField());
 		myVersionDetector = new JreVersionDetector();
 
-		myAnchor = UIUtil.mergeComponentsWithAnchor(myViewClass, myAppClass, myCommonProgramParameters, myJrePathEditor, myModule);
+		myAnchor = UIUtil.mergeComponentsWithAnchor(myViewClass, myAppClass, myDevOptions, myCommonProgramParameters, myJrePathEditor, myModule);
 	}
 
 	public void applyEditorTo(final TornadoFXConfiguration configuration) throws ConfigurationException {
@@ -86,6 +89,9 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 			configuration.VIEW_CLASS_NAME = getViewClassField().getText();
 			configuration.MAIN_CLASS_NAME = "tornadofx.App";
 		}
+		configuration.LIVE_STYLESHEETS = liveStylesheetsButton.isSelected();
+		configuration.DUMP_STYLESHEETS = dumpStylesheetsButton.isSelected();
+		configuration.LIVE_VIEWS = liveViewsButton.isSelected();
 		configuration.ALTERNATIVE_JRE_PATH = myJrePathEditor.getJrePathOrName();
 		configuration.ALTERNATIVE_JRE_PATH_ENABLED = myJrePathEditor.isAlternativeJreSelected();
 		configuration.ENABLE_SWING_INSPECTOR = (myVersionDetector.isJre50Configured(configuration) || myVersionDetector.isModuleJre50Configured(configuration)) && myShowSwingInspectorCheckbox.isSelected();
@@ -106,6 +112,9 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 			getAppClassField().setText(null);
 			getViewClassField().setText(configuration.VIEW_CLASS_NAME != null ? configuration.VIEW_CLASS_NAME.replaceAll("\\$", "\\.") : "");
 		}
+		liveStylesheetsButton.setSelected(configuration.LIVE_STYLESHEETS);
+		dumpStylesheetsButton.setSelected(configuration.DUMP_STYLESHEETS);
+		liveViewsButton.setSelected(configuration.LIVE_VIEWS);
 		myJrePathEditor.setPathOrName(configuration.ALTERNATIVE_JRE_PATH, configuration.ALTERNATIVE_JRE_PATH_ENABLED);
 		updateShowSwingInspector(configuration);
 	}
@@ -176,6 +185,16 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		panel.add(appButton);
 		panel.add(viewButton);
 		typeWrapper.setComponent(panel);
+
+		liveViewsButton = new JBCheckBox("Live Views");
+		liveStylesheetsButton = new JBCheckBox("Live Stylesheets");
+		dumpStylesheetsButton = new JBCheckBox("Dump Stylesheets");
+		JPanel devPanel = new JPanel(new FlowLayout());
+		devPanel.add(liveViewsButton);
+		devPanel.add(liveStylesheetsButton);
+		devPanel.add(dumpStylesheetsButton);
+		myDevOptions = new LabeledComponent();
+		myDevOptions.setComponent(devPanel);
 	}
 
 	public static boolean isViewClass(PsiClass psiClass) {
