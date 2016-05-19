@@ -1,10 +1,14 @@
 package no.tornado.tornadofx.idea
 
+import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
+import org.jetbrains.kotlin.idea.search.projectScope
 
 class FXTools {
     companion object {
         fun isComponent(psiClass: PsiClass) = isType("tornadofx.Component", psiClass)
+        fun isFragment(psiClass: PsiClass) = isType("tornadofx.Fragment", psiClass)
         fun isUIComponent(psiClass: PsiClass) = isType("tornadofx.UIComponent", psiClass)
 
         fun isType(type: String, psiClass: PsiClass): Boolean {
@@ -18,5 +22,8 @@ class FXTools {
 
             return false
         }
+
+        fun psiClass(className: String, project: Project) =
+            JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
     }
 }

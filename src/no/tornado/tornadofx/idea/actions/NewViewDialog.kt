@@ -4,6 +4,7 @@ import com.intellij.execution.ui.ClassBrowser
 import com.intellij.ide.actions.TemplateKindCombo
 import com.intellij.ide.util.ClassFilter.ClassFilterWithScope
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.psi.JavaCodeFragment
 import com.intellij.psi.JavaPsiFacade
@@ -26,6 +27,7 @@ import javax.swing.JTextField
 class NewViewDialog(val project: Project) : DialogWrapper(project) {
     val myPanel = JPanel(GridBagLayout())
     val myKindCombo = TemplateKindCombo()
+    val myTypeCombo = ComboBox()
     val myNameField = JTextField()
     val myUpDownHint = JLabel(PlatformIcons.UP_DOWN_ARROWS)
     val visibilityChecker = JavaCodeFragment.VisibilityChecker { declaration, place ->
@@ -48,15 +50,19 @@ class NewViewDialog(val project: Project) : DialogWrapper(project) {
         myPanel.add(myUpDownHint, GridBagConstraints().apply { gridx = 2; gridy = 0; insets = Insets(3, 3, 3, 0); })
 
         myPanel.add(JLabel("Kind"), GridBagConstraints().apply { gridx = 0; gridy = 1; insets = Insets(3, 3, 3, 10); fill = HORIZONTAL })
-
         myKindCombo.registerUpDownHint(myNameField)
         myKindCombo.addItem("Code", KotlinIcons.CLASS, "TornadoFX Code View")
         myKindCombo.addItem("FXML", KotlinIcons.FILE, "TornadoFX FXML View")
-
         myPanel.add(myKindCombo, GridBagConstraints().apply { gridx = 1; gridy = 1; weightx = 2.0; insets = Insets(3, 3, 3, 0); fill = HORIZONTAL; gridwidth = 2 })
 
-        myPanel.add(JLabel("Root"), GridBagConstraints().apply { gridx = 0; gridy = 2; insets = Insets(3, 3, 3, 10); fill = HORIZONTAL })
-        myPanel.add(rootType, GridBagConstraints().apply { gridx = 1; gridy = 2; weightx = 2.0; insets = Insets(3, 3, 3, 0); fill = HORIZONTAL; gridwidth = 2 })
+        myPanel.add(JLabel("Type"), GridBagConstraints().apply { gridx = 0; gridy = 2; insets = Insets(3, 3, 3, 10); fill = HORIZONTAL })
+        myTypeCombo.addItem("View")
+        myTypeCombo.addItem("Fragment")
+        myPanel.add(myTypeCombo, GridBagConstraints().apply { gridx = 1; gridy = 2; weightx = 2.0; insets = Insets(3, 3, 3, 0); fill = HORIZONTAL; gridwidth = 2 })
+
+
+        myPanel.add(JLabel("Root"), GridBagConstraints().apply { gridx = 0; gridy = 3; insets = Insets(3, 3, 3, 10); fill = HORIZONTAL })
+        myPanel.add(rootType, GridBagConstraints().apply { gridx = 1; gridy = 3; weightx = 2.0; insets = Insets(3, 3, 3, 0); fill = HORIZONTAL; gridwidth = 2 })
         rootType.text = "javafx.scene.layout.BorderPane"
 
         RootClassBrowser()

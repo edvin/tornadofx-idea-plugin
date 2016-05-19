@@ -14,6 +14,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorTextFieldWithBrowseButton
+import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.FXTools.Companion.isComponent
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.idea.search.projectScope
@@ -36,7 +37,9 @@ class InjectComponentAction : AnAction() {
                     val propName = componentClass.substringAfterLast(".").let {
                         it.first().toLowerCase() + it.substring(1)
                     }
-                    val prop = factory.createProperty("val $propName: $componentClass by inject()")
+                    val componentPsiClass = FXTools.psiClass(componentClass, e.project!!)!!
+                    val injectType = if (FXTools.isFragment(componentPsiClass)) "fragment" else "inject"
+                    val prop = factory.createProperty("val $propName: $componentClass by $injectType()")
                     val ktClassBody = PsiTreeUtil.getParentOfType(element, KtClassBody::class.java)!!
                     val added = ktClassBody.addAfter(prop, element) as KtElement
                     ShortenReferences().process(added)

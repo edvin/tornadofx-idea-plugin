@@ -1,11 +1,9 @@
 package no.tornado.tornadofx.idea.actions
 
-import com.intellij.ide.actions.CreateFileAction
 import com.intellij.ide.fileTemplates.FileTemplate
 import com.intellij.ide.fileTemplates.FileTemplateManager
 import com.intellij.ide.fileTemplates.FileTemplateUtil
 import com.intellij.ide.fileTemplates.actions.CreateFromTemplateActionBase
-import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
@@ -35,18 +33,19 @@ class NewViewAction : AnAction() {
             val templateName = dialog.myKindCombo.selectedName
             val fileName = dialog.myNameField.text
             val rootType = dialog.rootType.text
+            val viewType = dialog.myTypeCombo.selectedItem as String
 
             val template = FileTemplateManager.getInstance(e.project!!).getInternalTemplate(templateName)
             val view = LangDataKeys.IDE_VIEW.getData(e.dataContext)!!
 
-            val createdElement = createFileFromTemplate(fileName, template, view.orChooseDirectory!!, rootType)
+            val createdElement = createFileFromTemplate(fileName, template, view.orChooseDirectory!!, rootType, viewType)
             if (createdElement != null)
-                postProcess(createdElement, templateName, rootType)
+                postProcess(createdElement, templateName, rootType, viewType)
         }
     }
 
 
-    fun postProcess(createdElement: PsiFile, templateName: String, rootType: String) {
+    fun postProcess(createdElement: PsiFile, templateName: String, rootType: String, viewType: String) {
         // Create FXML companion to the source file
         if (templateName == "TornadoFX FXML View") {
             val project = createdElement.project
@@ -76,11 +75,11 @@ class NewViewAction : AnAction() {
                 targetDir = createdElement.containingDirectory
             }
 
-            createFileFromTemplate(createdElement.name.substringBefore(".") + ".fxml", template, targetDir, rootType)
+            createFileFromTemplate(createdElement.name.substringBefore(".") + ".fxml", template, targetDir, rootType, viewType)
         }
     }
 
-    fun createFileFromTemplate(name: String, template: FileTemplate, dir: PsiDirectory, rootType: String): PsiFile? {
+    fun createFileFromTemplate(name: String, template: FileTemplate, dir: PsiDirectory, rootType: String, viewType: String): PsiFile? {
         var file: PsiFile? = null
 
         DumbService.allowStartingDumbModeInside(DumbModePermission.MAY_START_BACKGROUND, Runnable {
@@ -90,6 +89,7 @@ class NewViewAction : AnAction() {
                 val props = FileTemplateManager.getInstance(dir.project).defaultProperties
                 props.put("fqRootType", rootType)
                 props.put("rootType", rootType.substringAfterLast("."))
+                props.put("viewType", viewType)
                 element = FileTemplateUtil.createFromTemplate(template, name, props, dir)
                 val psiFile = element.containingFile
 
