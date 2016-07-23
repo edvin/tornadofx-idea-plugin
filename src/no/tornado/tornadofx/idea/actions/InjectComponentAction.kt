@@ -88,7 +88,7 @@ class InjectComponentAction : AnAction() {
 
         override fun findClass(className: String) = JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
         override fun getFilter(): ClassFilter.ClassFilterWithScope = object : ClassFilter.ClassFilterWithScope {
-            override fun getScope() = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(project.allModules().first())
+            override fun getScope() = GlobalSearchScope.allScope(project)
             override fun isAccepted(psiClass: PsiClass) = isComponent(psiClass)
         }
 

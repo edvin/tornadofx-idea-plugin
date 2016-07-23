@@ -11,7 +11,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbModePermission
 import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
@@ -19,12 +18,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.IncorrectOperationException
+import no.tornado.tornadofx.idea.allRoots
 import org.apache.velocity.runtime.parser.ParseException
-import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtFile
 
 class NewViewAction : AnAction() {
-    val log = Logger.getInstance("#no.tornado.tornadofx.idea.actions.NewViewAction")
+    val log: Logger = Logger.getInstance("#no.tornado.tornadofx.idea.actions.NewViewAction")
 
     override fun actionPerformed(e: AnActionEvent) {
         val dialog = NewViewDialog(e.project!!)
@@ -52,8 +51,7 @@ class NewViewAction : AnAction() {
             val template = FileTemplateManager.getInstance(project).getInternalTemplate("TornadoFX FXML ViewResource")
 
             // Prefer resources folder as target for FXML file
-            val rootModel = ModuleRootManager.getInstance(project.allModules().first()).modifiableModel
-            val resourcesRoot = rootModel.sourceRoots.find { it.name == "resources" }
+            val resourcesRoot = project.allRoots().find { it.name == "resources" }
 
             val targetDir: PsiDirectory
 

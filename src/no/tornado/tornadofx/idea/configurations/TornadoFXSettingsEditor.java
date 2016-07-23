@@ -235,9 +235,9 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		myModule.setAnchor(anchor);
 	}
 
-	ClassBrowser createClassBrowser(final Project project,
-	                                final ConfigurationModuleSelector moduleSelector,
-	                                final TornadoFXConfiguration.RunType runType) {
+	private ClassBrowser createClassBrowser(final Project project,
+	                                        final ConfigurationModuleSelector moduleSelector,
+	                                        final TornadoFXConfiguration.RunType runType) {
 		final ClassFilter classFilter = aClass -> runType == TornadoFXConfiguration.RunType.View ? isViewClass(aClass) : isAppClass(aClass);
 		return new MyClassBrowser(project, moduleSelector, "Choose " + runType + " Class") {
 			protected ClassFilter createFilter(final Module module) {
@@ -247,12 +247,12 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 	}
 
 	private abstract static class MyClassBrowser extends ClassBrowser {
-		protected final Project myProject;
+		final Project myProject;
 		private final ConfigurationModuleSelector myModuleSelector;
 
-		public MyClassBrowser(final Project project,
-		                      final ConfigurationModuleSelector moduleSelector,
-		                      final String title) {
+		MyClassBrowser(final Project project,
+		               final ConfigurationModuleSelector moduleSelector,
+		               final String title) {
 			super(project, title);
 			myProject = project;
 			myModuleSelector = moduleSelector;
@@ -275,7 +275,6 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 				public GlobalSearchScope getScope() {
 					return scope;
 				}
-
 				public boolean isAccepted(final PsiClass aClass) {
 					return filter == null || filter.isAccepted(aClass);
 				}

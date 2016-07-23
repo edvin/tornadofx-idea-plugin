@@ -22,11 +22,11 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
             return prop != null && !prop.isLocal
         }
 
-        return false;
+        return false
     }
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
-        var prop = PsiTreeUtil.getParentOfType(element, KtProperty::class.java)!!
+        val prop = PsiTreeUtil.getParentOfType(element, KtProperty::class.java)!!
         val propName = prop.name!!
         val returnType = QuickFixUtil.getDeclarationReturnType(prop)
 

@@ -1,18 +1,21 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.0.5</version>
+    <version>1.5.2</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
-    <description>Run configurations, project templates, actions and intentions for TornadoFX.</description>
+    <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
       TornadoFX support
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.0.6 - Unreleased</h4>
+        <h4>1.5.2 - Unreleased</h4>
         <ul>
-            <li>New View action can also create New Fragment</li>
-            <li>"Inject Component" injects Fragments using the new `fragment()` delegate from TornadoFX 1.4.8</li>
+            <li>Gradle project template</li>
+            <li>Multi module Gradle support</li>
+            <li>New View action can also create new Fragment</li>
+            <li>"Inject Component" injects Fragments using the `fragment()` delegate</li>
+            <li>Fixed an <a href="https://github.com/edvin/tornadofx-idea-plugin/issues/2">exception on plugin startup</a></li>
         </ul>
         <h4>1.0.5 - 2016-05-18</h4>
         <ul>
@@ -46,7 +49,8 @@
 
         <!--<fileEditorProvider implementation="no.tornado.tornadofx.idea.editors.ViewEditorProvider"/>-->
 
-        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/TornadoFX Maven App.zip" category="true"/>
+        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-project.zip" category="true"/>
+        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project.zip" category="true"/>
         <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->
 
         <intentionAction>

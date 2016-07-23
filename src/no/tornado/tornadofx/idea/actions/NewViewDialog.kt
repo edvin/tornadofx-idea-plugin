@@ -95,7 +95,7 @@ class NewViewDialog(val project: Project) : DialogWrapper(project) {
         override fun findClass(className: String) = JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
         override fun getField() = rootType
         override fun getFilter(): ClassFilterWithScope = object : ClassFilterWithScope {
-            override fun getScope() = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(project.allModules().first())
+            override fun getScope() = GlobalSearchScope.allScope(project)
             override fun isAccepted(psiClass: PsiClass) = isParentClass(psiClass)
         }
     }

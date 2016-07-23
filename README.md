@@ -33,4 +33,5 @@ Run a TornadoFX Application or a View ad hoc
 
 #### Project Templates
 
-- Empty Maven Application
+- Maven Application
+- Gradle Application
