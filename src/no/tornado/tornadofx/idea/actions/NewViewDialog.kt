@@ -14,7 +14,6 @@ import com.intellij.ui.EditorTextFieldWithBrowseButton
 import com.intellij.util.PlatformIcons
 import org.jetbrains.kotlin.idea.KotlinIcons
 import org.jetbrains.kotlin.idea.search.projectScope
-import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagConstraints.HORIZONTAL
@@ -27,7 +26,7 @@ import javax.swing.JTextField
 class NewViewDialog(val project: Project) : DialogWrapper(project) {
     val myPanel = JPanel(GridBagLayout())
     val myKindCombo = TemplateKindCombo()
-    val myTypeCombo = ComboBox()
+    val myTypeCombo = ComboBox<String>()
     val myNameField = JTextField()
     val myUpDownHint = JLabel(PlatformIcons.UP_DOWN_ARROWS)
     val visibilityChecker = JavaCodeFragment.VisibilityChecker { declaration, place ->

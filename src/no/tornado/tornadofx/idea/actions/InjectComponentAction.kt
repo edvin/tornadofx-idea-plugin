@@ -16,10 +16,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorTextFieldWithBrowseButton
 import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.FXTools.Companion.isComponent
+import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.idea.search.projectScope
-import org.jetbrains.kotlin.idea.util.ShortenReferences
-import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassBody
 import org.jetbrains.kotlin.psi.KtElement

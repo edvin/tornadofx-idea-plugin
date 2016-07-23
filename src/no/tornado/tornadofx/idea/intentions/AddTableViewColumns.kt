@@ -100,7 +100,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     }
 
     inner class ColumnsDialog(psiClass: PsiClass) : DialogWrapper(psiClass.project) {
-        val fieldList: JList<Any>
+        val fieldList: JList<PsiMethod>
         val component: JComponent
         val fields: CollectionListModel<PsiMethod>
 

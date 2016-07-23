@@ -9,7 +9,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.5.2 - Unreleased</h4>
+        <h4>1.5.2 - 2016-07-23</h4>
         <ul>
             <li>Gradle project template</li>
             <li>Multi module Gradle support</li>

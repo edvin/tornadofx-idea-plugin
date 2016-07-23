@@ -9,10 +9,6 @@ import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.idea.refactoring.toPsiFile
-import org.jetbrains.kotlin.psi.KtClass
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -22,9 +18,9 @@ class ViewEditor(val project: Project, val file: VirtualFile) : FileEditor {
     val panel = JPanel()
 
     init {
-        val psiFile = file.toPsiFile(project)!!
-        val ktClass = PsiTreeUtil.findChildOfType(psiFile, KtClass::class.java)!!
-        val psiFacade = JavaPsiFacade.getInstance(project)
+//        val psiFile = file.toPsiFile(project)!!
+//        val ktClass = PsiTreeUtil.findChildOfType(psiFile, KtClass::class.java)!!
+//        val psiFacade = JavaPsiFacade.getInstance(project)
         panel.add(JLabel("View Editor"))
     }
 
