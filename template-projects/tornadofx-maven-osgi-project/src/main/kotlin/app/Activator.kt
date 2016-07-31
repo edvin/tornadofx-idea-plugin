@@ -8,13 +8,13 @@ import tornadofx.osgi.registerView
 
 class Activator : BundleActivator {
     override fun start(context: BundleContext) {
-        // Comment out if this bundle shouldn't provide an Application to the TornadoFX Runtime Bundle
+        // Comment out if this bundle shouldn't provide an Application to the TornadoFX OSGi Runtime
         context.registerApplication(MyApp::class)
 
         // Uncomment to provide this stylesheet to other bundles
         //context.registerStylesheet(Styles::class)
 
-        // Uncomment to provide this View to other bundles
+        // Uncomment to provide a View to other bundles
         //context.registerView(MusicPlayer::class, "dashboard")
     }
 

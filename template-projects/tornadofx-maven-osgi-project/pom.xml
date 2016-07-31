@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>no.tornado</groupId>
-    <artifactId>tornadofx-maven-project</artifactId>
+    <artifactId>tornadofx-maven-osgi-project</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-osgi-bundle</artifactId>
+            <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>

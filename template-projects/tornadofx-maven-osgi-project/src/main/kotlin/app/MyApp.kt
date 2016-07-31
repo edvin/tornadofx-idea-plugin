@@ -1,9 +1,8 @@
 package app
 
-import app.Styles
-import view.MainView
 import tornadofx.App
 import tornadofx.importStylesheet
+import view.MainView
 
 class MyApp: App() {
     override val primaryView = MainView::class
