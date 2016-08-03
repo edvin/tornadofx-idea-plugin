@@ -2,7 +2,9 @@
 
 # Remember to build each template via Tools -> "Save project as template"
 
-IDEA_PROJECT_TEMPLATES=~/Library/Preferences/IntelliJIdea2016.2/projectTemplates
+#IDEA_PROJECT_TEMPLATES=~/Library/Preferences/IntelliJIdea2016.2/projectTemplates
+IDEA_PROJECT_TEMPLATES=~/.IntelliJIdea2016.2/config/projectTemplates
+
 PLUGIN_PROJECT_TEMPLATES=resources/projectTemplates
 
 cp ${IDEA_PROJECT_TEMPLATES}/tornadofx-maven-project.zip ${PLUGIN_PROJECT_TEMPLATES}

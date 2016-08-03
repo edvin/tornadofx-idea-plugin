@@ -20,7 +20,7 @@ apply plugin: 'application'
 mainClassName = 'app.MyApp'
 
 dependencies {
-    compile 'no.tornado:tornadofx:1.5.3'
+    compile 'no.tornado:tornadofx:1.5.4'
     testCompile 'junit:junit:4.12'
 }
 
