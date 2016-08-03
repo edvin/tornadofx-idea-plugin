@@ -17,7 +17,6 @@ repositories {
 }
 
 apply plugin: 'application'
-mainClassName = 'app.MyApp'
 
 dependencies {
     compile 'no.tornado:tornadofx:1.5.4'
@@ -28,7 +27,7 @@ jar {
     manifest {
         attributes(
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'app.MyApp'
+                'Main-Class': 'com.example.demo.app.MyApp'
         )
     }
     from configurations.compile.collect { entry -> zipTree(entry) }
