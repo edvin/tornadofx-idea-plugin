@@ -40,3 +40,7 @@ class FXTools {
 fun Project.allRoots(): List<VirtualFile> = allModules()
         .map { ModuleRootManager.getInstance(it).modifiableModel }
         .flatMap { it.sourceRoots.toList() }
+
+fun Project.firstModuleWithTornadoFXLib() = allModules().filter {
+    JavaPsiFacade.getInstance(this).findClass("tornadofx.App", it.moduleWithLibrariesScope) != null
+}.firstOrNull()

@@ -8,6 +8,8 @@ import com.intellij.psi.PsiElement
 import no.tornado.tornadofx.idea.FXTools.Companion.isApp
 import no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.App
 import no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.View
+import no.tornado.tornadofx.idea.firstModuleWithTornadoFXLib
+import org.jetbrains.kotlin.idea.refactoring.memberInfo.qualifiedClassNameForRendering
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.psi.KtClass
 
@@ -19,14 +21,15 @@ class TornadoFXRunConfigurationProducer : RunConfigurationProducer<TornadoFXConf
 
         configuration.name = psiClass.name
 
+        configuration.setModule(context.project.firstModuleWithTornadoFXLib())
+
         if (isApp(psiClass)) {
             configuration.RUN_TYPE = App
             configuration.MAIN_CLASS_NAME = psiClass.qualifiedName
         } else {
             configuration.RUN_TYPE = View
             configuration.MAIN_CLASS_NAME = "tornadofx.App"
-            configuration.VIEW_CLASS_NAME = psiClass.qualifiedName
-            println("View and ${psiClass.qualifiedName}")
+            configuration.VIEW_CLASS_NAME = psiClass.qualifiedClassNameForRendering()
         }
         return true
     }
