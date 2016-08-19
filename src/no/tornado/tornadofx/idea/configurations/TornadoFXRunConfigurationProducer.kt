@@ -24,6 +24,7 @@ class TornadoFXRunConfigurationProducer : RunConfigurationProducer<TornadoFXConf
             configuration.MAIN_CLASS_NAME = psiClass.qualifiedName
         } else {
             configuration.RUN_TYPE = View
+            configuration.MAIN_CLASS_NAME = "tornadofx.App"
             configuration.VIEW_CLASS_NAME = psiClass.qualifiedName
             println("View and ${psiClass.qualifiedName}")
         }
