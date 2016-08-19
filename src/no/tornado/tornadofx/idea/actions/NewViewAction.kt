@@ -6,16 +6,22 @@ import com.intellij.ide.fileTemplates.FileTemplateUtil
 import com.intellij.ide.fileTemplates.actions.CreateFromTemplateActionBase
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataKeys
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbModePermission
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.popup.Balloon
+import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.wm.WindowManager
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.IncorrectOperationException
 import no.tornado.tornadofx.idea.allRoots
 import org.apache.velocity.runtime.parser.ParseException
@@ -114,8 +120,18 @@ class NewViewAction : AnAction() {
 
     private fun hasBuilder(project: Project, rootType: String): Boolean {
         val builderName = rootType.substringAfterLast(".").toLowerCase()
-        val layouts = JavaPsiFacade.getInstance(project).findClass("tornadofx.LayoutsKt", GlobalSearchScope.allScope(project))!!
-        return layouts.findMethodsByName(builderName, true).isNotEmpty()
+        val layouts = JavaPsiFacade.getInstance(project).findClass("tornadofx.LayoutsKt", GlobalSearchScope.allScope(project))
+        if (layouts == null) {
+            val statusBar = WindowManager.getInstance().getStatusBar(project)
+            JBPopupFactory.getInstance()
+                    .createHtmlTextBalloonBuilder("TornadoFX was not found on your classpath. You must add it to reliably use the TornadoFX plugin.", MessageType.WARNING, null)
+                    .setFadeoutTime(7500)
+                    .createBalloon()
+                    .show(RelativePoint.getCenterOf(statusBar.component), Balloon.Position.atRight);
+            return true
+        } else {
+            return layouts.findMethodsByName(builderName, true).isNotEmpty()
+        }
     }
 
 }
