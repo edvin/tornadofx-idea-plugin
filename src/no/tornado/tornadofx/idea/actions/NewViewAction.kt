@@ -11,12 +11,11 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbModePermission
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
+import com.intellij.psi.*
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.IncorrectOperationException
 import no.tornado.tornadofx.idea.allRoots
 import org.apache.velocity.runtime.parser.ParseException
@@ -87,6 +86,7 @@ class NewViewAction : AnAction() {
                 val props = FileTemplateManager.getInstance(dir.project).defaultProperties
                 props.put("fqRootType", rootType)
                 props.put("rootType", rootType.substringAfterLast("."))
+                props.put("initType", if(hasBuilder(project, rootType)) "builder" else "construct")
                 props.put("viewType", viewType)
                 element = FileTemplateUtil.createFromTemplate(template, name, props, dir)
                 val psiFile = element.containingFile
@@ -110,6 +110,12 @@ class NewViewAction : AnAction() {
         })
 
         return file
+    }
+
+    private fun hasBuilder(project: Project, rootType: String): Boolean {
+        val builderName = rootType.substringAfterLast(".").toLowerCase()
+        val layouts = JavaPsiFacade.getInstance(project).findClass("tornadofx.LayoutsKt", GlobalSearchScope.allScope(project))!!
+        return layouts.findMethodsByName(builderName, true).isNotEmpty()
     }
 
 }

@@ -5,7 +5,7 @@ import ${fqRootType}
 import tornadofx.${viewType}
 
 #parse("File Header.java")
-class ${NAME} : ${viewType}() {
+class ${NAME} : ${viewType}("My View") {
 	override val root : ${rootType} by fxml()
 
 	init {
