@@ -9,9 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.5.4.1 - 2016-08-19</h4>
+        <h4>1.5.4.1 - 2016-08-03</h4>
         <ul>
-            <li>New View now uses the new syntax for view root types that has a builder</li>
+            <li>OSGi Declarative Services Template</li>
+            <li>Better dependencies and build for OSGi templates</li>
+            <li>Templates support configurable group and name</li>
         </ul>
         <h4>1.5.4 - 2016-08-03</h4>
         <ul>
@@ -63,6 +65,7 @@
 
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-project.zip" category="true"/>
+        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-ds-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project.zip" category="true"/>
         <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->
 
