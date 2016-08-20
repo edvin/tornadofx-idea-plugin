@@ -15,9 +15,9 @@ import org.jetbrains.kotlin.psi.KtClass
 
 class TornadoFXRunConfigurationProducer : RunConfigurationProducer<TornadoFXConfiguration>(TornadoFXConfigurationType()){
     override fun setupConfigurationFromContext(configuration: TornadoFXConfiguration, context: ConfigurationContext, sourceElement: Ref<PsiElement>): Boolean {
-        val ktClass = sourceElement.get() as KtClass
+        val ktClass = sourceElement.get() as? KtClass ?: return false
         val psiFacade = JavaPsiFacade.getInstance(ktClass.project)
-        val psiClass = psiFacade.findClass(ktClass.fqName.toString(), ktClass.project.allScope())!!
+        val psiClass = psiFacade.findClass(ktClass.fqName.toString(), ktClass.project.allScope()) ?: return false
 
         configuration.name = psiClass.name
 
