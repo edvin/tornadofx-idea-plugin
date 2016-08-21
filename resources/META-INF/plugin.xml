@@ -94,6 +94,8 @@
         <runLineMarkerContributor language="kotlin"
                                   implementationClass="no.tornado.tornadofx.idea.configurations.TornadoFXRunLineMarkerContributor"/>
 
+        <!--<framework.type implementation="no.tornado.tornadofx.idea.framework.TornadoFXFramework"/>-->
+
         <internalFileTemplate name="TornadoFX Code View"/>
         <internalFileTemplate name="TornadoFX FXML View"/>
         <internalFileTemplate name="TornadoFX FXML ViewResource"/>
