@@ -60,12 +60,12 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
                 if (ktClassBody.children.isEmpty()) {
                     ktClassBody.addAfter(factory.createNewLine(), ktClassBody)
-                    ktClassBody.addAfter(declaration, ktClassBody.firstChild)
                     ktClassBody.addAfter(propAccessor, ktClassBody.firstChild)
+                    ktClassBody.addAfter(declaration, ktClassBody.firstChild)
                 } else {
                     ktClassBody.addAfter(factory.createNewLine(), ktClassBody.firstChild)
-                    ktClassBody.addAfter(declaration, ktClassBody.firstChild)
                     ktClassBody.addAfter(propAccessor, ktClassBody.firstChild)
+                    ktClassBody.addAfter(declaration, ktClassBody.firstChild)
                 }
 
                 addImports()
