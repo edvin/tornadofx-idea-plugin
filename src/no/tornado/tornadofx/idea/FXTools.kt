@@ -28,6 +28,18 @@ class FXTools {
             return false
         }
 
+        fun isTornadoFXType(psiClass: PsiClass): Boolean {
+            for (supa in psiClass.supers)
+                if (supa.qualifiedName?.startsWith("tornadofx.") ?: false) {
+                    return true
+                } else {
+                    val superIs = isTornadoFXType(supa)
+                    if (superIs) return true
+                }
+
+            return false
+        }
+
         fun psiClass(className: String, project: Project) =
                 JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
     }
