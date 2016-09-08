@@ -10,9 +10,11 @@ import no.tornado.tornadofx.idea.FXTools.Companion.isTornadoFXType
 import org.jetbrains.kotlin.asJava.toLightClass
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.ShortenReferences
-import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
+import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 
 class GenerateViewModel : PsiElementBaseIntentionAction() {
@@ -33,17 +35,12 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
     }
 
-    private class PropDesc(val name: String, val isFXProperty: Boolean, val accessor: String) {
-        constructor(param: KtParameter) : this(param.name!!, checkFxProperty(param), param.name!!)
-        constructor(prop: KtProperty) : this(prop.name!!, checkFxProperty(prop), prop.name!!)
-        constructor(method: KtNamedFunction) : this(method.name!!.replace(Regex("Property$"), ""), true, "${method.name}()")
+    private class PropDesc(val name: String, val accessor: String, val type: KotlinType?) {
+        constructor(param: KtParameter) : this(param.name!!, param.name!!, getDeclarationReturnType(param))
+        constructor(prop: KtProperty) : this(prop.name!!, prop.name!!, getDeclarationReturnType(prop))
+        constructor(method: KtNamedFunction) : this(method.name!!.replace(Regex("Property$"), ""), "${method.name}()", getDeclarationReturnType(method))
 
-        companion object {
-            private fun checkFxProperty(p: KtNamedDeclaration): Boolean {
-                val returnType = QuickFixUtil.getDeclarationReturnType(p)
-                return returnType?.supertypes()?.find { it.getJetTypeFqName(false) == "javafx.beans.property.Property" } != null
-            }
-        }
+        fun isFXProperty() = type?.supertypes()?.find { it.getJetTypeFqName(false) == "javafx.beans.property.Property" } != null
     }
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
@@ -77,10 +74,19 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                 (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
                     val s = StringBuilder("val ${param.name} = bind { ")
 
-                    if (param.isFXProperty) {
+                    if (param.isFXProperty()) {
                         s.append("$sourceVal.${param.accessor} }")
                     } else {
-                        s.append("javafx.beans.property.SimpleObjectProperty($sourceVal.${param.name}) }");
+                        val typeName = param.type?.nameIfStandardType?.toString()
+                        val propType = when (typeName) {
+                            "Int" -> "Integer"
+                            "Long" -> "Long"
+                            "Boolean" -> "Boolean"
+                            "Float" -> "Float"
+                            "String" -> "String"
+                            else -> "Object"
+                        }
+                        s.append("javafx.beans.property.Simple${propType}Property($sourceVal.${param.name}) }");
                     }
 
                     val declaration = ktClassBody.addAfter(factory.createProperty(s.toString()), ktClassBody.firstChild) as KtElement
@@ -92,4 +98,5 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
 
     }
+
 }
