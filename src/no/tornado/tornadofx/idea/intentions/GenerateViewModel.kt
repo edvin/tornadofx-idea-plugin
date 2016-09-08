@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.FXTools.Companion.isTornadoFXType
 import org.jetbrains.kotlin.asJava.toLightClass
 import org.jetbrains.kotlin.idea.KotlinLanguage
@@ -39,8 +40,6 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
         constructor(param: KtParameter) : this(param.name!!, param.name!!, getDeclarationReturnType(param))
         constructor(prop: KtProperty) : this(prop.name!!, prop.name!!, getDeclarationReturnType(prop))
         constructor(method: KtNamedFunction) : this(method.name!!.replace(Regex("Property$"), ""), "${method.name}()", getDeclarationReturnType(method))
-
-        fun isFXProperty() = type?.supertypes()?.find { it.getJetTypeFqName(false) == "javafx.beans.property.Property" } != null
     }
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
@@ -74,7 +73,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                 (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
                     val s = StringBuilder("val ${param.name} = bind { ")
 
-                    if (param.isFXProperty()) {
+                    if (FXTools.isJavaFXProperty(param.type)) {
                         s.append("$sourceVal.${param.accessor} }")
                     } else {
                         val typeName = param.type?.nameIfStandardType?.toString()

@@ -39,7 +39,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
         }
    }
 
-    private fun addForParam(param: KtParameter, project: Project, element: PsiElement) {
+    fun addForParam(param: KtParameter, project: Project, element: PsiElement) {
         val paramName = param.name!!
         val returnType = QuickFixUtil.getDeclarationReturnType(param)
 
@@ -93,7 +93,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
         }.execute()
     }
 
-    private fun addForProp(prop: KtProperty, project: Project, element: PsiElement) {
+    fun addForProp(prop: KtProperty, project: Project, element: PsiElement) {
         val propName = prop.name!!
         val returnType = QuickFixUtil.getDeclarationReturnType(prop)
 
