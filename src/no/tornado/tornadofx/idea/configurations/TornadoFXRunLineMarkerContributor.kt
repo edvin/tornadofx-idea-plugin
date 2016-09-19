@@ -14,7 +14,7 @@ class TornadoFXRunLineMarkerContributor : RunLineMarkerContributor() {
     override fun getInfo(element: PsiElement?): Info? {
         if (element is KtClass) {
             val psiFacade = JavaPsiFacade.getInstance(element.project)
-            val psiClass = psiFacade.findClass(element.fqName.toString(), element.project.allScope()) ?: return null
+            val psiClass = psiFacade?.findClass(element.fqName.toString(), element.project.allScope()) ?: return null
 
             val isApp = FXTools.isApp(psiClass)
             val isView = FXTools.isView(psiClass)
