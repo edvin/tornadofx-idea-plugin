@@ -16,7 +16,7 @@ Please report any [issues](https://github.com/edvin/tornadofx-idea-plugin/issues
 
 #### Run Configuration
 
-Run a TornadoFX Application or a View ad hoc
+Run a TornadoFX Application or a View ad hoc, specify Live reloading of stylesheets and/or Views
 
 #### Add View
 
@@ -26,12 +26,16 @@ Run a TornadoFX Application or a View ad hoc
 
 - Search for Components (View, Fragment, Controller) and create injected val
  
-#### Intentions
+### Convert field members to JavaFX Properties
+ 
+### Add TableView Columns
 
-- Convert field members to JavaFX Properties
-- Add TableView Columns
+## Generate ViewModel
 
 #### Project Templates
 
 - Maven Application
 - Gradle Application
+- OSGi Application
+- OSGi Dynamic View
+- OSGi Dynamic Stylesheet

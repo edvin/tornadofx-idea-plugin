@@ -7,6 +7,9 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.typeUtil.supertypes
 
 class FXTools {
     companion object {
@@ -28,11 +31,26 @@ class FXTools {
             return false
         }
 
+        fun isTornadoFXType(psiClass: PsiClass): Boolean {
+            for (supa in psiClass.supers)
+                if (supa.qualifiedName?.startsWith("tornadofx.") ?: false) {
+                    return true
+                } else {
+                    val superIs = isTornadoFXType(supa)
+                    if (superIs) return true
+                }
+
+            return false
+        }
+
         fun psiClass(className: String, project: Project) =
                 JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
+
+        fun isJavaFXProperty(type: KotlinType?) = type?.supertypes()?.find { it.getJetTypeFqName(false) == "javafx.beans.property.Property" } != null
     }
 
 }
+
 
 /**
  * A list of all source roots from all modules

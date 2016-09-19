@@ -14,12 +14,15 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.ToolbarDecorator
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.descriptors.MemberDescriptor
+import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptor
 import org.jetbrains.kotlin.idea.codeInsight.KtFunctionPsiElementCellRenderer
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.ImportPath
+import org.jetbrains.kotlin.types.KotlinType
 import javax.swing.Action
 import javax.swing.JComponent
 import javax.swing.JList
@@ -30,7 +33,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     override fun getFamilyName() = text
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement) =
-            getFunctionDescriptor(element)?.returnType?.getJetTypeFqName(false) == "javafx.scene.control.TableView"
+        getReturnType(element)?.getJetTypeFqName(false) == "javafx.scene.control.TableView"
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
         val declaration = PsiTreeUtil.getParentOfType(element, KtCallableDeclaration::class.java)!!
@@ -71,8 +74,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     }
 
     private fun getModelPsiClass(element: PsiElement, project: Project): PsiClass? {
-        val descriptor = getFunctionDescriptor(element)!!
-        val returnType = descriptor.returnType!!
+        val returnType = getReturnType(element) ?: return null
         val modelTypeProjection = returnType.arguments[0]!!
         val modelTypeFq = modelTypeProjection.type.getJetTypeFqName(false)
         return getPsiClass(project, modelTypeFq)
@@ -93,10 +95,19 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     private fun getPsiClass(project: Project, modelTypeFq: String): PsiClass? =
             JavaPsiFacade.getInstance(project).findClass(modelTypeFq, project.projectScope())
 
-    private fun getFunctionDescriptor(element: PsiElement): FunctionDescriptor? {
+    private fun getReturnType(element: PsiElement): KotlinType? {
+        val memberDescriptor = getMemberDescriptor(element)
+        return when (memberDescriptor) {
+            is PropertyDescriptor -> memberDescriptor.getter?.returnType
+            is FunctionDescriptor -> memberDescriptor.returnType
+            else -> null
+        }
+    }
+
+    private fun getMemberDescriptor(element: PsiElement): MemberDescriptor? {
         val declaration = PsiTreeUtil.getParentOfType(element, KtCallableDeclaration::class.java)
         val descriptor = declaration?.resolveToDescriptor()
-        return if (descriptor is FunctionDescriptor) descriptor else null
+        return if (descriptor is MemberDescriptor) descriptor else null
     }
 
     inner class ColumnsDialog(psiClass: PsiClass) : DialogWrapper(psiClass.project) {
