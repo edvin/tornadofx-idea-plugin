@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="no.tornado.tornadofx.idea.TornadoFXConfigurable.ConfigUI">
+  <grid id="27dc6" binding="mainPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+    <constraints>
+      <xy x="11" y="1" width="656" height="58"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="955b1" class="javax.swing.JCheckBox" binding="alternativePropertySyntaxCheckbox">
+        <constraints/>
+        <properties>
+          <text value="Use alternative JavaFX Property Syntax"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>
