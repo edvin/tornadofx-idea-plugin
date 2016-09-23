@@ -13,6 +13,12 @@
           <text value="Use alternative JavaFX Property Syntax"/>
         </properties>
       </component>
+      <component id="8538c" class="com.intellij.ui.HyperlinkLabel" binding="propertySyntaxLink">
+        <constraints/>
+        <properties>
+          <toolTipText value="Read more about the alternative property syntax"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

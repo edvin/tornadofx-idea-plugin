@@ -2,12 +2,18 @@ package no.tornado.tornadofx.idea;
 
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.ui.HyperlinkAdapter;
+import com.intellij.ui.HyperlinkLabel;
 import no.tornado.tornadofx.idea.TornadoFXSettings;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
 
 public class TornadoFXConfigurable implements SearchableConfigurable {
     private TornadoFXSettings settings;
@@ -69,8 +75,23 @@ public class TornadoFXConfigurable implements SearchableConfigurable {
     }
 
     public static class ConfigUI {
-        JPanel mainPanel;
-        JCheckBox alternativePropertySyntaxCheckbox;
+        private JPanel mainPanel;
+        private JCheckBox alternativePropertySyntaxCheckbox;
+        private HyperlinkLabel propertySyntaxLink;
+
+        public ConfigUI() {
+            propertySyntaxLink.setHyperlinkText("More");
+            propertySyntaxLink.addHyperlinkListener(new HyperlinkAdapter() {
+                @Override
+                protected void hyperlinkActivated(HyperlinkEvent e) {
+                    try {
+                        Desktop.getDesktop().browse(URI.create("https://edvin.gitbooks.io/tornadofx-guide/content/Appendix%20A%20-%20Supplementary%20Topics.html#alternative-property-syntax"));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+        }
 
         void reset(TornadoFXSettings settings) {
             alternativePropertySyntaxCheckbox.setSelected(settings.getAlternativePropertySyntax());

@@ -7,10 +7,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
+import no.tornado.tornadofx.idea.TornadoFXSettings
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
+import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.ImportPath
+import org.jetbrains.kotlin.types.KotlinType
 
 class FXPropertyConverter : PsiElementBaseIntentionAction() {
     override fun getText() = "Convert to TornadoFX Property"
@@ -41,7 +44,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
     fun addForParam(param: KtParameter, project: Project, element: PsiElement) {
         val paramName = param.name!!
-        val returnType = QuickFixUtil.getDeclarationReturnType(param)
+        val returnType = QuickFixUtil.getDeclarationReturnType(param)!!
 
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
@@ -53,10 +56,11 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                     ktClassBody = ktClass.add(ktClassBody) as KtClassBody
                 }
 
-                val typeDecl = "<$returnType>"
-
-                val declaration = factory.createProperty("var $paramName by property$typeDecl()")
-                val propAccessor = factory.createFunction("fun ${paramName}Property() = getProperty(${ktClass.name}::$paramName)")
+                val (declaration, propAccessor) = if (TornadoFXSettings.getInstance().alternativePropertySyntax) {
+                    createAlternativePropertyElements(factory, paramName, returnType, "")
+                } else {
+                    createPropertyElements(factory, paramName, returnType, ktClass, "")
+                }
 
                 if (ktClassBody.children.isEmpty()) {
                     ktClassBody.addAfter(factory.createNewLine(), ktClassBody)
@@ -95,7 +99,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
     fun addForProp(prop: KtProperty, project: Project, element: PsiElement) {
         val propName = prop.name!!
-        val returnType = QuickFixUtil.getDeclarationReturnType(prop)
+        val returnType = QuickFixUtil.getDeclarationReturnType(prop)!!
 
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
@@ -104,10 +108,12 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                 val ktClassBody = PsiTreeUtil.getParentOfType(element, KtClassBody::class.java)!!
 
                 val value = if (prop.hasInitializer() && prop.initializer!!.text != "null") prop.initializer!!.text else ""
-                val typeDecl = if (value.isEmpty()) "<$returnType>" else ""
 
-                val declaration = factory.createProperty("var $propName by property$typeDecl($value)")
-                val propAccessor = factory.createFunction("fun ${propName}Property() = getProperty(${ktClass.name}::$propName)")
+                val (declaration, propAccessor) = if (TornadoFXSettings.getInstance().alternativePropertySyntax) {
+                    createAlternativePropertyElements(factory, propName, returnType, value)
+                } else {
+                    createPropertyElements(factory, propName, returnType, ktClass, value)
+                }
 
                 ktClassBody.addAfter(propAccessor, prop)
                 ktClassBody.addAfter(declaration, prop)
@@ -131,4 +137,28 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
         }.execute()
     }
 
+    companion object {
+        fun createAlternativePropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, value: String): Pair<PsiElement, PsiElement> {
+            val typeName = returnType.nameIfStandardType?.toString()
+
+            val propType = when (typeName) {
+                "Int" -> "Integer"
+                "Long" -> "Long"
+                "Boolean" -> "Boolean"
+                "Float" -> "Float"
+                "String" -> "String"
+                else -> "Object"
+            }
+
+            return factory.createProperty("val ${paramName}Property = Simple${propType}Property($value)") to
+                    factory.createProperty("var paramName by ${paramName}Property")
+        }
+
+        fun createPropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, ktClass: KtClass, value: String): Pair<PsiElement, PsiElement> {
+            val typeDecl = "<$returnType>"
+            return factory.createProperty("var $paramName by property$typeDecl($value)") to
+                    factory.createFunction("fun ${paramName}Property() = getProperty(${ktClass.name}::$paramName)")
+        }
+
+    }
 }
