@@ -9,7 +9,9 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.TornadoFXSettings
 import org.jetbrains.kotlin.idea.KotlinLanguage
+import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
+import org.jetbrains.kotlin.idea.quickfix.createFromUsage.callableBuilder.getTypeParameters
 import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.ImportPath
@@ -56,23 +58,26 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                     ktClassBody = ktClass.add(ktClassBody) as KtClassBody
                 }
 
+                val importList = mutableSetOf<String>()
+                val value = if (param.hasDefaultValue()) param.defaultValue?.firstChild?.text ?: "" else ""
+
                 val (declaration, propAccessor) = if (TornadoFXSettings.getInstance().alternativePropertySyntax) {
-                    createAlternativePropertyElements(factory, paramName, returnType, "")
+                    createAlternativePropertyElements(factory, paramName, returnType, value, importList)
                 } else {
-                    createPropertyElements(factory, paramName, returnType, ktClass, "")
+                    createPropertyElements(factory, paramName, returnType, ktClass, value, importList)
                 }
 
                 if (ktClassBody.children.isEmpty()) {
                     ktClassBody.addAfter(factory.createNewLine(), ktClassBody)
-                    ktClassBody.addAfter(propAccessor, ktClassBody.firstChild)
-                    ktClassBody.addAfter(declaration, ktClassBody.firstChild)
+                    shortenIfNeeded(ktClassBody.addAfter(propAccessor, ktClassBody.firstChild))
+                    shortenIfNeeded(ktClassBody.addAfter(declaration, ktClassBody.firstChild))
                 } else {
                     ktClassBody.addAfter(factory.createNewLine(), ktClassBody.firstChild)
-                    ktClassBody.addAfter(propAccessor, ktClassBody.firstChild)
-                    ktClassBody.addAfter(declaration, ktClassBody.firstChild)
+                    shortenIfNeeded(ktClassBody.addAfter(propAccessor, ktClassBody.firstChild))
+                    shortenIfNeeded(ktClassBody.addAfter(declaration, ktClassBody.firstChild))
                 }
 
-                addImports()
+                addImports(element, project, importList)
 
                 while(param.nextSibling?.node?.text == "," || param.nextSibling is PsiWhiteSpace)
                     param.nextSibling.delete()
@@ -83,17 +88,6 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                 param.delete()
             }
 
-            private fun addImports() {
-                // ShortenReferences can't handle tornadofx.getProperty, so imports are added manually
-                val importsFactory = KtImportsFactory(project)
-                val ktFile = PsiTreeUtil.getParentOfType(element, KtFile::class.java)!!
-
-                val imports = ktFile.importList!!.imports
-
-                for (fqName in listOf("tornadofx.property", "tornadofx.getProperty"))
-                    if (imports.find { it.importedFqName.toString() == fqName } == null)
-                        ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(fqName)))
-            }
         }.execute()
     }
 
@@ -109,55 +103,68 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
                 val value = if (prop.hasInitializer() && prop.initializer!!.text != "null") prop.initializer!!.text else ""
 
+                val importList = mutableSetOf<String>()
+
                 val (declaration, propAccessor) = if (TornadoFXSettings.getInstance().alternativePropertySyntax) {
-                    createAlternativePropertyElements(factory, propName, returnType, value)
+                    createAlternativePropertyElements(factory, propName, returnType, value, importList)
                 } else {
-                    createPropertyElements(factory, propName, returnType, ktClass, value)
+                    createPropertyElements(factory, propName, returnType, ktClass, value, importList)
                 }
 
-                ktClassBody.addAfter(propAccessor, prop)
-                ktClassBody.addAfter(declaration, prop)
+                shortenIfNeeded(ktClassBody.addAfter(propAccessor, prop))
+                shortenIfNeeded(ktClassBody.addAfter(declaration, prop))
 
-                addImports()
+                addImports(element, project, importList)
 
                 prop.delete()
             }
 
-            private fun addImports() {
-                // ShortenReferences can't handle tornadofx.getProperty, so imports are added manually
-                val importsFactory = KtImportsFactory(project)
-                val ktFile = PsiTreeUtil.getParentOfType(element, KtFile::class.java)!!
-
-                val imports = ktFile.importList!!.imports
-
-                for (fqName in listOf("tornadofx.property", "tornadofx.getProperty"))
-                    if (imports.find { it.importedFqName.toString() == fqName } == null)
-                        ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(fqName)))
-            }
         }.execute()
     }
 
     companion object {
-        fun createAlternativePropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, value: String): Pair<PsiElement, PsiElement> {
+        fun createAlternativePropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, value: String, importList: MutableSet<String>): Pair<PsiElement, PsiElement> {
             val typeName = returnType.nameIfStandardType?.toString()
 
             val propType = when (typeName) {
-                "Int" -> "Integer"
-                "Long" -> "Long"
-                "Boolean" -> "Boolean"
-                "Float" -> "Float"
-                "String" -> "String"
-                else -> "Object"
+                "Int" -> "SimpleIntegerProperty"
+                "Long" -> "SimpleLongProperty"
+                "Boolean" -> "SimpleBooleanProperty"
+                "Float" -> "SimpleFloatProperty"
+                "String" -> "SimpleStringProperty"
+                else -> "SimpleObjectProperty<$returnType>"
             }
 
-            return factory.createProperty("val ${paramName}Property = Simple${propType}Property($value)") to
-                    factory.createProperty("var paramName by ${paramName}Property")
+            val fullPropName = "javafx.beans.property.$propType"
+
+            importList.addAll(listOf("tornadofx.getValue", "tornadofx.setValue"))
+
+            return factory.createProperty("val ${paramName}Property = $fullPropName($value)") to
+                    factory.createProperty("var $paramName by ${paramName}Property")
         }
 
-        fun createPropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, ktClass: KtClass, value: String): Pair<PsiElement, PsiElement> {
-            val typeDecl = "<$returnType>"
-            return factory.createProperty("var $paramName by property$typeDecl($value)") to
+        fun createPropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, ktClass: KtClass, value: String, importList: MutableSet<String>): Pair<PsiElement, PsiElement> {
+            importList.addAll(listOf("tornadofx.property", "tornadofx.getProperty"))
+
+            return factory.createProperty("var $paramName by property<$returnType>($value)") to
                     factory.createFunction("fun ${paramName}Property() = getProperty(${ktClass.name}::$paramName)")
+        }
+
+        private fun addImports(element: PsiElement, project: Project, importList: Iterable<String>) {
+            // ShortenReferences can't handle tornadofx.getProperty, so imports are added manually
+            val importsFactory = KtImportsFactory(project)
+            val ktFile = PsiTreeUtil.getParentOfType(element, KtFile::class.java)!!
+
+            val imports = ktFile.importList!!.imports
+
+            for (fqName in importList)
+                if (imports.find { it.importedFqName.toString() == fqName } == null)
+                    ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(fqName)))
+        }
+
+        private fun shortenIfNeeded(declaration: PsiElement) {
+            if (declaration is KtElement)
+                ShortenReferences().process(declaration)
         }
 
     }
