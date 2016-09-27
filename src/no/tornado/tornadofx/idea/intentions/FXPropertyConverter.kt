@@ -64,7 +64,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                 }
 
                 val importList = mutableSetOf<String>()
-                val value = if (param.hasDefaultValue()) param.defaultValue?.firstChild?.text ?: "" else ""
+                val value = if (param.hasDefaultValue()) param.defaultValue?.text ?: "" else ""
 
                 val (declaration, propAccessor) = if (TornadoFXSettings.getInstance().alternativePropertySyntax) {
                     createAlternativePropertyElements(factory, paramName, returnType, value, importList)
@@ -142,6 +142,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                 "Long" -> "SimpleLongProperty"
                 "Boolean" -> "SimpleBooleanProperty"
                 "Float" -> "SimpleFloatProperty"
+                "Double" -> "SimpleDoubleProperty"
                 "String" -> "SimpleStringProperty"
                 else -> "SimpleObjectProperty<${typeName ?: returnType.lowerIfFlexible() ?: returnType}>"
             }
@@ -157,7 +158,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
         fun createPropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, ktClass: KtClass, value: String, importList: MutableSet<String>): Pair<PsiElement, PsiElement> {
             importList.addAll(listOf("tornadofx.property", "tornadofx.getProperty"))
 
-            return factory.createProperty("var $paramName by property<${returnType.nameIfStandardType ?: returnType}>($value)") to
+            return factory.createProperty("var $paramName by property<${returnType.nameIfStandardType ?: returnType.lowerIfFlexible() ?: returnType}>($value)") to
                     factory.createFunction("fun ${paramName}Property() = getProperty(${ktClass.name}::$paramName)")
         }
 

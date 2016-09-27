@@ -85,10 +85,11 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                             "Long" -> "Long"
                             "Boolean" -> "Boolean"
                             "Float" -> "Float"
+                            "Double" -> "Double"
                             "String" -> "String"
                             else -> "Object"
                         }
-                        s.append("javafx.beans.property.Simple${propType}Property($sourceVal.${param.name}) }");
+                        s.append("javafx.beans.property.Simple${propType}Property($sourceVal.${param.name}) }")
                     }
 
                     val declaration = ktClassBody.addAfter(factory.createProperty(s.toString()), ktClassBody.firstChild) as KtElement
