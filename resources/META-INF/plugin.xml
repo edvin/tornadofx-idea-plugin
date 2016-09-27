@@ -131,6 +131,7 @@
         <applicationService serviceInterface="no.tornado.tornadofx.idea.TornadoFXSettings" serviceImplementation="no.tornado.tornadofx.idea.TornadoFXSettings"/>
         <applicationConfigurable instance="no.tornado.tornadofx.idea.TornadoFXConfigurable" groupId="language" id="preferences.TornadoFX"/>
 
+        <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSColorAnnotator" order="first"/>
     </extensions>
 
     <project-components>
