@@ -17,7 +17,7 @@ class TornadoFXRunLineMarkerContributor : RunLineMarkerContributor() {
             val psiClass = psiFacade?.findClass(element.fqName.toString(), element.project.allScope()) ?: return null
 
             val isApp = FXTools.isApp(psiClass)
-            val isView = FXTools.isView(psiClass)
+            val isView = FXTools.isUIComponent(psiClass)
 
             if (isApp || isView) {
                 return Info(
