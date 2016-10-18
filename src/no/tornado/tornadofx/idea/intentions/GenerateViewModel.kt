@@ -52,7 +52,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
                 val factory = KtPsiFactory(project)
-                val ktClass = element.containingFile.addAfter(factory.createClass("class ${sourceClass.name}Model(val $sourceVal: ${sourceClass.name}) : tornadofx.ViewModel()"), sourceClass) as KtElement
+                val ktClass = element.containingFile.addAfter(factory.createClass("class ${sourceClass.name}Model(var $sourceVal: ${sourceClass.name}) : tornadofx.ViewModel()"), sourceClass) as KtElement
                 ShortenReferences().process(ktClass)
 
                 val ktClassBody = ktClass.add(factory.createEmptyClassBody())

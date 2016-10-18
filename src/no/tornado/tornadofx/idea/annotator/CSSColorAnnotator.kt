@@ -13,12 +13,14 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.ColorPicker
 import com.intellij.util.ui.ColorIcon
 import no.tornado.tornadofx.idea.FXTools
+import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
 import org.jetbrains.kotlin.idea.references.KtInvokeFunctionReference
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.lazy.BodyResolveMode
 import java.awt.Color
 import java.util.*
 import javax.swing.Icon
@@ -48,12 +50,14 @@ class CSSColorAnnotator : Annotator {
 
     private fun annotateColor(element: KtBinaryExpression, holder: AnnotationHolder) {
         val annotation = holder.createInfoAnnotation(element, null)
-        val value = element.right?.mainReference
-        if (value is KtInvokeFunctionReference) {
-            val args = value.expression.valueArguments
+        val right = element.right?.mainReference
+        if (right is KtInvokeFunctionReference) {
+            //val context = element.analyze(BodyResolveMode.FULL)
+            //if (context.getType(right.expression)?.getJetTypeFqName(false) == "javafx.scene.paint.Color")
+            val args = right.expression.valueArguments
             val fxColor: javafx.scene.paint.Color
             if (args.size == 1) {
-                val colorCode = value.expression.valueArguments.first().text.replace("\"", "")
+                val colorCode = right.expression.valueArguments.first().text.replace("\"", "")
                 fxColor = javafx.scene.paint.Color.web(colorCode)
             } else {
                 if (args[0].textContains('.'))
