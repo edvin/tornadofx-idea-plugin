@@ -10,10 +10,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: no.tornado:tornadofx:1.5.6" level="project" />
+    <orderEntry type="library" name="Gradle: no.tornado:tornadofx:1.5.7" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish:javax.json:1.0.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.0.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.4" level="project" />
   </component>
 </module>

@@ -44,7 +44,6 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
         val sourceClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
-//        val sourceVal = sourceClass.name?.toLowerCase() ?: "source"
 
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
@@ -59,7 +58,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                         .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
                         .map(::PropDesc)
 
-                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.map { PropDesc(it) } ?: emptyList()
+                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.map(::PropDesc) ?: emptyList()
 
                 val fxPropertyFunctions = sourceClass.getBody()?.declarations
                         ?.filter { it is KtNamedFunction }
