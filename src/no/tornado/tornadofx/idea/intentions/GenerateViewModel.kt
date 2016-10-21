@@ -9,16 +9,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.FXTools.Companion.isTornadoFXType
-import org.jetbrains.kotlin.asJava.toLightClass
 import org.jetbrains.kotlin.idea.KotlinLanguage
-import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
 import org.jetbrains.kotlin.idea.search.allScope
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.typeUtil.supertypes
 
 class GenerateViewModel : PsiElementBaseIntentionAction() {
     override fun getText() = "Generate ViewModel"
@@ -47,12 +44,12 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
         val sourceClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
-        val sourceVal = sourceClass.name?.toLowerCase() ?: "source"
+//        val sourceVal = sourceClass.name?.toLowerCase() ?: "source"
 
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
                 val factory = KtPsiFactory(project)
-                val ktClass = element.containingFile.addAfter(factory.createClass("class ${sourceClass.name}Model(var $sourceVal: ${sourceClass.name}) : tornadofx.ViewModel()"), sourceClass) as KtElement
+                val ktClass = element.containingFile.addAfter(factory.createClass("class ${sourceClass.name}Model : tornadofx.ItemViewModel<${sourceClass.name}>()"), sourceClass) as KtElement
                 ShortenReferences().process(ktClass)
 
                 val ktClassBody = ktClass.add(factory.createEmptyClassBody())
@@ -60,7 +57,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
                 val constructorParams = sourceClass.getPrimaryConstructorParameters()
                         .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
-                        .map { PropDesc(it) }
+                        .map(::PropDesc)
 
                 val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.map { PropDesc(it) } ?: emptyList()
 
@@ -77,7 +74,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                     val s = StringBuilder("val ${param.name} = bind { ")
 
                     if (FXTools.isJavaFXProperty(param.type)) {
-                        s.append("$sourceVal.${param.accessor} }")
+                        s.append("item?.${param.accessor} }")
                     } else {
                         val typeName = param.type?.nameIfStandardType?.toString()
                         val propType = when (typeName) {
@@ -89,7 +86,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                             "String" -> "String"
                             else -> "Object"
                         }
-                        s.append("javafx.beans.property.Simple${propType}Property($sourceVal.${param.name}) }")
+                        s.append("if (item == null) javafx.beans.property.Simple${propType}Property() else javafx.beans.property.Simple${propType}Property(item?.${param.name}) }")
                     }
 
                     val declaration = ktClassBody.addAfter(factory.createProperty(s.toString()), ktClassBody.firstChild) as KtElement
