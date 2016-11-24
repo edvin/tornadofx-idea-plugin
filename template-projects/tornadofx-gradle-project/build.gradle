@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.0.4'
+    ext.kotlin_version = '1.0.5-2'
 
     repositories {
         mavenLocal()
@@ -20,7 +20,7 @@ repositories {
 apply plugin: 'application'
 
 dependencies {
-    compile 'no.tornado:tornadofx:1.5.7'
+    compile 'no.tornado:tornadofx:1.5.8'
     testCompile 'junit:junit:4.12'
 }
 

@@ -12,8 +12,8 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <kotlin.version>1.0.4</kotlin.version>
-        <tornadofx.version>1.5.7</tornadofx.version>
+        <kotlin.version>1.0.5-2</kotlin.version>
+        <tornadofx.version>1.5.8</tornadofx.version>
     </properties>
 
     <dependencies>
