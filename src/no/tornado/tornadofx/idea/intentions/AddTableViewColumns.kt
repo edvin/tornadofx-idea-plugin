@@ -141,10 +141,8 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     private fun getJavaFXProperties(psiClass: PsiClass): List<PsiMethod> = psiClass.allMethods
             .filter { it.name.endsWith("Property") }
             .filterNot { it.name.fourthLetterIsUpperCase && (it.name.startsWith("get") || it.name.startsWith("set")) }
-            .filter { it.returnType?.canonicalText?.contains("javafx.beans.property") ?: false }
 
     private fun getJavaFXFields(psiClass: PsiClass): List<PsiField> = psiClass.allFields
-            .filter { it.type.canonicalText.contains("javafx.beans.property") }
             .filterNot { it.name?.endsWith("\$delegate") ?: false }
 
     private val String.fourthLetterIsUpperCase: Boolean
