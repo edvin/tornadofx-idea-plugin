@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.5.8</version>
+    <version>1.5.8.1</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,6 +9,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.5.8.1 - 2016-12-06</h4>
+        <ul>
+            <li>Generate TableView Columns supports alternate property syntax</li>
+            <li>Generate Properties works for POKOs</li>
+            <li>Generate ViewModel works for alternate property syntax</li>
+        </ul>
         <h4>1.5.8 - 2016-11-24</h4>
         <ul>
             <li>TornadoFX 1.5.8</li>

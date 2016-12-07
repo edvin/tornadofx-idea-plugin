@@ -43,7 +43,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
     }
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
-        val sourceClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
+        val sourceClass = element as? KtClass ?: PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
 
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
@@ -58,7 +58,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                         .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
                         .map(::PropDesc)
 
-                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.map(::PropDesc) ?: emptyList()
+                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.filterNot { it.hasDelegate() }?.map(::PropDesc) ?: emptyList()
 
                 val fxPropertyFunctions = sourceClass.getBody()?.declarations
                         ?.filter { it is KtNamedFunction }
@@ -67,10 +67,12 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                         ?: emptyList()
 
                 val fxPropertyFnNames = fxPropertyFunctions.map { it.name.replace(Regex("Property$"), "") }
-                val propertiesWithoutFunctionOverlaps = properties.filterNot { fxPropertyFnNames.contains(it.name) }
+                val propertiesWithoutFunctionOverlaps = properties
+                        .filterNot { fxPropertyFnNames.contains(it.name) }
 
                 (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
-                    val s = StringBuilder("val ${param.name} = bind { ")
+                    val paramName = param.name.replace(Regex("Property$"), "")
+                    val s = StringBuilder("val $paramName = bind { ")
 
                     if (FXTools.isJavaFXProperty(param.type)) {
                         s.append("item?.${param.accessor} }")
