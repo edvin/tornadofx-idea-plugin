@@ -23,7 +23,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
         if (element.isWritable && element.language == KotlinLanguage.INSTANCE) {
-            val ktClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)
+            val ktClass = element as? KtClass ?: PsiTreeUtil.getParentOfType(element, KtClass::class.java)
 
             if (ktClass != null) {
                 val psiFacade = JavaPsiFacade.getInstance(project)
