@@ -20,7 +20,7 @@ repositories {
 apply plugin: 'application'
 
 dependencies {
-    compile 'no.tornado:tornadofx:1.5.8'
+    compile 'no.tornado:tornadofx:1.5.9'
     testCompile 'junit:junit:4.12'
 }
 

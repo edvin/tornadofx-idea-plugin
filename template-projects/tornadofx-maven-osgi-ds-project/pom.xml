@@ -12,7 +12,7 @@
 
     <properties>
         <kotlin.version>1.0.5-2</kotlin.version>
-        <tornadofx.version>1.5.8</tornadofx.version>
+        <tornadofx.version>1.5.9</tornadofx.version>
     </properties>
 
     <dependencies>
