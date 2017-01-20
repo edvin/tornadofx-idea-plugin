@@ -9,6 +9,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.6.0 - 2017-22-01</h4>
+        <ul>
+            <li>TornadoFX 1.6.0</li>
+            <li>Configures automatic import of tornadofx.*</li>
+        </ul>
+
         <h4>1.5.9 - 2016-12-24</h4>
         <ul>
             <li>TornadoFX 1.5.9</li>
@@ -151,7 +157,7 @@
 
         <applicationService serviceInterface="no.tornado.tornadofx.idea.TornadoFXSettings" serviceImplementation="no.tornado.tornadofx.idea.TornadoFXSettings"/>
         <applicationConfigurable instance="no.tornado.tornadofx.idea.TornadoFXConfigurable" groupId="language" id="preferences.TornadoFX"/>
-
+        <preloadingActivity implementation="no.tornado.tornadofx.idea.FXPreloader"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSColorAnnotator" order="first"/>
     </extensions>
 
