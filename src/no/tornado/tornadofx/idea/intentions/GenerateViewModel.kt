@@ -8,11 +8,10 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
-import no.tornado.tornadofx.idea.FXTools.Companion.isTornadoFXType
 import org.jetbrains.kotlin.idea.KotlinLanguage
+import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
 import org.jetbrains.kotlin.idea.search.allScope
-import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.KotlinType
@@ -28,7 +27,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
             if (ktClass != null) {
                 val psiFacade = JavaPsiFacade.getInstance(project)
                 val psiClass = psiFacade.findClass(ktClass.fqName.toString(), project.allScope())
-                return psiClass != null && !isTornadoFXType(psiClass)
+                return psiClass != null
             }
         }
 

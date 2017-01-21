@@ -13,6 +13,8 @@
         <ul>
             <li>TornadoFX 1.6.0</li>
             <li>Configures automatic import of tornadofx.*</li>
+            <li>Generate ViewModel intention available in more situations</li>
+            <li>Generate View imports tornadofx.*</li>
         </ul>
 
         <h4>1.5.9 - 2016-12-24</h4>
