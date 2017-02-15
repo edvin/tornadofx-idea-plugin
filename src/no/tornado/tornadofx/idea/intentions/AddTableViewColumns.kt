@@ -6,10 +6,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.LabeledComponent
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiMethod
+import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.ToolbarDecorator
@@ -33,7 +30,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     override fun getFamilyName() = text
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement) =
-        getReturnType(element)?.getJetTypeFqName(false) == "javafx.scene.control.TableView"
+            getReturnType(element)?.getJetTypeFqName(false) == "javafx.scene.control.TableView"
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
         val declaration = PsiTreeUtil.getParentOfType(element, KtCallableDeclaration::class.java)!!
@@ -60,9 +57,9 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
                     addImports(element, modelPsiClass)
                 }
 
-                private fun niceColumnName(it: PsiMethod): String {
+                private fun niceColumnName(it: PsiMember): String {
                     val stripped = it.name.let {
-                        it.first().toUpperCase() + it.substring(1).replace(Regex("Property$"), "")
+                        it!!.first().toUpperCase() + it.substring(1).replace(Regex("Property$"), "")
                     }
                     return stripped.replace(Regex("([A-Z]){1}"), " $1").trim()
                 }
@@ -87,9 +84,10 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
         val imports = ktFile.importList!!.imports
 
-        for (fqName in listOf("tornadofx.column", psiClass.qualifiedName!!))
-            if (imports.find { it.importedFqName.toString() == fqName } == null)
-                ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(fqName)))
+        // TODO: Don't add import if class is in the same package as the class we're operating on
+        listOf("tornadofx.column", psiClass.qualifiedName!!)
+                .filter { fqName -> imports.find { it.importedFqName.toString() == fqName } == null }
+                .forEach { ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(it))) }
     }
 
     private fun getPsiClass(project: Project, modelTypeFq: String): PsiClass? =
@@ -111,15 +109,15 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     }
 
     inner class ColumnsDialog(psiClass: PsiClass) : DialogWrapper(psiClass.project) {
-        val fieldList: JList<PsiMethod>
+        val fieldList: JList<PsiMember>
         val component: JComponent
-        val fields: CollectionListModel<PsiMethod>
+        val fields: CollectionListModel<PsiMember>
 
         init {
             title = "Add TableView Columns from ${psiClass.name}"
 
-            val properties = getJavaFXProperties(psiClass)
-            fields = CollectionListModel(properties)
+            val candidates: List<PsiMember> = getJavaFXProperties(psiClass) + getJavaFXFields(psiClass)
+            fields = CollectionListModel(candidates)
             fieldList = JList(fields)
             fieldList.cellRenderer = KtFunctionPsiElementCellRenderer()
             val decorator = ToolbarDecorator.createDecorator(fieldList)
@@ -142,5 +140,12 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
     private fun getJavaFXProperties(psiClass: PsiClass): List<PsiMethod> = psiClass.allMethods
             .filter { it.name.endsWith("Property") }
-            .filter { it.returnType?.canonicalText?.contains("javafx.beans.property") ?: false }
+            .filterNot { it.name.fourthLetterIsUpperCase && (it.name.startsWith("get") || it.name.startsWith("set")) }
+
+    private fun getJavaFXFields(psiClass: PsiClass): List<PsiField> = psiClass.allFields
+            .filterNot { it.name?.endsWith("\$delegate") ?: false }
+
+    private val String.fourthLetterIsUpperCase: Boolean
+        get() = length > 3 && this[3].isUpperCase()
 }
+

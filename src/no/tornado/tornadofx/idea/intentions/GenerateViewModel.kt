@@ -8,11 +8,10 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
-import no.tornado.tornadofx.idea.FXTools.Companion.isTornadoFXType
 import org.jetbrains.kotlin.idea.KotlinLanguage
+import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
 import org.jetbrains.kotlin.idea.search.allScope
-import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.KotlinType
@@ -23,12 +22,12 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
         if (element.isWritable && element.language == KotlinLanguage.INSTANCE) {
-            val ktClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)
+            val ktClass = element as? KtClass ?: PsiTreeUtil.getParentOfType(element, KtClass::class.java)
 
             if (ktClass != null) {
                 val psiFacade = JavaPsiFacade.getInstance(project)
                 val psiClass = psiFacade.findClass(ktClass.fqName.toString(), project.allScope())
-                return psiClass != null && !isTornadoFXType(psiClass)
+                return psiClass != null
             }
         }
 
@@ -43,8 +42,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
     }
 
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
-        val sourceClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
-//        val sourceVal = sourceClass.name?.toLowerCase() ?: "source"
+        val sourceClass = element as? KtClass ?: PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
 
         object : WriteCommandAction.Simple<String>(project, element.containingFile) {
             override fun run() {
@@ -59,7 +57,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                         .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
                         .map(::PropDesc)
 
-                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.map { PropDesc(it) } ?: emptyList()
+                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.filterNot { it.hasDelegate() }?.map(::PropDesc) ?: emptyList()
 
                 val fxPropertyFunctions = sourceClass.getBody()?.declarations
                         ?.filter { it is KtNamedFunction }
@@ -68,10 +66,12 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                         ?: emptyList()
 
                 val fxPropertyFnNames = fxPropertyFunctions.map { it.name.replace(Regex("Property$"), "") }
-                val propertiesWithoutFunctionOverlaps = properties.filterNot { fxPropertyFnNames.contains(it.name) }
+                val propertiesWithoutFunctionOverlaps = properties
+                        .filterNot { fxPropertyFnNames.contains(it.name) }
 
                 (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
-                    val s = StringBuilder("val ${param.name} = bind { ")
+                    val paramName = param.name.replace(Regex("Property$"), "")
+                    val s = StringBuilder("val $paramName = bind { ")
 
                     if (FXTools.isJavaFXProperty(param.type)) {
                         s.append("item?.${param.accessor} }")

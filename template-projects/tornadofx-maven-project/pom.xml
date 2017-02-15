@@ -10,8 +10,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <kotlin.version>1.0.3</kotlin.version>
-        <tornadofx.version>1.5.6</tornadofx.version>
+        <kotlin.version>1.0.5-2</kotlin.version>
+        <tornadofx.version>1.5.9</tornadofx.version>
     </properties>
 
     <dependencies>

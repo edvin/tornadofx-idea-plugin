@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.lowerIfFlexible
+import org.jetbrains.kotlin.types.replace
 
 class FXPropertyConverter : PsiElementBaseIntentionAction() {
     override fun getText() = "Convert to TornadoFX Property"
@@ -132,7 +133,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
     companion object {
         fun createAlternativePropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, value: String, importList: MutableSet<String>): Pair<PsiElement, PsiElement> {
-            val typeName = returnType.nameIfStandardType?.toString()
+            val typeName = (returnType.nameIfStandardType ?: returnType.lowerIfFlexible()).toString().replace(Regex("\\?$"), "")
 
             val propType = when (typeName) {
                 "Int" -> "SimpleIntegerProperty"
@@ -141,7 +142,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
                 "Float" -> "SimpleFloatProperty"
                 "Double" -> "SimpleDoubleProperty"
                 "String" -> "SimpleStringProperty"
-                else -> "SimpleObjectProperty<${typeName ?: returnType.lowerIfFlexible() ?: returnType}>"
+                else -> "SimpleObjectProperty<$typeName>"
             }
 
             val fullPropName = "javafx.beans.property.$propType"

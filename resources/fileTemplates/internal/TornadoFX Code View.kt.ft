@@ -1,8 +1,8 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME}
 
 #end
-import tornadofx.${viewType}
-#if (${initType} == "builder")import tornadofx.${rootType.toLowerCase()}#else import ${fqRootType}#end
+import tornadofx.*
+#if (${initType} != "builder")import ${fqRootType}#end
 
 #parse("File Header.java")
 class ${NAME} : ${viewType}("My View") {
