@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.5.9</version>
+    <version>1.6.2</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,99 +9,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.6.0 - 2017-22-01</h4>
+        <h4>1.6.2 - 2017-19-02</h4>
         <ul>
-            <li>TornadoFX 1.6.0</li>
+            <li>TornadoFX 1.6.2</li>
             <li>Configures automatic import of tornadofx.*</li>
             <li>Generate ViewModel intention available in more situations</li>
             <li>Generate View imports tornadofx.*</li>
-        </ul>
-
-        <h4>1.5.9 - 2016-12-24</h4>
-        <ul>
-            <li>TornadoFX 1.5.9</li>
-        </ul>
-        <h4>1.5.8.1 - 2016-12-06</h4>
-        <ul>
-            <li>Generate TableView Columns supports alternate property syntax</li>
-            <li>Generate Properties works for POKOs</li>
-            <li>Generate ViewModel works for alternate property syntax</li>
-        </ul>
-        <h4>1.5.8 - 2016-11-24</h4>
-        <ul>
-            <li>TornadoFX 1.5.8</li>
-        </ul>
-        <h4>1.5.7 - 2016-10-21</h4>
-        <ul>
-            <li>TornadoFX 1.5.7</li>
-            <li>Choose fxproperty style in settings</li>
-            <li>Generate ItemViewModel</li>
-            <li>Type safe CSS color picker (beta)</li>
-        </ul>
-        <h4>1.5.6.1 - 2016-09-19</h4>
-        <ul>
-            <li>Fixed npe in two intentions</li>
-        </ul>
-        <h4>1.5.6 - 2016-09-19</h4>
-        <ul>
-            <li>Support for TornadoFX 1.5.6</li>
-        </ul>
-        <h4>1.5.5.4 - 2016-08-21</h4>
-        <ul>
-            <li>Generate ViewModel from model class</li>
-            <li>Create TornadoFX Properties for all members in a class</li>
-        </ul>
-        <h4>1.5.5.3 - 2016-08-20</h4>
-        <ul>
-            <li>Generate properties from constructor parameters</li>
-            <li>TableView Add Columns works for all builder styles</li>
-        </ul>
-        <h4>1.5.5.1 - 2016-08-20</h4>
-        <ul>
-            <li>Fixed cast exception in configuration producer</li>
-        </ul>
-        <h4>1.5.5 - 2016-08-19</h4>
-        <ul>
-            <li>Gutter icon/action for running View and App directly</li>
-            <li>New View now uses the new syntax for view root types that has a builder</li>
-        </ul>
-        <h4>1.5.4.1 - 2016-08-03</h4>
-        <ul>
-            <li>OSGi Declarative Services Template</li>
-            <li>Better dependencies and build for OSGi templates</li>
-            <li>Templates support configurable group and name</li>
-        </ul>
-        <h4>1.5.4 - 2016-08-03</h4>
-        <ul>
-            <li>TornadoFX Version 1.5.4</li>
-        </ul>
-        <h4>1.5.3 - 2016-08-02</h4>
-        <ul>
-            <li>OSGi project template</li>
-        </ul>
-        <h4>1.5.2 - 2016-07-23</h4>
-        <ul>
-            <li>Gradle project template</li>
-            <li>Multi module Gradle support</li>
-            <li>New View action can also create new Fragment</li>
-            <li>"Inject Component" injects Fragments using the `fragment()` delegate</li>
-            <li>Fixed an <a href="https://github.com/edvin/tornadofx-idea-plugin/issues/2">exception on plugin startup</a></li>
-        </ul>
-        <h4>1.0.5 - 2016-05-18</h4>
-        <ul>
-            <li>Dev mod options in Run Config: Live Views / Live Stylesheets</li>
-        </ul>
-        <h4>1.0.4 - 2016-05-18</h4>
-        <ul>
-            <li>Inject Component generator</li>
-        </ul>
-        <h4>1.0.3 - 2016-05-17</h4>
-        <ul>
-            <li>Add view class based on FXML or Code</li>
-        </ul>
-        <h4>1.0.2 - 2016-05-16</h4>
-        <ul>
-            <li>Fixed missing source dir annotation for Maven template</li>
         </ul>
     ]]>
     </change-notes>

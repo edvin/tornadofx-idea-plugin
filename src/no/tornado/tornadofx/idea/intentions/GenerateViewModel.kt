@@ -32,7 +32,6 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
         }
 
         return false
-
     }
 
     private class PropDesc(val name: String, val accessor: String, val type: KotlinType?) {
