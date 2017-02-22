@@ -8,7 +8,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "TornadoFXSettings", storages = arrayOf(Storage("other.xml")))
 class TornadoFXSettings : PersistentStateComponent<TornadoFXSettings> {
-    var alternativePropertySyntax = false
+    var alternativePropertySyntax = true
 
     override fun loadState(state: TornadoFXSettings) {
         XmlSerializerUtil.copyBean(state, this)

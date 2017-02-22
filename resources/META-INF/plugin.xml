@@ -9,12 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.6.2 - 2017-19-02</h4>
+        <h4>1.6.3 - 2017-19-02</h4>
         <ul>
-            <li>TornadoFX 1.6.2</li>
-            <li>Configures automatic import of tornadofx.*</li>
-            <li>Generate ViewModel intention available in more situations</li>
-            <li>Generate View imports tornadofx.*</li>
+            <li>TornadoFX 1.6.3</li>
+            <li>New type JavaFX Property syntax is now default</li>
         </ul>
     ]]>
     </change-notes>
@@ -36,7 +34,7 @@
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-ds-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project.zip" category="true"/>
-        <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->
+        <moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>
 
         <intentionAction>
             <className>no.tornado.tornadofx.idea.intentions.ConvertAllPropertiesToFX</className>

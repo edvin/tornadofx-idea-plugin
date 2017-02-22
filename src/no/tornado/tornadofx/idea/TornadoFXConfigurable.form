@@ -10,13 +10,13 @@
       <component id="955b1" class="javax.swing.JCheckBox" binding="alternativePropertySyntaxCheckbox">
         <constraints/>
         <properties>
-          <text value="Use alternative JavaFX Property Syntax"/>
+          <text value="Use new type JavaFX Property Syntax"/>
         </properties>
       </component>
       <component id="8538c" class="com.intellij.ui.HyperlinkLabel" binding="propertySyntaxLink">
         <constraints/>
         <properties>
-          <toolTipText value="Read more about the alternative property syntax"/>
+          <toolTipText value="Read more about the new property syntax"/>
         </properties>
       </component>
     </children>
