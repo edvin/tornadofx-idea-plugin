@@ -27,7 +27,7 @@ class ViewEditorProvider : ApplicationComponent, FileEditorProvider {
     }
 
     override fun readState(sourceElement: Element, project: Project, file: VirtualFile): FileEditorState {
-        return FileEditorState { fileEditorState, fileEditorStateLevel -> true }
+        return FileEditorState { orState, fileEditorStateLevel -> true }
     }
 
     override fun getEditorTypeId() = "tornadofx-views"

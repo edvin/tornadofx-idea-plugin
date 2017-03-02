@@ -72,7 +72,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
     private fun getModelPsiClass(element: PsiElement, project: Project): PsiClass? {
         val returnType = getReturnType(element) ?: return null
-        val modelTypeProjection = returnType.arguments[0]!!
+        val modelTypeProjection = returnType.arguments[0]
         val modelTypeFq = modelTypeProjection.type.getJetTypeFqName(false)
         return getPsiClass(project, modelTypeFq)
     }

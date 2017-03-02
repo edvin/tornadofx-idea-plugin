@@ -43,6 +43,7 @@ import java.awt.*;
 import static no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.App;
 import static no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.View;
 
+@SuppressWarnings("unchecked")
 public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfiguration> implements PanelWithAnchor {
 	private CommonJavaParametersPanel myCommonProgramParameters;
 	private LabeledComponent<EditorTextFieldWithBrowseButton> myViewClass;

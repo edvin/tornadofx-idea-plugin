@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.6.2</version>
+    <version>1.6.2.2</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,9 +9,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.6.3 - 2017-19-02</h4>
+        <h4>1.6.2.2 - 2017-19-02</h4>
         <ul>
-            <li>TornadoFX 1.6.3</li>
+            <li>Kotlin 1.1</li>
             <li>New type JavaFX Property syntax is now default</li>
         </ul>
     ]]>
