@@ -67,8 +67,13 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
         override fun createJavaParameters(): JavaParameters? {
             val params = super.createJavaParameters()!!
 
-            if (RUN_TYPE == RunType.View)
+            if (RUN_TYPE == RunType.View) {
                 params.programParametersList.add("--view-class=$VIEW_CLASS_NAME")
+                val isInProdSources = JavaParametersUtil.isClassInProductionSources(VIEW_CLASS_NAME!!, configurationModule.module!!)!!
+                if (!isInProdSources) {
+                    params.configureByModule(configurationModule.module, JavaParameters.JDK_AND_CLASSES_AND_TESTS)
+                }
+            }
 
             if (LIVE_VIEWS)
                 params.programParametersList.add("--live-views")
@@ -88,13 +93,13 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
         VIEW_CLASS_NAME = element.getAttributeValue("view-class")
         RUN_TYPE = RunType.valueOf(element.getAttributeValue("run-type"))
         element.getAttributeValue("live-stylesheets")?.apply {
-            LIVE_STYLESHEETS = "true".equals(this)
+            LIVE_STYLESHEETS = "true" == this
         }
         element.getAttributeValue("live-views")?.apply {
-            LIVE_VIEWS = "true".equals(this)
+            LIVE_VIEWS = "true" == this
         }
         element.getAttributeValue("dump-stylesheets")?.apply {
-            DUMP_STYLESHEETS = "true".equals(this)
+            DUMP_STYLESHEETS = "true" == this
         }
     }
 
