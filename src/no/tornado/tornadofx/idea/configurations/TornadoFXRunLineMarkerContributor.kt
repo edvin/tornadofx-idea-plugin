@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.psi.KtClass
 
 class TornadoFXRunLineMarkerContributor : RunLineMarkerContributor() {
-    override fun getInfo(element: PsiElement?): Info? {
+    override fun getInfo(element: PsiElement): Info? {
         if (element is KtClass) {
             val psiFacade = JavaPsiFacade.getInstance(element.project)
             val psiClass = psiFacade?.findClass(element.fqName.toString(), element.project.allScope()) ?: return null

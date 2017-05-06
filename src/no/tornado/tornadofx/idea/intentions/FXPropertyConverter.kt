@@ -14,11 +14,11 @@ import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
 import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.lowerIfFlexible
-import org.jetbrains.kotlin.types.replace
 
 class FXPropertyConverter : PsiElementBaseIntentionAction() {
     override fun getText() = "Convert to TornadoFX Property"
@@ -169,7 +169,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
             for (fqName in importList)
                 if (imports.find { it.importedFqName.toString() == fqName } == null)
-                    ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(fqName)))
+                    ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(FqName(fqName), false)))
         }
 
         private fun shortenIfNeeded(declaration: PsiElement) {

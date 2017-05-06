@@ -85,7 +85,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                             "String" -> "String"
                             else -> "Object"
                         }
-                        s.append("if (item == null) javafx.beans.property.Simple${propType}Property() else javafx.beans.property.Simple${propType}Property(item?.${param.name}) }")
+                        s.append("if (item == null) javafx.beans.property.Simple${propType}Property() else javafx.beans.property.Simple${propType}Property(item!!.${param.name}) }")
                     }
 
                     val declaration = ktClassBody.addAfter(factory.createProperty(s.toString()), ktClassBody.firstChild) as KtElement
