@@ -65,6 +65,7 @@
         <!--<framework.type implementation="no.tornado.tornadofx.idea.framework.TornadoFXFrameworkType"/>-->
         <!--<frameworkSupport implementation="no.tornado.tornadofx.idea.framework.TornadoFXFrameworkSupportProvider"/>-->
         <facetType implementation="no.tornado.tornadofx.idea.facet.TornadoFXFacetType"/>
+        <framework.detector implementation="no.tornado.tornadofx.idea.framework.TornadoFXFrameworkDetector"/>
 
         <internalFileTemplate name="TornadoFX Code View"/>
         <internalFileTemplate name="TornadoFX FXML View"/>
