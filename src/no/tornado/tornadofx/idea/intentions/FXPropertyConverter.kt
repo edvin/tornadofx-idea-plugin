@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.TornadoFXSettings
+import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
@@ -27,6 +28,8 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
         if (element.isWritable && element.language == KotlinLanguage.INSTANCE) {
+            TornadoFXFacet.get(project) ?: return false
+
             val prop = PsiTreeUtil.getParentOfType(element, KtProperty::class.java)
             if (prop != null) return !prop.isLocal
 

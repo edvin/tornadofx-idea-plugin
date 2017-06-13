@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.ToolbarDecorator
+import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.MemberDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
@@ -17,6 +18,7 @@ import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptor
 import org.jetbrains.kotlin.idea.codeInsight.KtFunctionPsiElementCellRenderer
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.types.KotlinType
@@ -31,6 +33,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement) =
             getReturnType(element)?.getJetTypeFqName(false) == "javafx.scene.control.TableView"
+            && TornadoFXFacet.get(project) != null
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
         val declaration = PsiTreeUtil.getParentOfType(element, KtCallableDeclaration::class.java)!!
@@ -87,7 +90,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
         // TODO: Don't add import if class is in the same package as the class we're operating on
         listOf("tornadofx.column", psiClass.qualifiedName!!)
                 .filter { fqName -> imports.find { it.importedFqName.toString() == fqName } == null }
-                .forEach { ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(it))) }
+                .forEach { ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(FqName(it), false))) }
     }
 
     private fun getPsiClass(project: Project, modelTypeFq: String): PsiClass? =

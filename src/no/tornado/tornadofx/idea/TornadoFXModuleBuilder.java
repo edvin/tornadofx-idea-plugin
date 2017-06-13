@@ -15,7 +15,6 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TornadoFXModuleBuilder extends ModuleBuilder implements PluginIcons, SourcePathsBuilder {
@@ -82,7 +80,7 @@ public class TornadoFXModuleBuilder extends ModuleBuilder implements PluginIcons
 	}
 
 	public ModuleType getModuleType() {
-		return TornadoFXModuleType.INSTANCE;
+		return TornadoFXModuleType.getInstance();
 	}
 
 	public boolean isTemplateBased() {

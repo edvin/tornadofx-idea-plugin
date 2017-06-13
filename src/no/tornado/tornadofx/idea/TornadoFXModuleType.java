@@ -1,16 +1,15 @@
 package no.tornado.tornadofx.idea;
 
 import com.intellij.openapi.module.ModuleType;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> implements PluginIcons {
-	public static final TornadoFXModuleType INSTANCE = new TornadoFXModuleType("TornadoFX");
+	private static final TornadoFXModuleType INSTANCE = new TornadoFXModuleType();
 
-	protected TornadoFXModuleType(@NotNull @NonNls String id) {
-		super(id);
+	public TornadoFXModuleType() {
+		super("TornadoFX");
 	}
 
 	@NotNull
@@ -31,6 +30,9 @@ public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> impl
 		return ACTION;
 	}
 
+	public static TornadoFXModuleType getInstance() {
+		return INSTANCE;
+	}
 
 	@NotNull
 	public TornadoFXModuleBuilder createModuleBuilder() {

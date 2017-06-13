@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.4</version>
+    <version>1.7.6</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,10 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.7.4 - 2017-05-05</h4>
+        <h4>1.7.6 - 2017-06-13</h4>
         <ul>
-            <li>TornadoFX 1.7.4</li>
-            <li>ViewModel generation bugs fixed</li>
+            <li>TornadoFX 1.7.6</li>
+            <li>TornadoFX Framework must be installed in project so we no longer interfer with non-TornadoFX Projects</li>
         </ul>
     ]]>
     </change-notes>
@@ -34,7 +34,7 @@
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-ds-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project.zip" category="true"/>
-        <moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>
+        <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->
 
         <intentionAction>
             <className>no.tornado.tornadofx.idea.intentions.ConvertAllPropertiesToFX</className>
@@ -62,7 +62,9 @@
         <runLineMarkerContributor language="kotlin"
                                   implementationClass="no.tornado.tornadofx.idea.configurations.TornadoFXRunLineMarkerContributor"/>
 
-        <!--<framework.type implementation="no.tornado.tornadofx.idea.framework.TornadoFXFramework"/>-->
+        <!--<framework.type implementation="no.tornado.tornadofx.idea.framework.TornadoFXFrameworkType"/>-->
+        <!--<frameworkSupport implementation="no.tornado.tornadofx.idea.framework.TornadoFXFrameworkSupportProvider"/>-->
+        <facetType implementation="no.tornado.tornadofx.idea.facet.TornadoFXFacetType"/>
 
         <internalFileTemplate name="TornadoFX Code View"/>
         <internalFileTemplate name="TornadoFX FXML View"/>

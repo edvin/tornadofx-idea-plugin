@@ -1,6 +1,7 @@
 package no.tornado.tornadofx.idea.intentions
 
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
+import com.intellij.facet.FacetManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
@@ -8,9 +9,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.FXTools.Companion.isJavaFXProperty
+import no.tornado.tornadofx.idea.facet.TornadoFXFacet
+import no.tornado.tornadofx.idea.facet.TornadoFXFacetType
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
 import org.jetbrains.kotlin.idea.search.allScope
+import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtPropertyDelegate
 
@@ -20,6 +24,8 @@ class ConvertAllPropertiesToFX: PsiElementBaseIntentionAction() {
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
         if (element.isWritable && element.language == KotlinLanguage.INSTANCE) {
+            TornadoFXFacet.get(project) ?: return false
+
             val ktClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)
 
             if (ktClass != null) {

@@ -8,6 +8,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
+import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
@@ -22,6 +23,8 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
         if (element.isWritable && element.language == KotlinLanguage.INSTANCE) {
+            TornadoFXFacet.get(project) ?: return false
+
             val ktClass = element as? KtClass ?: PsiTreeUtil.getParentOfType(element, KtClass::class.java)
 
             if (ktClass != null) {
