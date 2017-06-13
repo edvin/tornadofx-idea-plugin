@@ -1,7 +1,6 @@
 package no.tornado.tornadofx.idea.editors
 
 import com.intellij.openapi.components.ApplicationComponent
-import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -23,11 +22,8 @@ class ViewEditorProvider : ApplicationComponent, FileEditorProvider {
 
     override fun getPolicy() = FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
 
-    override fun disposeEditor(editor: FileEditor) {
-    }
-
     override fun readState(sourceElement: Element, project: Project, file: VirtualFile): FileEditorState {
-        return FileEditorState { orState, fileEditorStateLevel -> true }
+        return FileEditorState { _, _ -> true }
     }
 
     override fun getEditorTypeId() = "tornadofx-views"
