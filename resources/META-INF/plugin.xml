@@ -12,7 +12,7 @@
         <h4>1.7.6 - 2017-06-13</h4>
         <ul>
             <li>TornadoFX 1.7.6</li>
-            <li>TornadoFX Framework must be installed in project so we no longer interfer with non-TornadoFX Projects</li>
+            <li>TornadoFX Facet must be installed in project so we no longer interfere with non-TornadoFX Projects</li>
         </ul>
     ]]>
     </change-notes>
