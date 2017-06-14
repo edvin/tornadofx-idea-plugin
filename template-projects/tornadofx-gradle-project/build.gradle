@@ -1,7 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.2'
-
-    compileKotlin.kotlinOptions.jvmTarget = "1.8"
+    ext.kotlin_version = '1.1.2-5'
 
     repositories {
         mavenLocal()
@@ -14,6 +12,10 @@ buildscript {
 
 apply plugin: "kotlin"
 
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -22,8 +24,9 @@ repositories {
 apply plugin: 'application'
 
 dependencies {
-    compile 'no.tornado:tornadofx:1.7.5'
+    compile 'no.tornado:tornadofx:1.7.6'
     testCompile 'junit:junit:4.12'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }
 
 jar {
@@ -33,7 +36,7 @@ jar {
                 'Main-Class': 'com.example.demo.app.MyApp'
         )
     }
-    from (configurations.compile.collect { entry -> zipTree(entry) }) {
+    from(configurations.compile.collect { entry -> zipTree(entry) }) {
         exclude 'META-INF/MANIFEST.MF'
         exclude 'META-INF/*.SF'
         exclude 'META-INF/*.DSA'

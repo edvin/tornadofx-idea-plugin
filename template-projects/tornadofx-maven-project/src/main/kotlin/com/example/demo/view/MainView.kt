@@ -1,11 +1,8 @@
 package com.example.demo.view
 
-import tornadofx.View
-import tornadofx.addClass
-import tornadofx.hbox
-import tornadofx.label
+import tornadofx.*
 
-class MainView : View("Hello TornadoFX Application") {
+class MainView : View("Hello TornadoFX") {
     override val root = hbox {
         label(title) {
             addClass(heading)
