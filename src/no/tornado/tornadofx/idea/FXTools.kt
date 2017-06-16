@@ -18,6 +18,7 @@ class FXTools {
         fun isUIComponent(psiClass: PsiClass) = isType("tornadofx.UIComponent", psiClass)
         fun isApp(psiClass: PsiClass) = isType("tornadofx.App", psiClass)
         fun isView(psiClass: PsiClass) = isType("tornadofx.View", psiClass)
+        fun isStylesheet(psiClass: PsiClass) = isType("tornadofx.Stylesheet", psiClass)
 
         fun isType(type: String, psiClass: PsiClass): Boolean {
             for (supa in psiClass.supers)
