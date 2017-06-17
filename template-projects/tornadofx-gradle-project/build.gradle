@@ -29,6 +29,10 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }
 
+run {
+    main = 'com.example.demo.app.MyApp'
+}
+
 jar {
     manifest {
         attributes(
