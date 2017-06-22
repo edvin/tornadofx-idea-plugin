@@ -80,13 +80,14 @@ class CSSBoxAnnotator : Annotator {
     }
 
     private fun MutableList<Pair<Double, String>?>.isAllSimplifiable(): Boolean {
-        return this[0]?.first == this[1]?.first && this[0]?.first == this[2]?.first && this[0]?.first == this[3]?.first
+        return this.size == 4 && this[0]?.first == this[1]?.first && this[0]?.first == this[2]?.first && this[0]?.first == this[3]?.first
                 && this[0]?.second == this[1]?.second && this[0]?.second == this[2]?.second && this[0]?.second == this[3]?.second
+                || size == 2 && this[0]?.first == this[1]?.first && this[0]?.second == this[1]?.second
     }
 
     private fun MutableList<Pair<Double, String>?>.isVHSimplifiable(): Boolean {
         //top == bottom && right == left
-        return this[0]?.first == this[2]?.first && this[1]?.first == this[3]?.first
+        return this.size == 4 && this[0]?.first == this[2]?.first && this[1]?.first == this[3]?.first
                 && this[0]?.second == this[2]?.second && this[1]?.second == this[3]?.second
     }
 
