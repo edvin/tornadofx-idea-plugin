@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.7</version>
+    <version>1.7.7.1</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,6 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.7.7.1 - 2017-06-23</h4>
+        <ul>
+            <li>Generate ViewModel uses new binding syntax</li>
+        </ul>
         <h4>1.7.7 - 2017-06-17</h4>
         <ul>
             <li>TornadoFX 1.7.7</li>
