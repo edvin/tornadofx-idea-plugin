@@ -55,7 +55,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                 val ktClassBody = ktClass.add(factory.createEmptyClassBody())
                 ktClassBody.addAfter(factory.createNewLine(), ktClassBody)
 
-                val constructorParams = sourceClass.getPrimaryConstructorParameters()
+                val constructorParams = sourceClass.primaryConstructorParameters
                         .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
                         .map(::PropDesc)
 
@@ -73,10 +73,10 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
                 (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
                     val paramName = param.name.replace(Regex("Property$"), "")
-                    val s = StringBuilder("val $paramName = bind { ")
+                    val s = StringBuilder("val $paramName = bind")
 
                     if (FXTools.isJavaFXProperty(param.type)) {
-                        s.append("item?.${param.accessor} }")
+                        s.append("(${sourceClass.name}::${param.accessor})")
                     } else {
                         val typeName = param.type?.nameIfStandardType?.toString()
                         val propType = when (typeName) {
@@ -88,7 +88,7 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
                             "String" -> "String"
                             else -> "Object"
                         }
-                        s.append("if (item == null) javafx.beans.property.Simple${propType}Property() else javafx.beans.property.Simple${propType}Property(item!!.${param.name}) }")
+                        s.append("{ javafx.beans.property.Simple${propType}Property(item?.${param.name}) }")
                     }
 
                     val declaration = ktClassBody.addAfter(factory.createProperty(s.toString()), ktClassBody.firstChild) as KtElement
