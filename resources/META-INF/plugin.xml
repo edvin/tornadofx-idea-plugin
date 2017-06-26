@@ -48,7 +48,6 @@
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-ds-project.zip" category="true"/>
-        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-runnablejar-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-simplest-project.zip" category="true"/>
         <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->

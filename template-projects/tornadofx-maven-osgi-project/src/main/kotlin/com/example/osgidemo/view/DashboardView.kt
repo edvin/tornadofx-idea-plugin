@@ -1,15 +1,13 @@
 package com.example.osgidemo.view
 
-import tornadofx.View
-import tornadofx.addClass
-import tornadofx.label
+import com.example.osgidemo.app.Styles
+import tornadofx.*
 import tornadofx.osgi.addViewsWhen
-import tornadofx.vbox
 
 class DashboardView : View("Hello TornadoFX OSGi Application") {
     override val root = vbox {
         label(title) {
-            addClass(heading)
+            addClass(Styles.heading)
         }
         addViewsWhen { it.discriminator == "dashboard" }
     }
