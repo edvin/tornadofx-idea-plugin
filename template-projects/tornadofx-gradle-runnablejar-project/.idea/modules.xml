@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tornadofx-gradle-runnablejar-project.iml" filepath="$PROJECT_DIR$/.idea/modules/tornadofx-gradle-runnablejar-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tornadofx-gradle-runnablejar-project_main.iml" filepath="$PROJECT_DIR$/.idea/modules/tornadofx-gradle-runnablejar-project_main.iml" group="tornadofx-gradle-runnablejar-project" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tornadofx-gradle-runnablejar-project_test.iml" filepath="$PROJECT_DIR$/.idea/modules/tornadofx-gradle-runnablejar-project_test.iml" group="tornadofx-gradle-runnablejar-project" />
+    </modules>
+  </component>
+</project>
