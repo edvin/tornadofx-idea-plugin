@@ -11,6 +11,7 @@ buildscript {
 }
 
 apply plugin: "kotlin"
+apply plugin: 'application'
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -21,17 +22,13 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'application'
-
 dependencies {
     compile 'no.tornado:tornadofx:1.7.7'
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }
 
-run {
-    main = 'com.example.demo.app.MyApp'
-}
+mainClassName = 'com.example.demo.app.MyApp'
 
 jar {
     manifest {
