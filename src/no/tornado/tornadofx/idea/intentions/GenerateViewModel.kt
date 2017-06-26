@@ -7,13 +7,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil.getDeclarationReturnType
 import org.jetbrains.kotlin.idea.search.allScope
-import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.KotlinType
 
@@ -73,26 +71,8 @@ class GenerateViewModel : PsiElementBaseIntentionAction() {
 
                 (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
                     val paramName = param.name.replace(Regex("Property$"), "")
-                    val s = StringBuilder("val $paramName = bind")
-
-                    if (FXTools.isJavaFXProperty(param.type)) {
-                        s.append("(${sourceClass.name}::${param.accessor})")
-                    } else {
-                        val typeName = param.type?.nameIfStandardType?.toString()
-                        val propType = when (typeName) {
-                            "Int" -> "Integer"
-                            "Long" -> "Long"
-                            "Boolean" -> "Boolean"
-                            "Float" -> "Float"
-                            "Double" -> "Double"
-                            "String" -> "String"
-                            else -> "Object"
-                        }
-                        s.append("{ javafx.beans.property.Simple${propType}Property(item?.${param.name}) }")
-                    }
-
-                    val declaration = ktClassBody.addAfter(factory.createProperty(s.toString()), ktClassBody.firstChild) as KtElement
-
+                    val expr = "val $paramName = bind(${sourceClass.name}::${param.accessor})"
+                    val declaration = ktClassBody.addAfter(factory.createProperty(expr), ktClassBody.firstChild) as KtElement
                     ShortenReferences().process(declaration)
                 }
             }
