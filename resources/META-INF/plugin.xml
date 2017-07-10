@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.8</version>
+    <version>1.7.9</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,6 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.7.9</h4>
+        <ul>
+            <li>TornadoFX 1.7.9</li>
+            <li>Star imports are configured on Facet init instead of in Preloader</li>
+        </ul>
         <h4>1.7.8 - 2017-06-26</h4>
         <ul>
             <li>TornadoFX 1.7.8</li>
@@ -88,7 +93,6 @@
 
         <applicationService serviceInterface="no.tornado.tornadofx.idea.TornadoFXSettings" serviceImplementation="no.tornado.tornadofx.idea.TornadoFXSettings"/>
         <applicationConfigurable instance="no.tornado.tornadofx.idea.TornadoFXConfigurable" groupId="language" id="preferences.TornadoFX"/>
-        <preloadingActivity implementation="no.tornado.tornadofx.idea.FXPreloader"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSColorAnnotator" order="first"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSBoxAnnotator" order="first"/>
     </extensions>
