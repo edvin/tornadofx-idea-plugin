@@ -39,10 +39,13 @@ class TornadoFXFacet(
     }
 
     override fun initFacet() {
-        val settingsManager = CodeStyleSettingsManager.getInstance()
-        val settings = settingsManager.currentSettings.getCustomSettings(KotlinCodeStyleSettings::class.java)
-        if (!settings.PACKAGES_TO_USE_STAR_IMPORTS.contains("tornadofx")) {
-            settings.PACKAGES_TO_USE_STAR_IMPORTS.addEntry(PackageEntry(false, "tornadofx", false))
+        try {
+            val settingsManager = CodeStyleSettingsManager.getInstance()
+            val settings = settingsManager.currentSettings.getCustomSettings(KotlinCodeStyleSettings::class.java)
+            if (!settings.PACKAGES_TO_USE_STAR_IMPORTS.contains("tornadofx")) {
+                settings.PACKAGES_TO_USE_STAR_IMPORTS.addEntry(PackageEntry(false, "tornadofx", false))
+            }
+        } catch (ignored: Exception) {
         }
     }
 }
