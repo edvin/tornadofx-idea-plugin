@@ -171,8 +171,12 @@ class FXPropertyConverter : PsiElementBaseIntentionAction() {
             val imports = ktFile.importList!!.imports
 
             for (fqName in importList)
-                if (imports.find { it.importedFqName.toString() == fqName } == null)
-                    ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(FqName(fqName), false)))
+                if (imports.find { it.importedFqName.toString() == fqName } == null) {
+                    val directives = importsFactory.createImportDirectives(mutableListOf(ImportPath(FqName(fqName),false)))
+                    directives.forEach {
+                        ktFile.importList?.add(it)
+                    }
+                }
         }
 
         private fun shortenIfNeeded(declaration: PsiElement) {

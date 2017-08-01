@@ -9,7 +9,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="IntelliJ IDEA Community Edition IC-171.4694.70" jdkType="IDEA JDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
   </component>
 </module>

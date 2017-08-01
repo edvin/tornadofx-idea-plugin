@@ -90,7 +90,12 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
         // TODO: Don't add import if class is in the same package as the class we're operating on
         listOf("tornadofx.column", psiClass.qualifiedName!!)
                 .filter { fqName -> imports.find { it.importedFqName.toString() == fqName } == null }
-                .forEach { ktFile.importList?.add(importsFactory.createImportDirective(ImportPath(FqName(it), false))) }
+                .forEach {
+                    val directives = importsFactory.createImportDirectives(mutableListOf(ImportPath(FqName(it),false)))
+                    directives.forEach {
+                        ktFile.importList?.add(it)
+                    }
+                }
     }
 
     private fun getPsiClass(project: Project, modelTypeFq: String): PsiClass? =
