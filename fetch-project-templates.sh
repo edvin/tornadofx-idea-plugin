@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Remember to build each template via Tools -> "Save project as template"
-IDEA_PROJECT_TEMPLATES=~/.IntelliJIdea2017.1/config/projectTemplates
+IDEA_PROJECT_TEMPLATES=~/.IntelliJIdea2017.2/config/projectTemplates
 
 PLUGIN_PROJECT_TEMPLATES=resources/projectTemplates
 

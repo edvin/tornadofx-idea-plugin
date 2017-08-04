@@ -7,8 +7,4 @@ import tornadofx.*
 #parse("File Header.java")
 class ${NAME} : ${viewType}("My View") {
 	override val root : ${rootType} by fxml()
-
-	init {
-
-	}
 }

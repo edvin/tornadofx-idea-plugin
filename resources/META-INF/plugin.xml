@@ -9,10 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.7.9</h4>
+        <h4>1.7.9 2017-08-04</h4>
         <ul>
             <li>TornadoFX 1.7.9</li>
             <li>Star imports are configured on Facet init instead of in Preloader</li>
+            <li>Framework detector is much faster</li>
         </ul>
         <h4>1.7.8 - 2017-06-26</h4>
         <ul>

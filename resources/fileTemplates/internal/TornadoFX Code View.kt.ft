@@ -11,10 +11,7 @@ class ${NAME} : ${viewType}("My View") {
 
     }
     #else
-	override val root = ${rootType}()
+	override val root = ${importedFqName}()
 
-	init {
-
-	}
     #end
 }
