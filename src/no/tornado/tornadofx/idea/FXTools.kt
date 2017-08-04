@@ -46,7 +46,7 @@ class FXTools {
         }
 
         fun containsTornadoFXImports(file: KtFile) = file.importList?.imports?.find {
-            it.text.contains("tornadofx")
+            it.importedFqName?.asString()?.contains("tornadofx") ?: false
         } != null
 
         fun psiClass(className: String, project: Project) =
