@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 
@@ -43,6 +44,10 @@ class FXTools {
 
             return false
         }
+
+        fun containsTornadoFXImports(file: KtFile) = file.importList?.imports?.find {
+            it.text.contains("tornadofx")
+        } != null
 
         fun psiClass(className: String, project: Project) =
                 JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())

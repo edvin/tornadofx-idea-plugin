@@ -35,13 +35,10 @@ class TornadoFXFrameworkDetector : FacetBasedFrameworkDetector<TornadoFXFacet, T
 
         for (file in newFiles) {
             val psiFile: PsiFile? = psiManager.findFile(file)
-            if (psiFile is KtFile) {
-                for (clazz in psiFile.classes) {
-                    if (clazz != null && FXTools.isTornadoFXType(clazz))
-                        return context.createDetectedFacetDescriptions(this, newFiles)
-                }
-            }
+            if (psiFile is KtFile && FXTools.containsTornadoFXImports(psiFile))
+                return context.createDetectedFacetDescriptions(this, mutableListOf(file))
         }
+
         return Collections.emptyList()
     }
 }
