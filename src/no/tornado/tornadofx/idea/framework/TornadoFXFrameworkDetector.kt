@@ -30,7 +30,7 @@ class TornadoFXFrameworkDetector : FacetBasedFrameworkDetector<TornadoFXFacet, T
     override fun getFileType(): KotlinFileType = KotlinFileType.INSTANCE
 
     override fun detect(newFiles: MutableCollection<VirtualFile>, context: FrameworkDetectionContext): MutableList<out DetectedFrameworkDescription> {
-        val project = context.project ?: return arrayListOf()
+        val project = context.project ?: return Collections.emptyList()
         val psiManager = PsiManager.getInstance(project)
 
         for (file in newFiles) {
