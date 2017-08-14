@@ -49,7 +49,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <!--<fileEditorProvider implementation="no.tornado.tornadofx.idea.editors.ViewEditorProvider"/>-->
+        <fileEditorProvider implementation="no.tornado.tornadofx.idea.editors.ViewEditorProvider"/>
 
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-project.zip" category="true"/>
