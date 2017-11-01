@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.9</version>
+    <version>1.7.12</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,6 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.7.12 2017-11-1</h4>
+        <ul>
+            <li>TornadoFX 1.7.12</li>
+            <li>CSS Color Annotator improvements</li>
+        </ul>
         <h4>1.7.9 2017-08-04</h4>
         <ul>
             <li>TornadoFX 1.7.9</li>
