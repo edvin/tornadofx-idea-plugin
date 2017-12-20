@@ -61,9 +61,9 @@ class CSSColorAnnotator : Annotator {
     private fun annotateColor(element: KtProperty, holder: AnnotationHolder) {
         val annotation = holder.createInfoAnnotation(element, null)
 
-        val args = ((element.children.last() as KtElement) as KtCallExpression).valueArguments
+        val args = (element.children.last() as? KtCallExpression)?.valueArguments
 
-        val (fxColor, colorType) = args.toColorType() ?: return
+        val (fxColor, colorType) = args?.toColorType() ?: return
 
         try {
             val color = Color(fxColor.red.toFloat(), fxColor.green.toFloat(), fxColor.blue.toFloat(), fxColor.opacity.toFloat())

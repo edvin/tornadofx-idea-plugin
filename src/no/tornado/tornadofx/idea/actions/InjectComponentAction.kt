@@ -40,7 +40,7 @@ class InjectComponentAction : AnAction() {
                     val injectType = if (FXTools.isFragment(componentPsiClass)) "fragment" else "inject"
                     val prop = factory.createProperty("val $propName: $componentClass by $injectType()")
                     val ktClassBody = PsiTreeUtil.getParentOfType(element, KtClassBody::class.java)!!
-                    val added = ktClassBody.addAfter(prop, element) as KtElement
+                    val added = ktClassBody.addAfter(prop, ktClassBody.firstChild) as KtElement
                     ShortenReferences().process(added)
                 }
             }.execute()

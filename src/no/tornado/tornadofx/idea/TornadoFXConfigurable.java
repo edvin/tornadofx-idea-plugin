@@ -85,7 +85,7 @@ public class TornadoFXConfigurable implements SearchableConfigurable {
                 @Override
                 protected void hyperlinkActivated(HyperlinkEvent e) {
                     try {
-                        Desktop.getDesktop().browse(URI.create("https://edvin.gitbooks.io/tornadofx-guide/content/Appendix%20A%20-%20Supplementary%20Topics.html#alternative-property-syntax"));
+                        Desktop.getDesktop().browse(URI.create("https://edvin.gitbooks.io/tornadofx-guide/content/part2/Property%20Delegates.html#alternative-property-syntax"));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
