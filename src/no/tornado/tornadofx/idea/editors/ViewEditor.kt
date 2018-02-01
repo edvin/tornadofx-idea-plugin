@@ -22,9 +22,11 @@ import org.jetbrains.kotlin.psi.KtClass
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-class ViewEditor(val project: Project, val file: VirtualFile) : FileEditor {
+class ViewEditor(val project: Project, val myFile: VirtualFile) : FileEditor {
     val panel = JFXPanel()
     val wrapper = StackPane()
+
+    override fun getFile() = myFile
 
     init {
 //        val psiFile = file.toPsiFile(project)!!

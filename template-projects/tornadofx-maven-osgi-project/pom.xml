@@ -12,7 +12,7 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <kotlin.version>1.2.10</kotlin.version>
+        <kotlin.version>1.2.21</kotlin.version>
         <tornadofx.version>1.7.14</tornadofx.version>
     </properties>
 

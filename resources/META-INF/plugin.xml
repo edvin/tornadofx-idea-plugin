@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.14</version>
+    <version>1.7.14.1</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,42 +9,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.7.14 2017-12-20</h4>
+        <h4>1.7.14.1 2018-02-01</h4>
         <ul>
-            <li>TornadoFX 1.7.14</li>
-            <li>CSS Color Annotator bugfix</li>
-            <li>Updated link to alternate property syntax</li>
-        </ul>
-        <h4>1.7.12 2017-11-1</h4>
-        <ul>
-            <li>TornadoFX 1.7.12</li>
-            <li>CSS Color Annotator improvements</li>
-        </ul>
-        <h4>1.7.9 2017-08-04</h4>
-        <ul>
-            <li>TornadoFX 1.7.9</li>
-            <li>Star imports are configured on Facet init instead of in Preloader</li>
-            <li>Framework detector is much faster</li>
-        </ul>
-        <h4>1.7.8 - 2017-06-26</h4>
-        <ul>
-            <li>TornadoFX 1.7.8</li>
-            <li>More improvements to "Generate ViewModel"</li>
-        </ul>
-        <h4>1.7.7.1 - 2017-06-23</h4>
-        <ul>
-            <li>Generate ViewModel uses new binding syntax</li>
-        </ul>
-        <h4>1.7.7 - 2017-06-17</h4>
-        <ul>
-            <li>TornadoFX 1.7.7</li>
-            <li>Updated Project Templates</li>
-            <li>Simplification intentions for type safe CSS</li>
-        </ul>
-        <h4>1.7.6 - 2017-06-13</h4>
-        <ul>
-            <li>TornadoFX 1.7.6</li>
-            <li>TornadoFX Facet must be installed in project so we no longer interfere with non-TornadoFX Projects</li>
+            <li>Updated Kotlin plugin dependency</li>
         </ul>
     ]]>
     </change-notes>
