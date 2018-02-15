@@ -33,5 +33,5 @@ repositories {
 
 dependencies {
 	compile "no.tornado:tornadofx:$tornadofx_version"
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

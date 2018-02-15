@@ -28,7 +28,7 @@ repositories {
 dependencies {
     compile 'no.tornado:tornadofx:1.7.14'
     testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 mainClassName = 'com.example.demo.app.MyApp'
