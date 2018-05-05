@@ -454,7 +454,7 @@ fun String.toColor() = when (this) {
     "Color.WHITESMOKE" -> Color.WHITESMOKE
     "Color.YELLOW" -> Color.YELLOW
     "Color.YELLOWGREEN" -> Color.YELLOWGREEN
-    else -> throw IllegalStateException("Color: $this not known!")
+    else -> null
 }
 
 fun Color.toAwtColor() = java.awt.Color(//
