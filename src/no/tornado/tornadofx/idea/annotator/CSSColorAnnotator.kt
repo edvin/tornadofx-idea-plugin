@@ -6,23 +6,25 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.psi.JavaPsiFacade
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.PopupStep
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.ColorPicker
 import com.intellij.util.ui.ColorIcon
-import no.tornado.tornadofx.idea.FXTools
+import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
-import org.jetbrains.kotlin.idea.references.KtInvokeFunctionReference
 import org.jetbrains.kotlin.idea.references.mainReference
-import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.KotlinType
 import java.awt.Color
 import java.util.*
 import javax.swing.Icon
+
 
 enum class ColorType {
     WEB_WITH_OPACITY,
@@ -35,59 +37,117 @@ enum class ColorType {
 
 
 class CSSColorAnnotator : Annotator {
+
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (!element.isValid) return
-        val ktClass = PsiTreeUtil.getParentOfType(element, KtClass::class.java)
-        if (ktClass != null) {
-            val psiFacade = JavaPsiFacade.getInstance(element.project)
-            val psiClass = psiFacade.findClass(ktClass.fqName.toString(), element.project.allScope())
-            if (psiClass != null && FXTools.isType("tornadofx.Stylesheet", psiClass)) {
-                when (element) {
-                    is KtBinaryExpression -> {
-                        val left = element.left
-                        if (left is KtNameReferenceExpression) {
-                            val prop = left.mainReference.resolve()
-                            if (prop is KtProperty) {
-                                if (prop.declarationReturnType().isFxColor()) annotateColor(element, holder)
-                            }
+        // TODO: Is this the proper way of checking if this is an element in file of a tfx project?
+        if (TornadoFXFacet.get(element.project) != null) {
+            when (element) {
+                is KtBinaryExpression -> {
+                    val left = element.left
+                    if (left is KtNameReferenceExpression) {
+                        val prop = left.mainReference.resolve()
+                        val right = element.right
+                        if (prop is KtProperty && right != null) {
+                            handelProperty(prop, right, holder)
                         }
                     }
-                    is KtProperty -> if (element.declarationReturnType().isFxColor()) annotateColor(element, holder)
+                }
+                is KtProperty -> {
+                    handelProperty(element, element.children.last() as KtExpression, holder)
                 }
             }
         }
     }
 
-    private fun annotateColor(element: KtProperty, holder: AnnotationHolder) {
-        val annotation = holder.createInfoAnnotation(element, null)
-
-        val args = (element.children.last() as? KtCallExpression)?.valueArguments
-
-        val (fxColor, colorType) = args?.toColorType() ?: return
-
-        try {
-            val color = Color(fxColor.red.toFloat(), fxColor.green.toFloat(), fxColor.blue.toFloat(), fxColor.opacity.toFloat())
-            annotation.gutterIconRenderer = PickerRenderer(color, colorType, { element.replaceColor(it) })
-        } catch (ignored: Exception) {
+    private fun handelProperty(property: KtProperty, expr: KtExpression, holder: AnnotationHolder, ref: PsiElement? = null)  {
+        val returnType= property.declarationReturnType()
+        when {
+            expr is KtCallExpression && expr.text.startsWith("c(") -> annotateTFXColor(expr, ref, holder)
+            expr is KtCallExpression && returnType.isColorMulti() -> annotateMulti(expr.valueArguments, ref, holder)
+            expr is KtDotQualifiedExpression && expr.text.startsWith("Color.") ->
+                annotateFXColor(expr, ref, holder, { property.replaceColor(it) })
+            expr is KtReferenceExpression -> annotateReference(expr, holder)
         }
     }
 
-    private fun annotateColor(element: KtBinaryExpression, holder: AnnotationHolder) {
-        val annotation = holder.createInfoAnnotation(element, null)
-        val right = element.right?.mainReference
-        if (right is KtInvokeFunctionReference && right.expression.isValid) {
-            
-            val args = right.expression.valueArguments
-            val (fxColor, colorType) = args.toColorType() ?: return
-            try {
-                val color = Color(fxColor.red.toFloat(), fxColor.green.toFloat(), fxColor.blue.toFloat(), fxColor.opacity.toFloat())
-                annotation.gutterIconRenderer = PickerRenderer(color, colorType, { element.replaceColor(it) })
-            } catch (ignored: Exception) {
+
+    /**
+     * Annotates Color.* expressions
+     */
+    private fun annotateFXColor(element: KtDotQualifiedExpression, ref: PsiElement? = null, holder: AnnotationHolder, transformer: (String) -> Unit) {
+        val annotation = holder.createInfoAnnotation(ref ?: element, null)
+        val fxColor = element.text.toColor()
+        val color = Color(//
+                fxColor.red.toFloat(), //
+                fxColor.green.toFloat(), //
+                fxColor.blue.toFloat(), //
+                fxColor.opacity.toFloat()//
+        ) //
+
+        annotation.gutterIconRenderer = ColorRenderer(element.project, color, transformer)
+    }
+
+    /**
+     * Annotates multi(c() | Color.*, ...) expressions
+     */
+    private fun annotateMulti(elements: List<KtValueArgument>, ref: PsiElement? = null, holder: AnnotationHolder) {
+        for (element in elements) {
+            val child = element.firstChild
+
+            when {
+                child is KtCallExpression && child.text.startsWith("c(") ->
+                    annotateTFXColor(child, ref, holder)
+                child is KtDotQualifiedExpression && child.text.startsWith("Color.") ->
+                    annotateFXColor(child, ref, holder, { child.replaceColor(element, it) })
             }
         }
     }
 
+    /**
+     * Annotates c(...) expressions
+     */
+    private fun annotateTFXColor(element: KtCallExpression, ref: PsiElement? = null, holder: AnnotationHolder) {
+        // TODO: Do we need to check if the expression is valid?
+        val annotation = holder.createInfoAnnotation(ref ?: element, null)
+        val args = element.valueArguments
+        val (fxColor, colorType) = args.toColorType() ?: return
+        val color = Color(//
+                fxColor.red.toFloat(), //
+                fxColor.green.toFloat(), //
+                fxColor.blue.toFloat(), //
+                fxColor.opacity.toFloat() //
+        ) //
+        annotation.gutterIconRenderer = PickerRenderer(color, colorType, {
+            val factory = KtPsiFactory(element.project)
+            element.replace(factory.createExpression(it))
+        })
+    }
+
+    private fun annotateReference(element: KtReferenceExpression, holder: AnnotationHolder) {
+        val resolvedRef = element.mainReference.resolve()
+
+        if( resolvedRef is KtProperty) {
+            val expr = resolvedRef.children.last();
+            if (expr is KtExpression) {
+                handelProperty(
+                        resolvedRef,
+                        expr,
+                        holder,
+                        element
+                )
+            }
+        }
+
+    }
+
+    private fun KotlinType?.isColorMulti(): Boolean {
+        val fqName = this?.getJetTypeFqName(true)
+        return fqName == "tornadofx.MultiValue<javafx.scene.paint.Paint>" || fqName == "tornadofx.MultiValue<javafx.scene.paint.Color>"
+    }
+
     private fun KtNamedDeclaration.declarationReturnType() = QuickFixUtil.getDeclarationReturnType(this)
+
     private fun KotlinType?.isFxColor(): Boolean {
         val fqName = this?.getJetTypeFqName(false)
         return fqName == "javafx.scene.paint.Color" || fqName == "javafx.scene.paint.Paint"
@@ -96,6 +156,7 @@ class CSSColorAnnotator : Annotator {
     private fun List<KtValueArgument>.toColorType(): Pair<javafx.scene.paint.Color, ColorType>? {
         when (size) {
             1, 2 -> {
+                this[0]
                 val colorCode = this[0].textReplace("\"", "")
                 val fxColor: javafx.scene.paint.Color
                 try {
@@ -150,10 +211,58 @@ class CSSColorAnnotator : Annotator {
     private fun KtValueArgument.textToDouble() = text.toDouble()
     private fun KtValueArgument.textReplace(pattern: String, replacment: String) = text.replace(pattern, replacment)
 
+    class ColorRenderer(private val project: Project, val currentColor: Color, val transformer: (String) -> Unit) : GutterIconRenderer() {
+
+        override fun getIcon(): Icon = ColorIcon(8, currentColor)
+
+        override fun getClickAction(): AnAction? {
+            return object : AnAction() {
+                override fun actionPerformed(e: AnActionEvent) {
+                    val editor = CommonDataKeys.EDITOR.getData(e.dataContext)
+
+                    JBPopupFactory.getInstance()
+                            .createListPopup(object : BaseListPopupStep<String>(
+                                    "Choose-Color", defaultFXColorNames, defaultFXColors) {
+                                override fun getTextFor(value: String) = value
+
+                                override fun onChosen(selectedValue: String?, finalChoice: Boolean): PopupStep<*>? {
+                                    selectedValue?.let {
+                                        ApplicationManager.getApplication().invokeLater {
+                                            WriteCommandAction.runWriteCommandAction(project) {
+                                                transformer("Color.$it")
+                                            }
+                                        }
+                                    }
+                                    return super.onChosen(selectedValue, finalChoice)
+                                }
+
+                            }).showInBestPositionFor(editor!!)
+                }
+
+            }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ColorRenderer
+
+            if (currentColor != other.currentColor) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return 31 * currentColor.hashCode()
+        }
+
+
+    }
 
     class PickerRenderer(val currentColor: Color, val colorType: ColorType, val transformer: (String) -> Unit) : GutterIconRenderer() {
 
-        override fun getIcon(): Icon = ColorIcon(16, currentColor)
+        override fun getIcon(): Icon = ColorIcon(8, currentColor)
 
         override fun getClickAction() = object : AnAction() {
             override fun actionPerformed(e: AnActionEvent) {
@@ -209,10 +318,10 @@ class CSSColorAnnotator : Annotator {
 
     }
 
-    private fun KtBinaryExpression.replaceColor(color: String) {
+    private fun KtDotQualifiedExpression.replaceColor(parent: PsiElement, color: String) {
         val factory = KtPsiFactory(project)
-        deleteChildInternal(right!!.node)
-        add(factory.createExpression(color))
+        deleteChildInternal(this.node)
+        parent.add(factory.createExpression(color))
     }
 
     private fun KtProperty.replaceColor(color: String) {
