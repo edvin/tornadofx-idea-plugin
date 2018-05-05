@@ -17,7 +17,6 @@ import com.intellij.ui.ColorPicker
 import com.intellij.util.ui.ColorIcon
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
-import org.jetbrains.kotlin.idea.references.KtInvokeFunctionReference
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
@@ -61,20 +60,23 @@ class CSSColorAnnotator : Annotator {
         }
     }
 
-    private fun handelProperty(property: KtProperty, expr: KtExpression, holder: AnnotationHolder) {
+    private fun handelProperty(property: KtProperty, expr: KtExpression, holder: AnnotationHolder, ref: PsiElement? = null)  {
         val returnType= property.declarationReturnType()
         when {
-            expr is KtCallExpression && expr.text.startsWith("c(") -> annotateTFXColor(expr, holder)
-            expr is KtCallExpression && returnType.isColorMulti() -> annotateMulti(expr.valueArguments, holder)
-            expr is KtDotQualifiedExpression && expr.text.startsWith("Color.") -> annotateFXColor(expr, holder, { property.replaceColor(it) })
+            expr is KtCallExpression && expr.text.startsWith("c(") -> annotateTFXColor(expr, ref, holder)
+            expr is KtCallExpression && returnType.isColorMulti() -> annotateMulti(expr.valueArguments, ref, holder)
+            expr is KtDotQualifiedExpression && expr.text.startsWith("Color.") ->
+                annotateFXColor(expr, ref, holder, { property.replaceColor(it) })
+            expr is KtReferenceExpression -> annotateReference(expr, holder)
         }
     }
+
 
     /**
      * Annotates Color.* expressions
      */
-    private fun annotateFXColor(element: KtDotQualifiedExpression, holder: AnnotationHolder, transformer: (String) -> Unit) {
-        val annotation = holder.createInfoAnnotation(element, null)
+    private fun annotateFXColor(element: KtDotQualifiedExpression, ref: PsiElement? = null, holder: AnnotationHolder, transformer: (String) -> Unit) {
+        val annotation = holder.createInfoAnnotation(ref ?: element, null)
         val fxColor = element.text.toColor()
         val color = Color(//
                 fxColor.red.toFloat(), //
@@ -89,15 +91,15 @@ class CSSColorAnnotator : Annotator {
     /**
      * Annotates multi(c() | Color.*, ...) expressions
      */
-    private fun annotateMulti(elements: List<KtValueArgument>, holder: AnnotationHolder) {
+    private fun annotateMulti(elements: List<KtValueArgument>, ref: PsiElement? = null, holder: AnnotationHolder) {
         for (element in elements) {
             val child = element.firstChild
 
             when {
                 child is KtCallExpression && child.text.startsWith("c(") ->
-                    annotateTFXColor(child, holder)
+                    annotateTFXColor(child, ref, holder)
                 child is KtDotQualifiedExpression && child.text.startsWith("Color.") ->
-                    annotateFXColor(child, holder, { child.replaceColor(element, it) })
+                    annotateFXColor(child, ref, holder, { child.replaceColor(element, it) })
             }
         }
     }
@@ -105,9 +107,9 @@ class CSSColorAnnotator : Annotator {
     /**
      * Annotates c(...) expressions
      */
-    private fun annotateTFXColor(element: KtCallExpression, holder: AnnotationHolder) {
+    private fun annotateTFXColor(element: KtCallExpression, ref: PsiElement? = null, holder: AnnotationHolder) {
         // TODO: Do we need to check if the expression is valid?
-        val annotation = holder.createInfoAnnotation(element, null)
+        val annotation = holder.createInfoAnnotation(ref ?: element, null)
         val args = element.valueArguments
         val (fxColor, colorType) = args.toColorType() ?: return
         val color = Color(//
@@ -120,6 +122,23 @@ class CSSColorAnnotator : Annotator {
             val factory = KtPsiFactory(element.project)
             element.replace(factory.createExpression(it))
         })
+    }
+
+    private fun annotateReference(element: KtReferenceExpression, holder: AnnotationHolder) {
+        val resolvedRef = element.mainReference.resolve()
+
+        if( resolvedRef is KtProperty) {
+            val expr = resolvedRef.children.last();
+            if (expr is KtExpression) {
+                handelProperty(
+                        resolvedRef,
+                        expr,
+                        holder,
+                        element
+                )
+            }
+        }
+
     }
 
     private fun KotlinType?.isColorMulti(): Boolean {
