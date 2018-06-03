@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+    <component name="RunManager" selected="Gradle.Run">
+        <configuration default="true" type="Application" factoryName="Application">
+            <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+        </configuration>
+        <configuration name="Build" type="GradleRunConfiguration" factoryName="Gradle">
+            <ExternalSystemSettings>
+                <option name="executionName" />
+                <option name="externalProjectPath" value="$PROJECT_DIR$" />
+                <option name="externalSystemIdString" value="GRADLE" />
+                <option name="scriptParameters" value="" />
+                <option name="taskDescriptions">
+                    <list />
+                </option>
+                <option name="taskNames">
+                    <list>
+                        <option value="build" />
+                    </list>
+                </option>
+                <option name="vmOptions" value="" />
+            </ExternalSystemSettings>
+        </configuration>
+        <configuration name="Run" type="GradleRunConfiguration" factoryName="Gradle">
+            <ExternalSystemSettings>
+                <option name="executionName" />
+                <option name="externalProjectPath" value="$PROJECT_DIR$" />
+                <option name="externalSystemIdString" value="GRADLE" />
+                <option name="scriptParameters" value="" />
+                <option name="taskDescriptions">
+                    <list />
+                </option>
+                <option name="taskNames">
+                    <list>
+                        <option value="run" />
+                    </list>
+                </option>
+                <option name="vmOptions" value="" />
+            </ExternalSystemSettings>
+        </configuration>
+        <configuration name="Test" type="GradleRunConfiguration" factoryName="Gradle">
+            <ExternalSystemSettings>
+                <option name="executionName" />
+                <option name="externalProjectPath" value="$PROJECT_DIR$" />
+                <option name="externalSystemIdString" value="GRADLE" />
+                <option name="scriptParameters" value="" />
+                <option name="taskDescriptions">
+                    <list />
+                </option>
+                <option name="taskNames">
+                    <list>
+                        <option value="test" />
+                    </list>
+                </option>
+                <option name="vmOptions" value="" />
+            </ExternalSystemSettings>
+        </configuration>
+        <configuration name="&lt;template&gt;" type="JUnit" default="true" selected="false">
+            <option name="VM_PARAMETERS" value="-ea" />
+            <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+        </configuration>
+        <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
+            <option name="VM_PARAMETERS" value="-ea" />
+            <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+        </configuration>
+        <list>
+            <item itemvalue="Gradle.Build" />
+            <item itemvalue="Gradle.Run" />
+            <item itemvalue="Gradle.Test" />
+        </list>
+    </component>
+</project>
