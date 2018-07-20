@@ -74,6 +74,7 @@
         <applicationConfigurable instance="no.tornado.tornadofx.idea.TornadoFXConfigurable" groupId="language" id="preferences.TornadoFX"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSColorAnnotator" order="first"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSBoxAnnotator" order="first"/>
+        <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.PaddingAllAnnotator" order="first"/>
     </extensions>
 
     <project-components>
