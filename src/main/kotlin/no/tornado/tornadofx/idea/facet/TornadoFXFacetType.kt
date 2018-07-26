@@ -5,7 +5,7 @@ import com.intellij.facet.FacetType
 import com.intellij.facet.FacetTypeId
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
-import no.tornado.tornadofx.idea.PluginIcons
+import no.tornado.tornadofx.idea.icons.PluginIcons
 import javax.swing.Icon
 
 class TornadoFXFacetType : FacetType<TornadoFXFacet, TornadoFXFacetConfiguration>(ID, "TornadoFX", "TornadoFX") {

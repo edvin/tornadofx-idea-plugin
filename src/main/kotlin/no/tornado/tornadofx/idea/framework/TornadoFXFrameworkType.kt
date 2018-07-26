@@ -10,7 +10,7 @@ import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.roots.ModifiableModelsProvider
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ui.configuration.FacetsProvider
-import no.tornado.tornadofx.idea.PluginIcons
+import no.tornado.tornadofx.idea.icons.PluginIcons
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import no.tornado.tornadofx.idea.facet.TornadoFXFacetConfiguration
 import no.tornado.tornadofx.idea.facet.TornadoFXFacetType

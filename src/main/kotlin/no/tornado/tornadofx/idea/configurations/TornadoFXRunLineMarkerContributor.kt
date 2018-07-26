@@ -6,7 +6,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.util.Function
 import no.tornado.tornadofx.idea.FXTools
-import no.tornado.tornadofx.idea.PluginIcons
+import no.tornado.tornadofx.idea.icons.PluginIcons
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.psi.KtClass
