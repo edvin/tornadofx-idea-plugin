@@ -15,6 +15,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import no.tornado.tornadofx.idea.icons.PluginIcons;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TornadoFXModuleBuilder extends ModuleBuilder implements PluginIcons, SourcePathsBuilder {
+public class TornadoFXModuleBuilder extends ModuleBuilder implements SourcePathsBuilder {
     private List<Pair<String, String>> mySourcePaths;
     private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
     private String myCompilerOutputPath;

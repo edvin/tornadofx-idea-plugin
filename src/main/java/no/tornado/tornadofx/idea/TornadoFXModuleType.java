@@ -1,11 +1,12 @@
 package no.tornado.tornadofx.idea;
 
 import com.intellij.openapi.module.ModuleType;
+import no.tornado.tornadofx.idea.icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.Icon;
 
-public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> implements PluginIcons {
+public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> {
 	private static final TornadoFXModuleType INSTANCE = new TornadoFXModuleType();
 
 	public TornadoFXModuleType() {
@@ -23,11 +24,11 @@ public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> impl
 	}
 
 	public Icon getBigIcon() {
-		return ACTION;
+		return PluginIcons.INSTANCE.getACTION();
 	}
 
 	public Icon getNodeIcon(@Deprecated boolean isOpened) {
-		return ACTION;
+		return PluginIcons.INSTANCE.getACTION();
 	}
 
 	public static TornadoFXModuleType getInstance() {
