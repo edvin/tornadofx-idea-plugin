@@ -13,3 +13,8 @@ intellij {
     plugins 'Kotlin'
 }
 
+publishPlugin {
+    username publishUsername
+    password publishPassword
+}
+
