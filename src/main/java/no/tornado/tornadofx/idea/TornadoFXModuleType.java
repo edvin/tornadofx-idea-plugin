@@ -24,11 +24,11 @@ public class TornadoFXModuleType extends ModuleType<TornadoFXModuleBuilder> {
 	}
 
 	public Icon getBigIcon() {
-		return PluginIcons.INSTANCE.getACTION();
+		return PluginIcons.ACTION;
 	}
 
 	public Icon getNodeIcon(@Deprecated boolean isOpened) {
-		return PluginIcons.INSTANCE.getACTION();
+		return PluginIcons.ACTION;
 	}
 
 	public static TornadoFXModuleType getInstance() {
