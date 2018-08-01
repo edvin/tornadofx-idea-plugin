@@ -10,7 +10,7 @@ version '1.7.14.2-SNAPSHOT'
 
 intellij {
     version '2018.1.3'
-    plugins 'Kotlin'
+    plugins = ['Kotlin','properties']
 }
 
 publishPlugin {
