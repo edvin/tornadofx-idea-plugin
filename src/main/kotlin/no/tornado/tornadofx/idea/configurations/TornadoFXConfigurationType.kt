@@ -1,7 +1,7 @@
 package no.tornado.tornadofx.idea.configurations
 
 import com.intellij.execution.application.ApplicationConfigurationType
-import no.tornado.tornadofx.idea.PluginIcons
+import no.tornado.tornadofx.idea.icons.PluginIcons
 
 class TornadoFXConfigurationType : ApplicationConfigurationType() {
     override fun getIcon() = PluginIcons.ACTION

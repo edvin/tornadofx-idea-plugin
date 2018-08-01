@@ -78,14 +78,15 @@ class CSSColorAnnotator : Annotator {
     private fun annotateFXColor(element: KtDotQualifiedExpression, ref: PsiElement? = null, holder: AnnotationHolder, transformer: (String) -> Unit) {
         val annotation = holder.createInfoAnnotation(ref ?: element, null)
         val fxColor = element.text.toColor()
-        val color = Color(//
-                fxColor.red.toFloat(), //
-                fxColor.green.toFloat(), //
-                fxColor.blue.toFloat(), //
-                fxColor.opacity.toFloat()//
-        ) //
-
-        annotation.gutterIconRenderer = ColorRenderer(element.project, color, transformer)
+        fxColor?.let {
+            val color = Color(//
+                    fxColor.red.toFloat(), //
+                    fxColor.green.toFloat(), //
+                    fxColor.blue.toFloat(), //
+                    fxColor.opacity.toFloat()//
+            ) //
+            annotation.gutterIconRenderer = ColorRenderer(element.project, color, transformer)
+        }
     }
 
     /**

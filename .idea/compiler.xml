@@ -11,5 +11,11 @@
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
+    <bytecodeTargetLevel>
+      <module name="no.tornado.tornadofx.idea_main" target="1.8" />
+      <module name="no.tornado.tornadofx.idea_test" target="1.8" />
+      <module name="test-idea-plugin_main" target="1.8" />
+      <module name="test-idea-plugin_test" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
