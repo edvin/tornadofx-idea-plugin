@@ -48,6 +48,9 @@ class PropertiesIndex : FileBasedIndexExtension<String, String>() {
             }
 
             val filepath = content.file.path
+            if (!isResourcePath(filepath)) {
+                return mutableMapOf()
+            }
             val path = filepathToKey(filepath)
             val properties = (content.psiFile as PropertiesFile).properties
             val ret = mutableMapOf<String, String>()
@@ -62,6 +65,10 @@ class PropertiesIndex : FileBasedIndexExtension<String, String>() {
             TRACKER.change()
 
             return ret
+        }
+
+        private fun isResourcePath(filepath: String): Boolean {
+            return filepath.contains("res")
         }
 
         /**
