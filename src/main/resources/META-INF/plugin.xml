@@ -83,6 +83,7 @@
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSBoxAnnotator" order="first"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.PaddingAllAnnotator" order="first"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.VisiblePropertyBindAnnotator" order="first"/>
+        <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.MissingTranslationAnnotator" order="first"/>
 
         <lang.foldingBuilder language="kotlin" implementationClass="no.tornado.tornadofx.idea.folding.I18nFoldingBuilder"/>
         <fileBasedIndex implementation="no.tornado.tornadofx.idea.index.PropertiesIndex" />
