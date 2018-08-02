@@ -20,17 +20,27 @@ Run a TornadoFX Application or a View ad hoc, specify Live reloading of styleshe
 
 #### Add View
 
-- Create new View class based on Code or FXML automatically
+Create new View class based on Code or FXML automatically
 
 #### Inject Component
 
-- Search for Components (View, Fragment, Controller) and create injected val
+Search for Components (View, Fragment, Controller) and create injected val
  
-### Convert field members to JavaFX Properties
+### Convert fields to JavaFX Properties
+
+Converts fields to JavaFX Properties and fields delegated by them
  
 ### Add TableView Columns
 
-## Generate ViewModel
+### Generate ViewModel
+
+Generate ViewModel based on a class and its fields.
+
+### Translation support
+
+Fold `message["key"]` expression to their translated value. 
+
+Add translation intention action.
 
 #### Project Templates
 
@@ -39,3 +49,7 @@ Run a TornadoFX Application or a View ad hoc, specify Live reloading of styleshe
 - OSGi Application
 - OSGi Dynamic View
 - OSGi Dynamic Stylesheet
+
+## Running from source
+
+Clone the project and open it in IntelliJ IDEA. Select the Gradle task `intellij > runIde` to start a sandboxed instance of IntelliJ IDEA with the plugin installed.
