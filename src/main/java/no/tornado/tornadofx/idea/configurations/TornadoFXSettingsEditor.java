@@ -210,7 +210,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		return false;
 	}
 
-	public static boolean isAppClass(PsiClass psiClass) {
+	public static boolean isAppClass(@NotNull PsiClass psiClass) {
 		for (PsiClass supa : psiClass.getSupers())
 			if ("tornadofx.App".equals(supa.getQualifiedName())) {
 				return true;
@@ -250,6 +250,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 	private abstract static class MyClassBrowser extends ClassBrowser {
 		final Project myProject;
 		private final ConfigurationModuleSelector myModuleSelector;
+		private final String title;
 
 		MyClassBrowser(final Project project,
 		               final ConfigurationModuleSelector moduleSelector,
@@ -257,6 +258,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 			super(project, title);
 			myProject = project;
 			myModuleSelector = moduleSelector;
+			this.title = title;
 		}
 
 		protected PsiClass findClass(final String className) {
@@ -284,6 +286,11 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 
 		protected ClassFilter createFilter(final Module module) {
 			return null;
+		}
+
+		@Override
+		protected TreeJavaKotlinClassChooserDialog createClassChooser(ClassFilter.ClassFilterWithScope classFilter) {
+			return TreeJavaKotlinClassChooserDialog.withInnerClasses(title, myProject, classFilter.getScope(), classFilter);
 		}
 	}
 
