@@ -5,10 +5,8 @@ import com.intellij.execution.ExecutionBundle
 import com.intellij.execution.Executor
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.application.ApplicationConfiguration
-import com.intellij.execution.configurations.ConfigurationFactory
-import com.intellij.execution.configurations.JavaParameters
-import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.execution.configurations.RuntimeConfigurationWarning
+import com.intellij.execution.application.ApplicationConfigurationOptions
+import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.util.JavaParametersUtil
 import com.intellij.execution.util.ProgramParametersUtil
@@ -16,21 +14,39 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.options.SettingsEditorGroup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.WriteExternalException
+import com.intellij.util.xmlb.annotations.OptionTag
 import org.jdom.Element
 
 class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, name: String?) : ApplicationConfiguration(name, project, factory) {
+    open class TornadoFXConfigurationOptions : ApplicationConfigurationOptions() {
+        @get:OptionTag("VIEW_CLASS_NAME")
+        open var viewClassName by string()
+    }
     enum class RunType { App, View }
 
     @JvmField
     var RUN_TYPE = RunType.App
-    @JvmField
-    var VIEW_CLASS_NAME: String? = null
     @JvmField
     var LIVE_STYLESHEETS: Boolean = false
     @JvmField
     var DUMP_STYLESHEETS: Boolean = false
     @JvmField
     var LIVE_VIEWS: Boolean = false
+
+    var viewClassName: String?
+        get() = options.viewClassName
+        set(value) {
+            options.viewClassName = value
+        }
+
+
+    override fun getOptions(): TornadoFXConfigurationOptions {
+        return super.getOptions() as TornadoFXConfigurationOptions
+    }
+
+    override fun getOptionsClass(): Class<out ModuleBasedConfigurationOptions> {
+        return TornadoFXConfigurationOptions::class.java
+    }
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment) = ViewCommandLineState(environment)
 
@@ -46,15 +62,15 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
         JavaParametersUtil.checkAlternativeJRE(this)
 
         if (RUN_TYPE == RunType.App) {
-            if (MAIN_CLASS_NAME.isNullOrBlank()) {
+            if (mainClassName.isNullOrBlank()) {
                 throw RuntimeConfigurationWarning("No App Class specified")
             } else {
-                val psiClass = configurationModule.checkModuleAndClassName(MAIN_CLASS_NAME, "No App Class specified!")
+                val psiClass = configurationModule.checkModuleAndClassName(mainClassName, "No App Class specified!")
                 if (!TornadoFXSettingsEditor.isAppClass(psiClass))
                     throw RuntimeConfigurationWarning("Specified App Class does not inherit from tornadofx.App")
             }
         } else {
-            val psiClass = configurationModule.checkModuleAndClassName(VIEW_CLASS_NAME, "No View Class specified!")
+            val psiClass = configurationModule.checkModuleAndClassName(viewClassName, "No View Class specified!")
             if (!TornadoFXSettingsEditor.isViewClass(psiClass))
                 throw RuntimeConfigurationWarning("Specified View Class does not inherit from tornadofx.View")
         }
@@ -68,8 +84,8 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
             val params = super.createJavaParameters()!!
 
             if (RUN_TYPE == RunType.View) {
-                params.programParametersList.add("--view-class=$VIEW_CLASS_NAME")
-                val isInProdSources = JavaParametersUtil.isClassInProductionSources(VIEW_CLASS_NAME!!, configurationModule.module!!)!!
+                params.programParametersList.add("--view-class=$viewClassName")
+                val isInProdSources = JavaParametersUtil.isClassInProductionSources(viewClassName!!, configurationModule.module!!)!!
                 if (!isInProdSources) {
                     params.configureByModule(configurationModule.module, JavaParameters.JDK_AND_CLASSES_AND_TESTS)
                 }
@@ -90,7 +106,6 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
-        VIEW_CLASS_NAME = element.getAttributeValue("view-class")
         RUN_TYPE = RunType.valueOf(element.getAttributeValue("run-type"))
         element.getAttributeValue("live-stylesheets")?.apply {
             LIVE_STYLESHEETS = "true" == this
@@ -107,8 +122,6 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
         element.setAttribute("run-type", RUN_TYPE.toString())
-
-        if (VIEW_CLASS_NAME != null) element.setAttribute("view-class", VIEW_CLASS_NAME)
         element.setAttribute("live-views", LIVE_VIEWS.toString())
         element.setAttribute("live-stylesheets", LIVE_STYLESHEETS.toString())
         element.setAttribute("dump-stylesheets", DUMP_STYLESHEETS.toString())

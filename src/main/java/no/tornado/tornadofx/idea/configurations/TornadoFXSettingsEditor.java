@@ -84,11 +84,11 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		configuration.RUN_TYPE = appButton.isSelected() ? App : View;
 
 		if (configuration.RUN_TYPE == App) {
-			configuration.VIEW_CLASS_NAME = null;
-			configuration.MAIN_CLASS_NAME = getAppClassField().getText();
+			configuration.setViewClassName(null);
+			configuration.setMainClassName(getAppClassField().getText());
 		} else {
-			configuration.VIEW_CLASS_NAME = getViewClassField().getText();
-			configuration.MAIN_CLASS_NAME = "tornadofx.App";
+			configuration.setViewClassName(getViewClassField().getText());
+			configuration.setMainClassName("tornadofx.App");
 		}
 		configuration.LIVE_STYLESHEETS = liveStylesheetsButton.isSelected();
 		configuration.DUMP_STYLESHEETS = dumpStylesheetsButton.isSelected();
@@ -106,12 +106,12 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 			appButton.setSelected(true);
 			appButton.getActionListeners()[0].actionPerformed(null);
 			getViewClassField().setText(null);
-			getAppClassField().setText(configuration.MAIN_CLASS_NAME != null ? configuration.MAIN_CLASS_NAME.replaceAll("\\$", "\\.") : "");
+			getAppClassField().setText(configuration.getMainClassName() != null ? configuration.getMainClassName().replaceAll("\\$", "\\.") : "");
 		} else {
 			viewButton.setSelected(true);
 			viewButton.getActionListeners()[0].actionPerformed(null);
 			getAppClassField().setText(null);
-			getViewClassField().setText(configuration.VIEW_CLASS_NAME != null ? configuration.VIEW_CLASS_NAME.replaceAll("\\$", "\\.") : "");
+			getViewClassField().setText(configuration.getViewClassName() != null ? configuration.getViewClassName().replaceAll("\\$", "\\.") : "");
 		}
 		liveStylesheetsButton.setSelected(configuration.LIVE_STYLESHEETS);
 		dumpStylesheetsButton.setSelected(configuration.DUMP_STYLESHEETS);
