@@ -25,11 +25,11 @@ class TornadoFXRunConfigurationProducer : RunConfigurationProducer<TornadoFXConf
 
         if (isApp(psiClass)) {
             configuration.RUN_TYPE = App
-            configuration.MAIN_CLASS_NAME = psiClass.qualifiedName
+            configuration.mainClassName = psiClass.qualifiedName
         } else {
             configuration.RUN_TYPE = View
-            configuration.MAIN_CLASS_NAME = "tornadofx.App"
-            configuration.VIEW_CLASS_NAME = psiClass.qualifiedClassNameForRendering()
+            configuration.mainClassName = "tornadofx.App"
+            configuration.viewClassName = psiClass.qualifiedClassNameForRendering()
         }
         return true
     }
