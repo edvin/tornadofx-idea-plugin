@@ -4,7 +4,7 @@
 cd template-projects
 
 # Look at it relative to template-projects.
-PROJECT_TEMPLATES=../resources/projectTemplates
+PROJECT_TEMPLATES=../src/main/resources/projectTemplates
 
 zip_template() {
     zip -r ${PROJECT_TEMPLATES}/$1 $1

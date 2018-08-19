@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'no.tornado'
-version '1.7.14.2-SNAPSHOT'
+version '1.7.17'
 
 
 intellij {
