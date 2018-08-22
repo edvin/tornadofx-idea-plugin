@@ -1,5 +1,6 @@
 package no.tornado.tornadofx.idea.intentions
 
+import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
@@ -15,7 +16,7 @@ import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.KotlinType
 
-class GenerateViewModel : PsiElementBaseIntentionAction() {
+class GenerateViewModel : PsiElementBaseIntentionAction(), LowPriorityAction {
     override fun getText() = "Generate ViewModel"
     override fun getFamilyName() = text
 
