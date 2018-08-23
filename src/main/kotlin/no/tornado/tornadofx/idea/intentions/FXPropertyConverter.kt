@@ -1,6 +1,7 @@
 package no.tornado.tornadofx.idea.intentions
 
 import com.intellij.codeInsight.hint.HintManager
+import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
@@ -21,7 +22,7 @@ import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.lowerIfFlexible
 
-class FXPropertyConverter : PsiElementBaseIntentionAction() {
+class FXPropertyConverter : PsiElementBaseIntentionAction(), LowPriorityAction {
     override fun getText() = "Convert to TornadoFX Property"
 
     override fun getFamilyName() = text

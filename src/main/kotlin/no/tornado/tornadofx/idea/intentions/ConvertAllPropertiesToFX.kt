@@ -1,5 +1,6 @@
 package no.tornado.tornadofx.idea.intentions
 
+import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.facet.FacetManager
 import com.intellij.openapi.editor.Editor
@@ -18,7 +19,7 @@ import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtPropertyDelegate
 
-class ConvertAllPropertiesToFX: PsiElementBaseIntentionAction() {
+class ConvertAllPropertiesToFX: PsiElementBaseIntentionAction(), LowPriorityAction {
     override fun getText() = "Convert all properties to TornadoFX properties"
     override fun getFamilyName() = text
 
