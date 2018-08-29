@@ -9,8 +9,12 @@ version '1.7.17'
 
 
 intellij {
-    version '2018.1.3'
+    version '2018.1'
     plugins = ['Kotlin','properties']
+    patchPluginXml {
+        untilBuild = "" // Be forward compatible
+                        // sinceBuild is inferred from the version above
+    }
 }
 
 publishPlugin {
