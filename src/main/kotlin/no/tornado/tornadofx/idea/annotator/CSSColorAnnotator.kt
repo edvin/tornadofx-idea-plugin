@@ -41,21 +41,23 @@ class CSSColorAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (!element.isValid) return
         // TODO: Is this the proper way of checking if this is an element in file of a tfx project?
-        if (TornadoFXFacet.get(element.project) != null) {
-            when (element) {
-                is KtBinaryExpression -> {
-                    val left = element.left
-                    if (left is KtNameReferenceExpression) {
-                        val prop = left.mainReference.resolve()
-                        val right = element.right
-                        if (prop is KtProperty && right != null) {
-                            handelProperty(prop, right, holder)
-                        }
+        if (TornadoFXFacet.get(element.project) == null) {
+            return
+        }
+        when (element) {
+            is KtBinaryExpression -> {
+                val left = element.left
+                if (left is KtNameReferenceExpression) {
+                    val prop = left.mainReference.resolve()
+                    val right = element.right
+                    if (prop is KtProperty && right != null) {
+                        handelProperty(prop, right, holder)
                     }
                 }
-                is KtProperty -> {
-                    handelProperty(element, element.children.last() as KtExpression, holder)
-                }
+            }
+            is KtProperty -> {
+                val expr = element.children.last() as? KtExpression ?: return
+                handelProperty(element, expr, holder)
             }
         }
     }
@@ -66,7 +68,7 @@ class CSSColorAnnotator : Annotator {
             expr is KtCallExpression && expr.text.startsWith("c(") -> annotateTFXColor(expr, ref, holder)
             expr is KtCallExpression && returnType.isColorMulti() -> annotateMulti(expr.valueArguments, ref, holder)
             expr is KtDotQualifiedExpression && expr.text.startsWith("Color.") ->
-                annotateFXColor(expr, ref, holder, { property.replaceColor(it) })
+                annotateFXColor(expr, ref, holder) { property.replaceColor(it) }
             expr is KtReferenceExpression -> annotateReference(expr, holder)
         }
     }
@@ -119,10 +121,10 @@ class CSSColorAnnotator : Annotator {
                 fxColor.blue.toFloat(), //
                 fxColor.opacity.toFloat() //
         ) //
-        annotation.gutterIconRenderer = PickerRenderer(color, colorType, {
+        annotation.gutterIconRenderer = PickerRenderer(color, colorType) {
             val factory = KtPsiFactory(element.project)
             element.replace(factory.createExpression(it))
-        })
+        }
     }
 
     private fun annotateReference(element: KtReferenceExpression, holder: AnnotationHolder) {
