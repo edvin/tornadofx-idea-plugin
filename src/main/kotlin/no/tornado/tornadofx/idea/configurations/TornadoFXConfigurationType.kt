@@ -1,16 +1,8 @@
 package no.tornado.tornadofx.idea.configurations
 
-import com.intellij.execution.application.ApplicationConfigurationType
+import com.intellij.execution.configurations.ConfigurationTypeBase
 import no.tornado.tornadofx.idea.icons.PluginIcons
 
-class TornadoFXConfigurationType : ApplicationConfigurationType() {
-    override fun getIcon() = PluginIcons.ACTION
-
-    override fun getConfigurationTypeDescription() = displayName
-
-    override fun getId() = "TORNADOFX_RUNCONFIGURATION"
-
-    override fun getDisplayName() = "TornadoFX"
-
+class TornadoFXConfigurationType : ConfigurationTypeBase("TORNADOFX_RUNCONFIGURATION", "TornadoFX", "TornadoFX", PluginIcons.ACTION) {
     override fun getConfigurationFactories() = arrayOf(TornadoFXConfigurationFactory(this))
 }
