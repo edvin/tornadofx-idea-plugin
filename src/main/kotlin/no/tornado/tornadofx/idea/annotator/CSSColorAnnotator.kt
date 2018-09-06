@@ -56,7 +56,7 @@ class CSSColorAnnotator : Annotator {
                 }
             }
             is KtProperty -> {
-                val expr = element.children.last() as? KtExpression ?: return
+                val expr = element.children.lastOrNull() as? KtExpression ?: return
                 handelProperty(element, expr, holder)
             }
         }
