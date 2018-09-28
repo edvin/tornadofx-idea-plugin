@@ -19,7 +19,7 @@ class TornadoFXRunConfigurationProducer : RunConfigurationProducer<TornadoFXConf
         val psiFacade = JavaPsiFacade.getInstance(ktClass.project)
         val psiClass = psiFacade.findClass(ktClass.fqName.toString(), ktClass.project.allScope()) ?: return false
 
-        configuration.name = psiClass.name
+        configuration.name = psiClass.name ?: ""
 
         configuration.setModule(context.project.firstModuleWithTornadoFXLib())
 
