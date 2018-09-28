@@ -5,8 +5,10 @@ import com.intellij.execution.ExecutionBundle
 import com.intellij.execution.Executor
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.application.ApplicationConfiguration
-import com.intellij.execution.application.ApplicationConfigurationOptions
-import com.intellij.execution.configurations.*
+import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.JavaParameters
+import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.execution.configurations.RuntimeConfigurationWarning
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.util.JavaParametersUtil
 import com.intellij.execution.util.ProgramParametersUtil
@@ -14,14 +16,9 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.options.SettingsEditorGroup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.WriteExternalException
-import com.intellij.util.xmlb.annotations.OptionTag
 import org.jdom.Element
 
 class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, name: String?) : ApplicationConfiguration(name, project, factory) {
-    open class TornadoFXConfigurationOptions : ApplicationConfigurationOptions() {
-        @get:OptionTag("VIEW_CLASS_NAME")
-        open var viewClassName by string()
-    }
     enum class RunType { App, View }
 
     @JvmField
@@ -33,20 +30,7 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     @JvmField
     var LIVE_VIEWS: Boolean = false
 
-    var viewClassName: String?
-        get() = options.viewClassName
-        set(value) {
-            options.viewClassName = value
-        }
-
-
-    override fun getOptions(): TornadoFXConfigurationOptions {
-        return super.getOptions() as TornadoFXConfigurationOptions
-    }
-
-    override fun getOptionsClass(): Class<out ModuleBasedConfigurationOptions> {
-        return TornadoFXConfigurationOptions::class.java
-    }
+    var viewClassName: String? = null
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment) = ViewCommandLineState(environment)
 
@@ -107,6 +91,12 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     override fun readExternal(element: Element) {
         super.readExternal(element)
         RUN_TYPE = RunType.valueOf(element.getAttributeValue("run-type"))
+
+        val viewOption = element.content.find { it is Element && it.name == "option" && it.getAttribute("name")?.value == "VIEW_CLASS_NAME" }?.let { it as Element }
+        viewOption?.let {
+            viewClassName = it.getAttribute("value")?.value
+        }
+
         element.getAttributeValue("live-stylesheets")?.apply {
             LIVE_STYLESHEETS = "true" == this
         }
@@ -121,6 +111,10 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     @Throws(WriteExternalException::class)
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
+        element.addContent(Element("option").apply {
+            setAttribute("name", "VIEW_CLASS_NAME")
+            setAttribute("value", viewClassName)
+        })
         element.setAttribute("run-type", RUN_TYPE.toString())
         element.setAttribute("live-views", LIVE_VIEWS.toString())
         element.setAttribute("live-stylesheets", LIVE_STYLESHEETS.toString())
