@@ -5,13 +5,13 @@
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
-      TornadoFX support
+      Support for TornadoFX - the JavaFX framework for Kotlin
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.7.14.1 2018-02-01</h4>
+        <h4>1.7.17.1 2018-10-01</h4>
         <ul>
-            <li>Updated Kotlin plugin dependency</li>
+            <li>General bug fix and compatibility release</li>
         </ul>
     ]]>
     </change-notes>
