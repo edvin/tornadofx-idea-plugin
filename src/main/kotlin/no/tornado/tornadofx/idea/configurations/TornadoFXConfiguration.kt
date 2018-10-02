@@ -111,10 +111,12 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     @Throws(WriteExternalException::class)
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
-        element.addContent(Element("option").apply {
-            setAttribute("name", "VIEW_CLASS_NAME")
-            setAttribute("value", viewClassName)
-        })
+        viewClassName?.let {
+            element.addContent(Element("option").apply {
+                setAttribute("name", "VIEW_CLASS_NAME")
+                setAttribute("value", it)
+            })
+        }
         element.setAttribute("run-type", RUN_TYPE.toString())
         element.setAttribute("live-views", LIVE_VIEWS.toString())
         element.setAttribute("live-stylesheets", LIVE_STYLESHEETS.toString())
