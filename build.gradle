@@ -22,3 +22,8 @@ publishPlugin {
     password publishPassword
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = project.gradleVersion
+    distributionType = Wrapper.DistributionType.ALL
+    distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
