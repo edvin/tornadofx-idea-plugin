@@ -75,15 +75,22 @@ class TranslationManager {
     fun getResourceFile(clazz: KtClass): PsiFile {
         val project = clazz.project
         val className = clazz.fqName?.shortName() ?: throw FetchResourceFileException("Cannot fetch classname")
-        val folder = getFolder(clazz)!!
+        val filePath = getFileSubPath(clazz)!!
+        val folder = if (filePath.contains('/')) filePath.substring(0, filePath.lastIndexOf("/")) else null
 
         val file = FilenameIndex.getFilesByName(project, "$className.properties", GlobalSearchScope.allScope(project))
-            .firstOrNull { it.containingDirectory.toString().endsWith(folder.substring(0, folder.lastIndexOf("/"))) }
+            .firstOrNull {
+                if (folder != null) {
+                    it.containingDirectory.toString().endsWith(folder)
+                } else {
+                    it.containingDirectory.name.startsWith("res")
+                }
+            }
         return file ?: throw FetchResourceFileException("Cannot find file $className.properties")
     }
 
 
-    private fun getFolder(clazz: KtClass): String? {
+    private fun getFileSubPath(clazz: KtClass): String? {
         return clazz.fqName?.toString()?.replace(".", "/")
     }
 
