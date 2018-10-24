@@ -3,14 +3,18 @@ package no.tornado.tornadofx.idea.translation
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.TestSourcesFilter
 import com.intellij.psi.PsiFile
-import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.indexing.FileBasedIndex
 import no.tornado.tornadofx.idea.index.PropertiesIndex
+import org.jetbrains.jps.model.java.JavaResourceRootType
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.references.mainReference
+import org.jetbrains.kotlin.idea.util.module
 import org.jetbrains.kotlin.psi.KtArrayAccessExpression
 import org.jetbrains.kotlin.psi.KtClass
 
@@ -74,19 +78,22 @@ class TranslationManager {
 
     fun getResourceFile(clazz: KtClass): PsiFile {
         val project = clazz.project
-        val className = clazz.fqName?.shortName() ?: throw FetchResourceFileException("Cannot fetch classname")
-        val filePath = getFileSubPath(clazz)!!
-        val folder = if (filePath.contains('/')) filePath.substring(0, filePath.lastIndexOf("/")) else null
+        val module = clazz.containingFile.module!!
+        val psiManager = PsiManager.getInstance(project)
+        val moduleRootManager = ModuleRootManager.getInstance(module)
+        val resourcePath = getFileSubPath(clazz)!! + ".properties"
 
-        val file = FilenameIndex.getFilesByName(project, "$className.properties", GlobalSearchScope.allScope(project))
-            .firstOrNull {
-                if (folder != null) {
-                    it.containingDirectory.toString().endsWith(folder)
-                } else {
-                    it.containingDirectory.name.startsWith("res")
-                }
-            }
-        return file ?: throw FetchResourceFileException("Cannot find file $className.properties")
+        // check whether the class is a test source
+        val isTestSource = TestSourcesFilter.isTestSources(clazz.containingFile.virtualFile, project)
+        val resourceType = if (isTestSource) JavaResourceRootType.TEST_RESOURCE else JavaResourceRootType.RESOURCE
+
+        // get matching resource root(s)
+        return moduleRootManager.contentEntries
+                .flatMap { it.getSourceFolders(resourceType) }
+                .asSequence()
+                .mapNotNull { it.file?.findFileByRelativePath(resourcePath) }
+                .map { psiManager.findFile(it) }
+                .firstOrNull() ?: throw FetchResourceFileException("Cannot find file $resourcePath")
     }
 
 
