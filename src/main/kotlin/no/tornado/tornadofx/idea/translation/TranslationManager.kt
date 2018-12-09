@@ -58,7 +58,7 @@ class TranslationManager {
     fun findTranslation(key: String, project: Project): String? {
         val values = index.getValues(PropertiesIndex.NAME, key, GlobalSearchScope.allScope(project))
 
-        return values.firstOrNull()
+        return values.firstOrNull() ?: findGlobalTranslation(key, project)
     }
 
     /**
@@ -68,6 +68,11 @@ class TranslationManager {
     fun findTranslation(expression: KtArrayAccessExpression): String? {
         val key = getKey(expression)
         return findTranslation(key, expression.project)
+    }
+
+    private fun findGlobalTranslation(key: String, project: Project): String? {
+        val globalKey = "Messages." + key.substringAfterLast('.')
+        return index.getValues(PropertiesIndex.NAME, globalKey, GlobalSearchScope.allScope(project)).firstOrNull()
     }
 
     fun getResourcePath(project: Project, clazz: KtClass): String {
