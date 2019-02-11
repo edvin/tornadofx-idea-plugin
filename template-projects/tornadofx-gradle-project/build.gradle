@@ -30,11 +30,11 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    compile "no.tornado:tornadofx:$tornadofx_version"
+    implementation "no.tornado:tornadofx:$tornadofx_version"
 
-    testCompile "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
@@ -47,7 +47,7 @@ jar {
                 "Main-Class": mainClassName
         )
     }
-    from(configurations.compile.collect { entry -> zipTree(entry) }) {
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {
         exclude "META-INF/MANIFEST.MF"
         exclude "META-INF/*.SF"
         exclude "META-INF/*.DSA"
