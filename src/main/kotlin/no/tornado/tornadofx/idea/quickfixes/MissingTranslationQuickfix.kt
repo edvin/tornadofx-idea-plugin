@@ -4,8 +4,10 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import no.tornado.tornadofx.idea.dialog.ErrorDialog
 import no.tornado.tornadofx.idea.dialog.ExtractStringToResourceDialog
 import no.tornado.tornadofx.idea.translation.TranslationManager
 import org.jetbrains.kotlin.psi.KtArrayAccessExpression
@@ -25,15 +27,19 @@ class MissingTranslationQuickfix(private val expression: KtArrayAccessExpression
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = true
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        val defaultKey = expression.indexExpressions.first().text.trim('"')
-        val clazz = PsiTreeUtil.getParentOfType(expression, KtClass::class.java) ?: throw TranslationManager.FetchResourceFileException("Cannot find class")
-        val resourceFile = translationManager.getResourceFile(clazz)
-        val resourcePath = translationManager.getResourcePath(project, resourceFile)
-        val dialog =
+        val dialog = try {
+            val defaultKey = expression.indexExpressions.first().text.trim('"')
+            val clazz = PsiTreeUtil.getParentOfType(expression, KtClass::class.java)
+                    ?: throw TranslationManager.FetchResourceFileException("Cannot find class")
+            val resourceFile = translationManager.getResourceFile(clazz)
+            val resourcePath = translationManager.getResourcePath(project, resourceFile)
+
             ExtractStringToResourceDialog(project, defaultKey, resourcePath = resourcePath) { key, value ->
                 translationManager.addProperty(resourceFile, key, value)
             }
-
+        } catch (e: TranslationManager.FetchResourceFileException) {
+            ErrorDialog(project, e.message)
+        }
         ApplicationManager.getApplication().invokeLater {
             dialog.show()
         }
