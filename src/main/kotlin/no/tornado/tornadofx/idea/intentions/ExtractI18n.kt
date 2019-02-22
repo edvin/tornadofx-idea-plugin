@@ -42,10 +42,12 @@ class ExtractI18n : PsiElementBaseIntentionAction() {
 
         val dialog: DialogWrapper = try {
             val clazz = getClass(element) ?: throw TranslationManager.FetchResourceFileException("Cannot find class.")
-            val file = translationManager.getResourceFile(clazz)
-            val resourcePath = translationManager.getResourcePath(project, file)
-            ExtractStringToResourceDialog(project, defaultKey, defaultValue, resourcePath) { key, value ->
-                translationManager.addProperty(file, key, value)
+            val resourcePaths = translationManager.getResourceFiles(clazz)
+            val resourcePathStrings = Array(resourcePaths.size) {
+                translationManager.getResourcePath(project, resourcePaths[it])
+            }
+            ExtractStringToResourceDialog(project, defaultKey, defaultValue, resourcePaths, resourcePathStrings) { key, value, resourceFile ->
+                translationManager.addProperty(resourceFile, key, value)
                 WriteCommandAction.runWriteCommandAction(project) {
                     val factory = KtPsiFactory(project)
                     val stringPsi = PsiTreeUtil.getParentOfType(element, KtStringTemplateExpression::class.java) ?: element

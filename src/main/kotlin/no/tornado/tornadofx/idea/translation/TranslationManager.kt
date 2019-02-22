@@ -75,57 +75,63 @@ class TranslationManager {
         return index.getValues(PropertiesIndex.NAME, globalKey, GlobalSearchScope.allScope(project)).firstOrNull()
     }
 
-    fun getResourcePath(project: Project, clazz: KtClass): String {
-        val file = getResourceFile(clazz)
-        return getResourcePath(project, file)
-    }
 
     fun getResourcePath(project: Project, file: PsiFile): String {
         return file.virtualFile.path.substring(project.basePath?.length ?: 0)
     }
 
-    fun getResourceFile(clazz: KtClass): PsiFile {
+    fun getResourceFiles(clazz: KtClass): List<PsiFile> {
         val project = clazz.project
         val module = clazz.containingFile.module!!
         val psiManager = PsiManager.getInstance(project)
         val moduleRootManager = ModuleRootManager.getInstance(module)
-        val resourcePath = getFileSubPath(clazz)!! + ".properties"
+        val propertiesPath = getFileSubPath(clazz)!! + ".properties"
 
         // check whether the class is a test source
         val isTestSource = TestSourcesFilter.isTestSources(clazz.containingFile.virtualFile, project)
         val resourceType = if (isTestSource) JavaResourceRootType.TEST_RESOURCE else JavaResourceRootType.RESOURCE
 
+
+        val ret = mutableListOf<PsiFile>()
         // get matching resource root(s)
         val resourceFolders = moduleRootManager.contentEntries
                 .flatMap { it.getSourceFolders(resourceType) }
-        val file = resourceFolders
+        val existingFiles = resourceFolders
                 .asSequence()
-                .mapNotNull { it.file?.findFileByRelativePath(resourcePath) }
-                .map { psiManager.findFile(it) }
-                .firstOrNull()
-        if (file != null) {
-            return file
+                .mapNotNull { it.file?.findFileByRelativePath(propertiesPath) }
+                .mapNotNull { psiManager.findFile(it) }
+        ret.addAll(existingFiles.toList())
+
+        if (ret.isEmpty()) {
+            // Create file
+            val mainResourceDirectory = resourceFolders.firstOrNull()?.file
+                    ?: throw FetchResourceFileException("No resource folder found")
+
+            ret += PsiFileFactory.getInstance(project)
+                    .createFileFromText(
+                            propertiesPath.substringAfterLast('/'),
+                            PropertiesFileType.INSTANCE.language, ""
+                    ).let { newFile ->
+                        // create parent directories
+                        var parentDirectory = psiManager.findDirectory(mainResourceDirectory)
+                                ?: throw FetchResourceFileException("Cannot fetch directory '$mainResourceDirectory'")
+                        for (part in propertiesPath.substringBeforeLast("/").split('/')) {
+                            parentDirectory = parentDirectory.findSubdirectory(part)
+                                    ?: parentDirectory.createSubdirectory(part)
+                        }
+
+                        // Must return the added file as it contains the full path
+                        parentDirectory.add(newFile) as PsiFile
+                    }
         }
 
-        // Create file
-        val mainResourceDirectory = resourceFolders.firstOrNull()?.file ?: throw FetchResourceFileException("No resource folder found")
+        // find global files
+        ret += resourceFolders
+                .asSequence()
+                .mapNotNull { it.file?.findFileByRelativePath("Messages.properties") }
+                .mapNotNull { psiManager.findFile(it) }
 
-        return PsiFileFactory.getInstance(project)
-            .createFileFromText(
-                resourcePath.substringAfterLast('/'),
-                PropertiesFileType.INSTANCE.language, ""
-            ).let { newFile ->
-                // create parent directories
-                var parentDirectory = psiManager.findDirectory(mainResourceDirectory)
-                    ?: throw FetchResourceFileException("Cannot fetch directory '$mainResourceDirectory'")
-                for (part in resourcePath.substringBeforeLast("/").split('/')) {
-                    parentDirectory = parentDirectory.findSubdirectory(part)
-                            ?: parentDirectory.createSubdirectory(part)
-                }
-
-                // Must return the added file as it contains the full path
-                parentDirectory.add(newFile) as PsiFile
-            }
+        return ret
     }
 
 

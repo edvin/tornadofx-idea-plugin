@@ -31,10 +31,12 @@ class MissingTranslationQuickfix(private val expression: KtArrayAccessExpression
             val defaultKey = expression.indexExpressions.first().text.trim('"')
             val clazz = PsiTreeUtil.getParentOfType(expression, KtClass::class.java)
                     ?: throw TranslationManager.FetchResourceFileException("Cannot find class")
-            val resourceFile = translationManager.getResourceFile(clazz)
-            val resourcePath = translationManager.getResourcePath(project, resourceFile)
+            val resourcePaths = translationManager.getResourceFiles(clazz)
+            val resourcePathStrings = Array(resourcePaths.size) {
+                translationManager.getResourcePath(project, resourcePaths[it])
+            }
 
-            ExtractStringToResourceDialog(project, defaultKey, resourcePath = resourcePath) { key, value ->
+            ExtractStringToResourceDialog(project, defaultKey, "", resourcePaths, resourcePathStrings) { key, value, resourceFile ->
                 translationManager.addProperty(resourceFile, key, value)
             }
         } catch (e: TranslationManager.FetchResourceFileException) {
