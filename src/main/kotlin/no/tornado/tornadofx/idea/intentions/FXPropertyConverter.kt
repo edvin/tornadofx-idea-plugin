@@ -86,10 +86,10 @@ class FXPropertyConverter : PsiElementBaseIntentionAction(), LowPriorityAction {
 
                 addImports(element, project, importList)
 
-                while(param.nextSibling?.node?.text == "," || param.nextSibling is PsiWhiteSpace)
+                while(param.nextSibling?.node?.text == "," || (param.nextSibling is PsiWhiteSpace && param.nextSibling.nextSibling is PsiWhiteSpace))
                     param.nextSibling.delete()
 
-                while(param.prevSibling?.node?.text == "," || param.prevSibling is PsiWhiteSpace)
+                while(param.prevSibling?.node?.text == "," || (param.prevSibling is PsiWhiteSpace && param.prevSibling.prevSibling is PsiWhiteSpace))
                     param.prevSibling.delete()
 
                 param.delete()
@@ -139,7 +139,9 @@ class FXPropertyConverter : PsiElementBaseIntentionAction(), LowPriorityAction {
         fun createAlternativePropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, value: String, importList: MutableSet<String>): Pair<PsiElement, PsiElement> {
             val typeName = (returnType.nameIfStandardType ?: returnType.lowerIfFlexible()).toString().replace(Regex("\\?$"), "")
 
-            val propType = when (typeName) {
+            val propType = if (typeName != "String" && returnType.isMarkedNullable) {
+                "SimpleObjectProperty<$typeName>" // SimpleTYPEProperty on primitive types do not support null.
+            } else when (typeName) {
                 "Int" -> "SimpleIntegerProperty"
                 "Long" -> "SimpleLongProperty"
                 "Boolean" -> "SimpleBooleanProperty"
