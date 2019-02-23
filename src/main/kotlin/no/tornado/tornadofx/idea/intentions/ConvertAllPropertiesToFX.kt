@@ -29,7 +29,7 @@ class ConvertAllPropertiesToFX: PsiElementBaseIntentionAction(), LowPriorityActi
 
             val ktClass = if (element is KtClass) element else PsiTreeUtil.getParentOfType(element, KtClass::class.java)
 
-            if (ktClass != null) {
+            if (ktClass != null && !ktClass.isData()) {
                 val psiFacade = JavaPsiFacade.getInstance(project)
                 val psiClass = psiFacade.findClass(ktClass.fqName.toString(), project.allScope())
                 return psiClass != null && !FXTools.isTornadoFXType(psiClass)
