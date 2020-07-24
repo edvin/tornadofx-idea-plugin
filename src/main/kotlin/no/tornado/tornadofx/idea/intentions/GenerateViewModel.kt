@@ -45,41 +45,37 @@ class GenerateViewModel : PsiElementBaseIntentionAction(), LowPriorityAction {
     override fun invoke(project: Project, editor: Editor, element: PsiElement) {
         val sourceClass = element as? KtClass ?: PsiTreeUtil.getParentOfType(element, KtClass::class.java)!!
 
-        object : WriteCommandAction.Simple<String>(project, element.containingFile) {
-            override fun run() {
-                val factory = KtPsiFactory(project)
-                val ktClass = element.containingFile.addAfter(factory.createClass("class ${sourceClass.name}Model : tornadofx.ItemViewModel<${sourceClass.name}>()"), sourceClass) as KtElement
-                ShortenReferences().process(ktClass)
+        WriteCommandAction.writeCommandAction(project, element.containingFile).run<Throwable> {
+            val factory = KtPsiFactory(project)
+            val ktClass = element.containingFile.addAfter(factory.createClass("class ${sourceClass.name}Model : tornadofx.ItemViewModel<${sourceClass.name}>()"), sourceClass) as KtElement
+            ShortenReferences().process(ktClass)
 
-                val ktClassBody = ktClass.add(factory.createEmptyClassBody())
-                ktClassBody.addAfter(factory.createNewLine(), ktClassBody)
+            val ktClassBody = ktClass.add(factory.createEmptyClassBody())
+            ktClassBody.addAfter(factory.createNewLine(), ktClassBody)
 
-                val constructorParams = sourceClass.primaryConstructorParameters
-                        .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
-                        .map(::PropDesc)
+            val constructorParams = sourceClass.primaryConstructorParameters
+                .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
+                .map(::PropDesc)
 
-                val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.filterNot { it.hasDelegate() }?.map(::PropDesc) ?: emptyList()
+            val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.filterNot { it.hasDelegate() }?.map(::PropDesc) ?: emptyList()
 
-                val fxPropertyFunctions = sourceClass.getBody()?.declarations
-                        ?.filter { it is KtNamedFunction }
-                        ?.filter { it.name?.endsWith("Property") ?: false }
-                        ?.map { PropDesc(it as KtNamedFunction) }
-                        ?: emptyList()
+            val fxPropertyFunctions = sourceClass.getBody()?.declarations
+                ?.filter { it is KtNamedFunction }
+                ?.filter { it.name?.endsWith("Property") ?: false }
+                ?.map { PropDesc(it as KtNamedFunction) }
+                ?: emptyList()
 
-                val fxPropertyFnNames = fxPropertyFunctions.map { it.name.replace(Regex("Property$"), "") }
-                val propertiesWithoutFunctionOverlaps = properties
-                        .filterNot { fxPropertyFnNames.contains(it.name) }
+            val fxPropertyFnNames = fxPropertyFunctions.map { it.name.replace(Regex("Property$"), "") }
+            val propertiesWithoutFunctionOverlaps = properties
+                .filterNot { fxPropertyFnNames.contains(it.name) }
 
-                (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
-                    val paramName = param.name.replace(Regex("Property$"), "")
-                    val expr = "val $paramName = bind(${sourceClass.name}::${param.accessor})"
-                    val declaration = ktClassBody.addAfter(factory.createProperty(expr), ktClassBody.firstChild) as KtElement
-                    ShortenReferences().process(declaration)
-                }
+            (propertiesWithoutFunctionOverlaps.reversed() + fxPropertyFunctions.reversed() + constructorParams.reversed()).forEach { param ->
+                val paramName = param.name.replace(Regex("Property$"), "")
+                val expr = "val $paramName = bind(${sourceClass.name}::${param.accessor})"
+                val declaration = ktClassBody.addAfter(factory.createProperty(expr), ktClassBody.firstChild) as KtElement
+                ShortenReferences().process(declaration)
             }
-        }.execute()
-
-
+        }
     }
 
 }
