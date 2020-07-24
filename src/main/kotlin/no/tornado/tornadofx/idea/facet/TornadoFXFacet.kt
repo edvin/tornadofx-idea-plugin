@@ -1,13 +1,13 @@
 package no.tornado.tornadofx.idea.facet
 
+import com.intellij.application.options.CodeStyle
 import com.intellij.facet.Facet
 import com.intellij.facet.FacetManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.psi.codeStyle.PackageEntry
-import org.jetbrains.kotlin.idea.core.formatter.KotlinCodeStyleSettings
+import org.jetbrains.kotlin.idea.formatter.kotlinCustomSettings
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 
 class TornadoFXFacet(
@@ -40,8 +40,8 @@ class TornadoFXFacet(
 
     override fun initFacet() {
         try {
-            val settingsManager = CodeStyleSettingsManager.getInstance()
-            val settings = settingsManager.currentSettings.getCustomSettings(KotlinCodeStyleSettings::class.java)
+            val codeStyleSettings = CodeStyle.getDefaultSettings()
+            val settings = codeStyleSettings.kotlinCustomSettings
             if (!settings.PACKAGES_TO_USE_STAR_IMPORTS.contains("tornadofx")) {
                 settings.PACKAGES_TO_USE_STAR_IMPORTS.addEntry(PackageEntry(false, "tornadofx", false))
             }

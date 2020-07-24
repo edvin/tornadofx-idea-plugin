@@ -40,7 +40,7 @@ class ViewEditor(val project: Project, val myFile: VirtualFile) : FileEditor {
     private fun createHierarchy() {
         val psiFile = file.toPsiFile(project)!!
         val ktClass = PsiTreeUtil.findChildOfType(psiFile, KtClass::class.java)!!
-        val psiFacade = JavaPsiFacade.getInstance(project)
+        //val psiFacade = JavaPsiFacade.getInstance(project)
 
         val root = ktClass.getProperties().find { it.name == "root" }
         val rootType = QuickFixUtil.getDeclarationReturnType(root)!!

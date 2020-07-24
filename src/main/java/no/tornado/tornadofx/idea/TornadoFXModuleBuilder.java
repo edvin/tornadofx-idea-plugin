@@ -80,7 +80,7 @@ public class TornadoFXModuleBuilder extends ModuleBuilder implements SourcePaths
 
 	}
 
-	public ModuleType getModuleType() {
+	public ModuleType<TornadoFXModuleBuilder> getModuleType() {
 		return TornadoFXModuleType.getInstance();
 	}
 

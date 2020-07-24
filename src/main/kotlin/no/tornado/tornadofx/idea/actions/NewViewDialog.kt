@@ -23,6 +23,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
 
+@Suppress("MemberVisibilityCanBePrivate", "UNUSED_ANONYMOUS_PARAMETER")
 class NewViewDialog(val project: Project) : DialogWrapper(project) {
     val myPanel = JPanel(GridBagLayout())
     val myKindCombo = TemplateKindCombo()
@@ -74,10 +75,10 @@ class NewViewDialog(val project: Project) : DialogWrapper(project) {
     override fun createCenterPanel() = myPanel
 
     fun isParentClass(psiClass: PsiClass): Boolean {
-        if (psiClass.qualifiedName?.startsWith("com.sun.") ?: false) return false
+        if (psiClass.qualifiedName?.startsWith("com.sun.") == true) return false
 
         for (supa in psiClass.supers) {
-            if ("javafx.scene.Parent" == supa.qualifiedName && !(supa.qualifiedName?.startsWith("com.sun.") ?: false))
+            if ("javafx.scene.Parent" == supa.qualifiedName && supa.qualifiedName?.startsWith("com.sun.") != true)
                 return true
 
             val superIs = isParentClass(supa)
@@ -86,7 +87,7 @@ class NewViewDialog(val project: Project) : DialogWrapper(project) {
         return false
     }
 
-    inner class RootClassBrowser() : ClassBrowser(project, "Select Root Class") {
+    inner class RootClassBrowser : ClassBrowser(project, "Select Root Class") {
         init {
             setField(rootType)
         }

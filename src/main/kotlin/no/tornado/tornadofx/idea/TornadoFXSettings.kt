@@ -6,7 +6,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "TornadoFXSettings", storages = arrayOf(Storage("other.xml")))
+@State(name = "TornadoFXSettings", storages = [Storage("other.xml")])
 class TornadoFXSettings : PersistentStateComponent<TornadoFXSettings> {
     var alternativePropertySyntax = true
 
