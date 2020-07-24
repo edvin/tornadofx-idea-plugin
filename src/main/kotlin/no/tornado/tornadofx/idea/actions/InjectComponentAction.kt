@@ -30,24 +30,22 @@ class InjectComponentAction : AnAction() {
         val componentClass = browser.requestComponentClass()
         if (componentClass != null) {
             val element = getElementAtCaret(e)!!
-            object : WriteCommandAction.Simple<String>(e.project!!, element.containingFile) {
-                override fun run() {
-                    val factory = KtPsiFactory(project)
-                    val propName = componentClass.substringAfterLast(".").let {
-                        it.first().toLowerCase() + it.substring(1)
-                    }
-                    val componentPsiClass = FXTools.psiClass(componentClass, e.project!!)!!
-                    val injectType = if (FXTools.isFragment(componentPsiClass)) "fragment" else "inject"
-                    val prop = factory.createProperty("val $propName: $componentClass by $injectType()")
-                    val ktClassBody = PsiTreeUtil.getParentOfType(element, KtClassBody::class.java)!!
-                    val added = ktClassBody.addAfter(prop, ktClassBody.firstChild) as KtElement
-                    ShortenReferences().process(added)
+            WriteCommandAction.writeCommandAction(e.project!!, element.containingFile).run<Throwable> {
+                val factory = KtPsiFactory(e.project!!)
+                val propName = componentClass.substringAfterLast(".").let {
+                    it.first().toLowerCase() + it.substring(1)
                 }
-            }.execute()
+                val componentPsiClass = FXTools.psiClass(componentClass, e.project!!)!!
+                val injectType = if (FXTools.isFragment(componentPsiClass)) "fragment" else "inject"
+                val prop = factory.createProperty("val $propName: $componentClass by $injectType()")
+                val ktClassBody = PsiTreeUtil.getParentOfType(element, KtClassBody::class.java)!!
+                val added = ktClassBody.addAfter(prop, ktClassBody.firstChild) as KtElement
+                ShortenReferences().process(added)
+            }
         }
     }
 
-    fun getElementAtCaret(e: AnActionEvent): PsiElement? {
+    private fun getElementAtCaret(e: AnActionEvent): PsiElement? {
         val psiFile = e.getData(LangDataKeys.PSI_FILE)
         val editor = e.getData(PlatformDataKeys.EDITOR)
 
@@ -79,7 +77,7 @@ class InjectComponentAction : AnAction() {
         e.presentation.isEnabled = isComponent(psiClass)
     }
 
-    inner class ComponentBrowser(project: Project) : ClassBrowser(project, "Select Component to Inject") {
+    class ComponentBrowser(project: Project) : ClassBrowser(project, "Select Component to Inject") {
         init {
             // Inject a fake field, we need it because myField.text is called while browsing
             setField(EditorTextFieldWithBrowseButton(project, true, null))
