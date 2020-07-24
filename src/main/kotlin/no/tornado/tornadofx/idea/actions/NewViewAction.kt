@@ -6,12 +6,10 @@ import com.intellij.ide.fileTemplates.FileTemplateUtil
 import com.intellij.ide.fileTemplates.actions.CreateFromTemplateActionBase
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKeys
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.project.DumbModePermission
-import com.intellij.openapi.project.DumbService
+//import com.intellij.openapi.project.DumbModePermission
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.Messages
@@ -85,35 +83,42 @@ class NewViewAction : AnAction() {
     fun createFileFromTemplate(name: String, template: FileTemplate, dir: PsiDirectory, rootType: String, viewType: String): PsiFile? {
         var file: PsiFile? = null
 
-        DumbService.allowStartingDumbModeInside(DumbModePermission.MAY_START_BACKGROUND, Runnable {
-            val element: PsiElement
-            val project = dir.project
-            try {
-                val props = FileTemplateManager.getInstance(dir.project).defaultProperties
-                props.put("fqRootType", rootType)
-                props.put("rootType", rootType.substringAfterLast("."))
-                props.put("initType", if(hasBuilder(project, rootType)) "builder" else "construct")
-                props.put("viewType", viewType)
-                element = FileTemplateUtil.createFromTemplate(template, name, props, dir)
-                val psiFile = element.containingFile
 
-                val virtualFile = psiFile.virtualFile
-                if (virtualFile != null) {
-                    if (template.isLiveTemplateEnabled) {
-                        CreateFromTemplateActionBase.startLiveTemplate(psiFile)
-                    } else {
-                        FileEditorManager.getInstance(project).openFile(virtualFile, true)
-                    }
-                    file = psiFile
+
+//        val dumbService = DumbService.getInstance(dir.project)
+//        object : DumbModeTask() {}
+//        dumbService.queueTask()
+//        dumbService.completeJustSubmittedTasks()
+
+        //DumbService.allowStartingDumbModeInside(DumbModePermission.MAY_START_BACKGROUND, Runnable {
+        val element: PsiElement
+        val project = dir.project
+        try {
+            val props = FileTemplateManager.getInstance(dir.project).defaultProperties
+            props["fqRootType"] = rootType
+            props["rootType"] = rootType.substringAfterLast(".")
+            props["initType"] = if(hasBuilder(project, rootType)) "builder" else "construct"
+            props["viewType"] = viewType
+            element = FileTemplateUtil.createFromTemplate(template, name, props, dir)
+            val psiFile = element.containingFile
+
+            val virtualFile = psiFile.virtualFile
+            if (virtualFile != null) {
+                if (template.isLiveTemplateEnabled) {
+                    CreateFromTemplateActionBase.startLiveTemplate(psiFile)
+                } else {
+                    FileEditorManager.getInstance(project).openFile(virtualFile, true)
                 }
-            } catch (e: ParseException) {
-                Messages.showErrorDialog(project, "Error parsing Velocity template: " + e.message, "Create File from Template")
-            } catch (e: IncorrectOperationException) {
-                throw e
-            } catch (e: Exception) {
-                log.error(e)
+                file = psiFile
             }
-        })
+        } catch (e: ParseException) {
+            Messages.showErrorDialog(project, "Error parsing Velocity template: " + e.message, "Create File from Template")
+        } catch (e: IncorrectOperationException) {
+            throw e
+        } catch (e: Exception) {
+            log.error(e)
+        }
+        //})
 
         return file
     }
