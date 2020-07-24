@@ -162,17 +162,15 @@ class FXPropertyConverter : PsiElementBaseIntentionAction(), LowPriorityAction {
 
         private fun addImports(element: PsiElement, project: Project, importList: Iterable<String>) {
             // ShortenReferences can't handle tornadofx.getProperty, so imports are added manually
-            val importsFactory = KtImportsFactory(project)
+            val ktPsiFactory = KtPsiFactory(project, false)
             val ktFile = PsiTreeUtil.getParentOfType(element, KtFile::class.java)!!
-
             val imports = ktFile.importList!!.imports
 
             for (fqName in importList)
                 if (imports.find { it.importedFqName.toString() == fqName } == null) {
-                    val directives = importsFactory.createImportDirectives(mutableListOf(ImportPath(FqName(fqName), false)))
-                    directives.forEach {
-                        ktFile.importList?.add(it)
-                    }
+                    val importPath = ImportPath(FqName(fqName), false)
+                    val directive = ktPsiFactory.createImportDirective(importPath)
+                    ktFile.importList?.add(directive)
                 }
         }
 

@@ -10,12 +10,11 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.ToolbarDecorator
+import com.intellij.ui.components.JBList
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
-import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.MemberDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptor
 import org.jetbrains.kotlin.idea.codeInsight.KtFunctionPsiElementCellRenderer
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.idea.search.usagesSearch.descriptor
@@ -26,7 +25,6 @@ import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.types.KotlinType
 import javax.swing.Action
 import javax.swing.JComponent
-import javax.swing.JList
 
 class AddTableViewColumns : PsiElementBaseIntentionAction() {
     override fun getText() = "Add TableView Columns..."
@@ -42,8 +40,9 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
         val modelPsiClass = getModelPsiClass(element, project) ?: return
 
         val dialog = ColumnsDialog(modelPsiClass)
-        dialog.show()
-
+        dialog.show() // error IDEA 2018.2 (stacktrace AWT Event)
+        // invokeLater { }  variance
+        // invokeLater { dialog.show() }
         if (dialog.isOK) {
             fun niceColumnName(it: PsiMember): String {
                 val stripped = it.name.let {
@@ -67,7 +66,6 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
                 addImports(element, modelPsiClass)
             }
         }
-
     }
 
     private fun getModelPsiClass(element: PsiElement, project: Project): PsiClass? {
@@ -79,19 +77,17 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
     // ShortenReferences can't handle tornadofx.column, so imports are added manually
     private fun addImports(element: PsiElement, psiClass: PsiClass) {
-        val importsFactory = KtImportsFactory(element.project)
+        val ktPsiFactory = KtPsiFactory(element.project, false)
         val ktFile = PsiTreeUtil.getParentOfType(element, KtFile::class.java)!!
-
         val imports = ktFile.importList!!.imports
 
         // TODO: Don't add import if class is in the same package as the class we're operating on
         listOf("tornadofx.column", psiClass.qualifiedName!!)
                 .filter { fqName -> imports.find { it.importedFqName?.asString() == fqName } == null }
                 .forEach {
-                    val directives = importsFactory.createImportDirectives(mutableListOf(ImportPath(FqName(it),false)))
-                    directives.forEach {
-                        ktFile.importList?.add(it)
-                    }
+                    val importPath = ImportPath(FqName(it), false)
+                    val directive = ktPsiFactory.createImportDirective(importPath)
+                    ktFile.importList?.add(directive)
                 }
     }
 
@@ -99,8 +95,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
             JavaPsiFacade.getInstance(project).findClass(modelTypeFq, project.projectScope())
 
     private fun getReturnType(element: PsiElement): KotlinType? {
-        val memberDescriptor = getMemberDescriptor(element)
-        return when (memberDescriptor) {
+        return when (val memberDescriptor = getMemberDescriptor(element)) {
             is PropertyDescriptor -> memberDescriptor.getter?.returnType
             is FunctionDescriptor -> memberDescriptor.returnType
             else -> null
@@ -115,7 +110,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
     }
 
     inner class ColumnsDialog(psiClass: PsiClass) : DialogWrapper(psiClass.project) {
-        val fieldList: JList<PsiMember>
+        val fieldList: JBList<PsiMember>
         val component: JComponent
         val fields: CollectionListModel<PsiMember>
 
@@ -124,7 +119,8 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
             val candidates: List<PsiMember> = getJavaFXProperties(psiClass) + getJavaFXFields(psiClass)
             fields = CollectionListModel(candidates)
-            fieldList = JList(fields)
+            //fieldList = JList(fields)
+            fieldList = JBList<PsiMember>(fields)
             fieldList.cellRenderer = KtFunctionPsiElementCellRenderer()
             val decorator = ToolbarDecorator.createDecorator(fieldList)
             decorator.disableAddAction()
@@ -135,11 +131,13 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
             init()
         }
 
+
         override fun createCenterPanel(): JComponent? {
             return component
         }
 
         override fun getOKAction(): Action {
+
             return super.getOKAction()
         }
     }

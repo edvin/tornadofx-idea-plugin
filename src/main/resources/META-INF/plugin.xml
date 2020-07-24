@@ -110,4 +110,9 @@
         </action>
     </actions>
 
+    <application-components>
+        <component>
+            <implementation-class>no.tornado.tornadofx.idea.editors.ViewEditorProvider</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>

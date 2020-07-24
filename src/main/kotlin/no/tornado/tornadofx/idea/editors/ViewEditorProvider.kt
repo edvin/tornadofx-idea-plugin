@@ -1,6 +1,5 @@
 package no.tornado.tornadofx.idea.editors
 
-import com.intellij.openapi.components.ApplicationComponent
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -14,7 +13,8 @@ import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.psi.KtClass
 
-class ViewEditorProvider : ApplicationComponent, FileEditorProvider {
+class ViewEditorProvider : FileEditorProvider {
+
     override fun createEditor(project: Project, file: VirtualFile) = ViewEditor(project, file)
 
     override fun writeState(state: FileEditorState, project: Project, targetElement: Element) {
@@ -41,11 +41,11 @@ class ViewEditorProvider : ApplicationComponent, FileEditorProvider {
         return false
     }
 
-    override fun disposeComponent() {
-    }
+//    override fun disposeComponent() {
+//    }
+//
+//    override fun initComponent() {
+//    }
 
-    override fun initComponent() {
-    }
-
-    override fun getComponentName() = "Live View"
+   // override fun getComponentName() = "Live View"
 }

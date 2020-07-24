@@ -37,7 +37,7 @@ class TornadoFXConfiguration(project: Project, factory: ConfigurationFactory, na
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
         val group = SettingsEditorGroup<TornadoFXConfiguration>()
         group.addEditor(ExecutionBundle.message("run.configuration.configuration.tab.title"), TornadoFXSettingsEditor(project))
-        JavaRunConfigurationExtensionManager.getInstance().appendEditors(this, group)
+        JavaRunConfigurationExtensionManager.instance.appendEditors(this, group)
         group.addEditor(ExecutionBundle.message("logs.tab.title"), LogConfigurationPanel<TornadoFXConfiguration>())
         return group
     }
