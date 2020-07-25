@@ -10,6 +10,7 @@ import com.intellij.psi.JavaCodeFragment
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.ui.EditorTextField
 import com.intellij.ui.EditorTextFieldWithBrowseButton
 import com.intellij.util.PlatformIcons
 import org.jetbrains.kotlin.idea.KotlinIcons
@@ -87,7 +88,7 @@ class NewViewDialog(val project: Project) : DialogWrapper(project) {
         return false
     }
 
-    inner class RootClassBrowser : ClassBrowser(project, "Select Root Class") {
+    inner class RootClassBrowser : ClassBrowser<EditorTextField>(project, "Select Root Class") {
         init {
             setField(rootType)
         }

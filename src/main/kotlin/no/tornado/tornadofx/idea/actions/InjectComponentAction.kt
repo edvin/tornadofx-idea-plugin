@@ -13,6 +13,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.ui.EditorTextField
 import com.intellij.ui.EditorTextFieldWithBrowseButton
 import no.tornado.tornadofx.idea.FXTools
 import no.tornado.tornadofx.idea.FXTools.Companion.isComponent
@@ -77,7 +78,7 @@ class InjectComponentAction : AnAction() {
         e.presentation.isEnabled = isComponent(psiClass)
     }
 
-    class ComponentBrowser(project: Project) : ClassBrowser(project, "Select Component to Inject") {
+    class ComponentBrowser(project: Project) : ClassBrowser<EditorTextField>(project, "Select Component to Inject") {
         init {
             // Inject a fake field, we need it because myField.text is called while browsing
             setField(EditorTextFieldWithBrowseButton(project, true, null))
