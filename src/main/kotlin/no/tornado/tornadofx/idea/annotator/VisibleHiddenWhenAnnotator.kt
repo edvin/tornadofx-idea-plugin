@@ -19,13 +19,10 @@ class VisibleHiddenWhenAnnotator : Annotator {
         if (isVisibleWhen || isHiddenWhen) {
             val arguments = element.valueArguments
             if (arguments.size == 1 && bindsToNot(arguments.first().text)) {
-                holder.newAnnotation(HighlightSeverity.WARNING, "Invert call")
+                holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Invert call")
                     .range(element)
                     .withFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
                     .create()
-
-//                holder.createWeakWarningAnnotation(element, "Invert call")
-//                    .registerFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
             }
         }
     }

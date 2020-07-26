@@ -2,6 +2,7 @@ package no.tornado.tornadofx.idea.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -52,14 +53,15 @@ class CSSBoxAnnotator : Annotator {
             args.forEach { values.add(it.text.convertOrNull()) }
 
             if (values.isAllSimplifiable()) {
-                holder.createWeakWarningAnnotation(element.right!!.textRange,
-                        "Can be simplified to box(${values[0]!!.first}${values[0]!!.second}).")
-                        .registerFix(BoxQuickFix(element, values[0]!!))
-
+                holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Can be simplified to box(${values[0]!!.first}${values[0]!!.second}).")
+                    .range(element.right!!.textRange)
+                    .withFix(BoxQuickFix(element, values[0]!!))
+                    .create()
             } else if (values.isVHSimplifiable()) {
-                holder.createWeakWarningAnnotation(element.right!!.textRange,
-                        "Can be simplified to box(${values[0]!!.first}${values[0]!!.second}, ${values[1]!!.first}${values[1]!!.second}).")
-                        .registerFix(BoxQuickFix(element, values[0]!!, values[1]!!))
+                holder.newAnnotation(HighlightSeverity.WEAK_WARNING,  "Can be simplified to box(${values[0]!!.first}${values[0]!!.second}, ${values[1]!!.first}${values[1]!!.second}).")
+                    .range(element.right!!.textRange)
+                    .withFix(BoxQuickFix(element, values[0]!!, values[1]!!))
+                    .create()
             }
         }
     }

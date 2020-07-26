@@ -29,7 +29,7 @@ class PaddingAllAnnotator : Annotator {
         // Left must be a call to setPadding
         val left = element.left as? KtNameReferenceExpression ?: return
         if (checkLeft(left)) {
-            holder.newAnnotation(HighlightSeverity.WARNING, "Can use paddingAll")
+            holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Can use paddingAll")
                 .range(element.textRange)
                 .withFix(PaddingAllQuickFix(element))
                 .create()

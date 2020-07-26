@@ -2,6 +2,7 @@ package no.tornado.tornadofx.idea.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -78,17 +79,13 @@ class CSSColorAnnotator : Annotator {
      * Annotates Color.* expressions
      */
     private fun annotateFXColor(element: KtDotQualifiedExpression, ref: PsiElement? = null, holder: AnnotationHolder, transformer: (String) -> Unit) {
-        val annotation = holder.createInfoAnnotation(ref ?: element, null)
-        val fxColor = element.text.toColor()
-        fxColor?.let {
-            val color = Color(//
-                    fxColor.red.toFloat(), //
-                    fxColor.green.toFloat(), //
-                    fxColor.blue.toFloat(), //
-                    fxColor.opacity.toFloat()//
-            ) //
-            annotation.gutterIconRenderer = ColorRenderer(element.project, color, transformer)
-        }
+        element.text.toColor()?.let {
+            val color = Color(it.red.toFloat(), it.green.toFloat(), it.blue.toFloat(), it.opacity.toFloat())
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .range(ref ?: element)
+                .gutterIconRenderer(ColorRenderer(element.project, color, transformer))
+                .create()
+        } // ?: do i need to create Annotate
     }
 
     /**
@@ -102,7 +99,7 @@ class CSSColorAnnotator : Annotator {
                 child is KtCallExpression && child.text.startsWith("c(") ->
                     annotateTFXColor(child, ref, holder)
                 child is KtDotQualifiedExpression && child.text.startsWith("Color.") ->
-                    annotateFXColor(child, ref, holder, { child.replaceColor(element, it) })
+                    annotateFXColor(child, ref, holder) { child.replaceColor(element, it) }
             }
         }
     }
@@ -112,19 +109,23 @@ class CSSColorAnnotator : Annotator {
      */
     private fun annotateTFXColor(element: KtCallExpression, ref: PsiElement? = null, holder: AnnotationHolder) {
         // TODO: Do we need to check if the expression is valid?
-        val annotation = holder.createInfoAnnotation(ref ?: element, null)
         val args = element.valueArguments
         val (fxColor, colorType) = args.toColorType() ?: return
-        val color = Color(//
-                fxColor.red.toFloat(), //
-                fxColor.green.toFloat(), //
-                fxColor.blue.toFloat(), //
-                fxColor.opacity.toFloat() //
-        ) //
-        annotation.gutterIconRenderer = PickerRenderer(color, colorType) {
+        val color = Color(
+                fxColor.red.toFloat(),
+                fxColor.green.toFloat(),
+                fxColor.blue.toFloat(),
+                fxColor.opacity.toFloat()
+        )
+        val pickerRenderer = PickerRenderer(color, colorType) {
             val factory = KtPsiFactory(element.project)
             element.replace(factory.createExpression(it))
         }
+
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+            .range(ref ?: element)
+            .gutterIconRenderer(pickerRenderer)
+            .create()
     }
 
     private fun annotateReference(element: KtReferenceExpression, holder: AnnotationHolder) {
@@ -141,7 +142,6 @@ class CSSColorAnnotator : Annotator {
                 )
             }
         }
-
     }
 
     private fun KotlinType?.isColorMulti(): Boolean {
