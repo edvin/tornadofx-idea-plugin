@@ -35,7 +35,7 @@ class FXTools {
 
         fun isTornadoFXType(psiClass: PsiClass): Boolean {
             for (supa in psiClass.supers)
-                if (supa.qualifiedName?.startsWith("tornadofx.") ?: false) {
+                if (supa.qualifiedName?.startsWith("tornadofx.") == true) {
                     return true
                 } else {
                     val superIs = isTornadoFXType(supa)
@@ -65,6 +65,6 @@ fun Project.allRoots(): List<VirtualFile> = allModules()
         .map { ModuleRootManager.getInstance(it).modifiableModel }
         .flatMap { it.sourceRoots.toList() }
 
-fun Project.firstModuleWithTornadoFXLib() = allModules().filter {
+fun Project.firstModuleWithTornadoFXLib() = allModules().firstOrNull {
     JavaPsiFacade.getInstance(this).findClass("tornadofx.App", it.moduleWithLibrariesScope) != null
-}.firstOrNull()
+}

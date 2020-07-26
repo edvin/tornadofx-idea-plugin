@@ -27,7 +27,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.psi.JavaCodeFragment;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.EditorTextFieldWithBrowseButton;
 import com.intellij.ui.PanelWithAnchor;
@@ -54,8 +53,8 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 	private final ConfigurationModuleSelector myModuleSelector;
 	private JrePathEditor myJrePathEditor;
 	private JCheckBox myShowSwingInspectorCheckbox;
-	private LabeledComponent typeWrapper;
-	private LabeledComponent myDevOptions;
+	private LabeledComponent<JPanel> typeWrapper;
+	private LabeledComponent<JPanel> myDevOptions;
 	private final JreVersionDetector myVersionDetector;
 	private final Project myProject;
 	private JComponent myAnchor;
@@ -78,7 +77,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		myAnchor = UIUtil.mergeComponentsWithAnchor(myViewClass, myAppClass, myDevOptions, typeWrapper, myCommonProgramParameters, myJrePathEditor, myModule);
 	}
 
-	public void applyEditorTo(final TornadoFXConfiguration configuration) throws ConfigurationException {
+	public void applyEditorTo(@NotNull final TornadoFXConfiguration configuration) throws ConfigurationException {
 		myCommonProgramParameters.applyTo(configuration);
 		myModuleSelector.applyTo(configuration);
 		configuration.RUN_TYPE = appButton.isSelected() ? App : View;
@@ -93,13 +92,13 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		configuration.LIVE_STYLESHEETS = liveStylesheetsButton.isSelected();
 		configuration.DUMP_STYLESHEETS = dumpStylesheetsButton.isSelected();
 		configuration.LIVE_VIEWS = liveViewsButton.isSelected();
-		configuration.ALTERNATIVE_JRE_PATH = myJrePathEditor.getJrePathOrName();
-		configuration.ALTERNATIVE_JRE_PATH_ENABLED = myJrePathEditor.isAlternativeJreSelected();
+		configuration.setAlternativeJrePath(myJrePathEditor.getJrePathOrName());
+		configuration.setAlternativeJrePathEnabled(myJrePathEditor.isAlternativeJreSelected());
 		configuration.setSwingInspectorEnabled((myVersionDetector.isJre50Configured(configuration) || myVersionDetector.isModuleJre50Configured(configuration)) && myShowSwingInspectorCheckbox.isSelected());
 		updateShowSwingInspector(configuration);
 	}
 
-	public void resetEditorFrom(final TornadoFXConfiguration configuration) {
+	public void resetEditorFrom(@NotNull final TornadoFXConfiguration configuration) {
 		myCommonProgramParameters.reset(configuration);
 		myModuleSelector.reset(configuration);
 		if (configuration.RUN_TYPE == App) {
@@ -116,7 +115,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		liveStylesheetsButton.setSelected(configuration.LIVE_STYLESHEETS);
 		dumpStylesheetsButton.setSelected(configuration.DUMP_STYLESHEETS);
 		liveViewsButton.setSelected(configuration.LIVE_VIEWS);
-		myJrePathEditor.setPathOrName(configuration.ALTERNATIVE_JRE_PATH, configuration.ALTERNATIVE_JRE_PATH_ENABLED);
+		myJrePathEditor.setPathOrName(configuration.getAlternativeJrePath(), configuration.isAlternativeJrePathEnabled());
 		updateShowSwingInspector(configuration);
 	}
 
@@ -151,22 +150,20 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 
 	private void createUIComponents() {
 		myViewClass = new LabeledComponent<>();
-		myViewClass.setComponent(new EditorTextFieldWithBrowseButton(myProject, true, new JavaCodeFragment.VisibilityChecker() {
-			public Visibility isDeclarationVisible(PsiElement declaration, PsiElement place) {
-				return (declaration instanceof PsiClass && isViewClass((PsiClass) declaration))
-					? Visibility.VISIBLE : Visibility.NOT_VISIBLE;
-			}
-		}));
+		JavaCodeFragment.VisibilityChecker vh1 =
+				(declaration, place) -> (declaration instanceof PsiClass && isViewClass((PsiClass) declaration))
+				? JavaCodeFragment.VisibilityChecker.Visibility.VISIBLE : JavaCodeFragment.VisibilityChecker.Visibility.NOT_VISIBLE;
+
+		myViewClass.setComponent(new EditorTextFieldWithBrowseButton(myProject, true, vh1));
 
 		myAppClass = new LabeledComponent<>();
-		myAppClass.setComponent(new EditorTextFieldWithBrowseButton(myProject, true, new JavaCodeFragment.VisibilityChecker() {
-			public Visibility isDeclarationVisible(PsiElement declaration, PsiElement place) {
-				return (declaration instanceof PsiClass && isAppClass((PsiClass) declaration))
-					? Visibility.VISIBLE : Visibility.NOT_VISIBLE;
-			}
-		}));
+		JavaCodeFragment.VisibilityChecker vh2 =
+				(declaration, place) -> (declaration instanceof PsiClass && isAppClass((PsiClass) declaration))
+				? JavaCodeFragment.VisibilityChecker.Visibility.VISIBLE : JavaCodeFragment.VisibilityChecker.Visibility.NOT_VISIBLE;
 
-		typeWrapper = new LabeledComponent<EditorTextFieldWithBrowseButton>();
+		myAppClass.setComponent(new EditorTextFieldWithBrowseButton(myProject, true, vh2));
+
+		typeWrapper = new LabeledComponent<>();
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		ButtonGroup typeGroup = new ButtonGroup();
 		appButton = new JBRadioButton("Application");
@@ -194,7 +191,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 		devPanel.add(liveViewsButton);
 		devPanel.add(liveStylesheetsButton);
 		devPanel.add(dumpStylesheetsButton);
-		myDevOptions = new LabeledComponent();
+		myDevOptions = new LabeledComponent<>();
 		myDevOptions.setComponent(devPanel);
 	}
 
@@ -265,7 +262,7 @@ public class TornadoFXSettingsEditor extends SettingsEditor<TornadoFXConfigurati
 			return myModuleSelector.findClass(className);
 		}
 
-		protected ClassFilter.ClassFilterWithScope getFilter() throws NoFilterException {
+		protected ClassFilter.ClassFilterWithScope getFilter() {
 			final Module module = myModuleSelector.getModule();
 			final GlobalSearchScope scope;
 			if (module == null) {

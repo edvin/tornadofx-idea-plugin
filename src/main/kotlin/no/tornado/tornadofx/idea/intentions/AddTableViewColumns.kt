@@ -10,13 +10,14 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.ToolbarDecorator
+import com.intellij.ui.components.JBList
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.MemberDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptor
 import org.jetbrains.kotlin.idea.codeInsight.KtFunctionPsiElementCellRenderer
 import org.jetbrains.kotlin.idea.search.projectScope
+import org.jetbrains.kotlin.idea.search.usagesSearch.descriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
@@ -24,7 +25,6 @@ import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.kotlin.types.KotlinType
 import javax.swing.Action
 import javax.swing.JComponent
-import javax.swing.JList
 
 class AddTableViewColumns : PsiElementBaseIntentionAction() {
     override fun getText() = "Add TableView Columns..."
@@ -40,37 +40,31 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
         val modelPsiClass = getModelPsiClass(element, project) ?: return
 
         val dialog = ColumnsDialog(modelPsiClass)
-        dialog.show()
-
+        dialog.show() // error,  AWT events are not allowed inside write action
+        // invokeLater { dialog.show() }
         if (dialog.isOK) {
-            object : WriteCommandAction.Simple<String>(project, element.containingFile) {
-                override fun run() {
-                    val factory = KtPsiFactory(project)
-                    val target = PsiTreeUtil.findChildrenOfType(declaration, KtBlockExpression::class.java).last()
-                    val modelName = modelPsiClass.name
-                    val properties = dialog.fields.items
+            fun niceColumnName(it: PsiMember): String {
+                val stripped = it.name.let {
+                    it!!.first().toUpperCase() + it.substring(1).replace(Regex("Property$"), "")
+                }
+                return stripped.replace(Regex("([A-Z]){1}"), " $1").trim()
+            }
+            WriteCommandAction.writeCommandAction(project, element.containingFile).run<Throwable> {
+                val factory = KtPsiFactory(project)
+                val target = PsiTreeUtil.findChildrenOfType(declaration, KtBlockExpression::class.java).last()
+                val modelName = modelPsiClass.name
+                val properties = dialog.fields.items
 
-                    properties.forEach {
-                        val colName = niceColumnName(it)
-                        val expr = factory.createExpression("column(\"$colName\", $modelName::${it.name})")
-                        if (target.children.isNotEmpty()) target.add(factory.createNewLine())
-                        target.add(expr)
-                    }
-
-                    addImports(element, modelPsiClass)
+                properties.forEach {
+                    val colName = niceColumnName(it)
+                    val expr = factory.createExpression("column(\"$colName\", $modelName::${it.name})")
+                    if (target.children.isNotEmpty()) target.add(factory.createNewLine())
+                    target.add(expr)
                 }
 
-                private fun niceColumnName(it: PsiMember): String {
-                    val stripped = it.name.let {
-                        it!!.first().toUpperCase() + it.substring(1).replace(Regex("Property$"), "")
-                    }
-                    return stripped.replace(Regex("([A-Z]){1}"), " $1").trim()
-                }
-
-            }.execute()
-
+                addImports(element, modelPsiClass)
+            }
         }
-
     }
 
     private fun getModelPsiClass(element: PsiElement, project: Project): PsiClass? {
@@ -82,19 +76,17 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
     // ShortenReferences can't handle tornadofx.column, so imports are added manually
     private fun addImports(element: PsiElement, psiClass: PsiClass) {
-        val importsFactory = KtImportsFactory(element.project)
+        val ktPsiFactory = KtPsiFactory(element.project, false)
         val ktFile = PsiTreeUtil.getParentOfType(element, KtFile::class.java)!!
-
         val imports = ktFile.importList!!.imports
 
         // TODO: Don't add import if class is in the same package as the class we're operating on
         listOf("tornadofx.column", psiClass.qualifiedName!!)
                 .filter { fqName -> imports.find { it.importedFqName?.asString() == fqName } == null }
                 .forEach {
-                    val directives = importsFactory.createImportDirectives(mutableListOf(ImportPath(FqName(it),false)))
-                    directives.forEach {
-                        ktFile.importList?.add(it)
-                    }
+                    val importPath = ImportPath(FqName(it), false)
+                    val directive = ktPsiFactory.createImportDirective(importPath)
+                    ktFile.importList?.add(directive)
                 }
     }
 
@@ -102,8 +94,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
             JavaPsiFacade.getInstance(project).findClass(modelTypeFq, project.projectScope())
 
     private fun getReturnType(element: PsiElement): KotlinType? {
-        val memberDescriptor = getMemberDescriptor(element)
-        return when (memberDescriptor) {
+        return when (val memberDescriptor = getMemberDescriptor(element)) {
             is PropertyDescriptor -> memberDescriptor.getter?.returnType
             is FunctionDescriptor -> memberDescriptor.returnType
             else -> null
@@ -112,12 +103,13 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
     private fun getMemberDescriptor(element: PsiElement): MemberDescriptor? {
         val declaration = PsiTreeUtil.getParentOfType(element, KtCallableDeclaration::class.java)
-        val descriptor = declaration?.resolveToDescriptor()
+        //val descriptor = declaration?.resolveToDescriptor()
+        val descriptor = declaration?.descriptor
         return if (descriptor is MemberDescriptor) descriptor else null
     }
 
     inner class ColumnsDialog(psiClass: PsiClass) : DialogWrapper(psiClass.project) {
-        val fieldList: JList<PsiMember>
+        val fieldList: JBList<PsiMember>
         val component: JComponent
         val fields: CollectionListModel<PsiMember>
 
@@ -126,7 +118,8 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
 
             val candidates: List<PsiMember> = getJavaFXProperties(psiClass) + getJavaFXFields(psiClass)
             fields = CollectionListModel(candidates)
-            fieldList = JList(fields)
+            //fieldList = JList(fields)
+            fieldList = JBList<PsiMember>(fields)
             fieldList.cellRenderer = KtFunctionPsiElementCellRenderer()
             val decorator = ToolbarDecorator.createDecorator(fieldList)
             decorator.disableAddAction()
@@ -137,11 +130,13 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
             init()
         }
 
+
         override fun createCenterPanel(): JComponent? {
             return component
         }
 
         override fun getOKAction(): Action {
+
             return super.getOKAction()
         }
     }
@@ -151,7 +146,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
             .filterNot { it.name.fourthLetterIsUpperCase && (it.name.startsWith("get") || it.name.startsWith("set")) }
 
     private fun getJavaFXFields(psiClass: PsiClass): List<PsiField> = psiClass.allFields
-            .filterNot { it.name?.endsWith("\$delegate") ?: false }
+            .filterNot { it.name.endsWith("\$delegate")  }
 
     private val String.fourthLetterIsUpperCase: Boolean
         get() = length > 3 && this[3].isUpperCase()

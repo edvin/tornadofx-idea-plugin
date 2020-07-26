@@ -14,6 +14,7 @@ zip_template "tornadofx-maven-project"
 zip_template "tornadofx-maven-osgi-project"
 zip_template "tornadofx-maven-osgi-ds-project"
 zip_template "tornadofx-gradle-project"
+zip_template "tornadofx-gradle-project-kts"
 
 # Go back after zipping.
 cd ..

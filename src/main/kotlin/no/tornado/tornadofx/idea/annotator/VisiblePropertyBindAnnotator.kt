@@ -2,6 +2,7 @@ package no.tornado.tornadofx.idea.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import no.tornado.tornadofx.idea.quickfixes.VisiblePropertyBindQuickfix
 import no.tornado.tornadofx.idea.util.getCalleeFQN
@@ -28,8 +29,10 @@ class VisiblePropertyBindAnnotator : Annotator {
             }
 
 
-            holder.createWeakWarningAnnotation(element.textRange, "Can use visibleWhen()")
-                .registerFix(VisiblePropertyBindQuickfix(element, right))
+            holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Can use visibleWhen()")
+                .range(element.textRange)
+                .withFix(VisiblePropertyBindQuickfix(element, right))
+                .create()
         }
     }
 

@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.psi.KtPsiFactory
 class PaddingAllQuickFix(val element: KtBinaryExpression): BaseIntentionAction() {
 
     override fun getText(): String {
-        return "Simplify statement..."
+        return "Simplify statement use paddingAll"
     }
 
     override fun getFamilyName(): String {

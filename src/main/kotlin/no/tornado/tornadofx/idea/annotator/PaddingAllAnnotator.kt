@@ -2,6 +2,7 @@ package no.tornado.tornadofx.idea.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import no.tornado.tornadofx.idea.quickfixes.css.PaddingAllQuickFix
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
@@ -28,8 +29,10 @@ class PaddingAllAnnotator : Annotator {
         // Left must be a call to setPadding
         val left = element.left as? KtNameReferenceExpression ?: return
         if (checkLeft(left)) {
-            holder.createWeakWarningAnnotation(element.textRange, "Can use paddingAll")
-                .registerFix(PaddingAllQuickFix(element))
+            holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Can use paddingAll")
+                .range(element.textRange)
+                .withFix(PaddingAllQuickFix(element))
+                .create()
         }
     }
 

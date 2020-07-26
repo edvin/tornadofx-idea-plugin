@@ -45,13 +45,13 @@ class ConvertAllPropertiesToFX: PsiElementBaseIntentionAction(), LowPriorityActi
         val converter = FXPropertyConverter()
 
         // Find all val or vars that are not JavaFX Properties
-        val params = ktClass.getPrimaryConstructorParameters()
+        val params = ktClass.primaryConstructorParameters
                 .filter { it.hasValOrVar() && !it.isVarArg && it.name != null && !isJavaFXProperty(getDeclarationReturnType(it)) }
 
         // Filter properties that are not JavaFX Properties and not Property Delegates
-        val props = ktClass.getBody()?.properties
+        val props = ktClass.body?.properties
                 ?.filter { it.name != null && !isJavaFXProperty(getDeclarationReturnType(it)) }
-                ?.filter { it.children.find { it is KtPropertyDelegate } == null}
+                ?.filter { it.children.find { psiElement -> psiElement is KtPropertyDelegate } == null}
 
         params.forEach { converter.addForParam(it, project, it) }
         props?.forEach { converter.addForProp(it, project, it) }

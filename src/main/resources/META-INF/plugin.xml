@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.14.1</version>
+    <version>1.7.18</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -22,6 +22,8 @@
     <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.properties</depends>
+    
+    <idea-version since-build="201" />
 
     <extensions defaultExtensionNs="com.intellij">
 
@@ -31,6 +33,7 @@
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-maven-osgi-ds-project.zip" category="true"/>
         <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project.zip" category="true"/>
+        <projectTemplate projectType="TornadoFX" templatePath="projectTemplates/tornadofx-gradle-project-kts.zip" category="true"/>
         <!--<moduleBuilder builderClass="no.tornado.tornadofx.idea.TornadoFXModuleBuilder" id="TORNADOFX_STEP" order="last"/>-->
 
         <intentionAction>
@@ -110,4 +113,9 @@
         </action>
     </actions>
 
+    <application-components>
+        <component>
+            <implementation-class>no.tornado.tornadofx.idea.editors.ViewEditorProvider</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>
