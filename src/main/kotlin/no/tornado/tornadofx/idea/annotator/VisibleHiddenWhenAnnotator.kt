@@ -21,8 +21,7 @@ class VisibleHiddenWhenAnnotator : Annotator {
             if (arguments.size == 1 && bindsToNot(arguments.first().text)) {
                 holder.newAnnotation(HighlightSeverity.WARNING, "Invert call")
                     .range(element)
-                    .newFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
-                    .registerFix()
+                    .withFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
                     .create()
 
 //                holder.createWeakWarningAnnotation(element, "Invert call")

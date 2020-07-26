@@ -31,8 +31,7 @@ class VisiblePropertyBindAnnotator : Annotator {
 
             holder.newAnnotation(HighlightSeverity.WARNING, "Can use visibleWhen()")
                 .range(element.textRange)
-                .newFix(VisiblePropertyBindQuickfix(element, right))
-                .registerFix()
+                .withFix(VisiblePropertyBindQuickfix(element, right))
                 .create()
         }
     }
