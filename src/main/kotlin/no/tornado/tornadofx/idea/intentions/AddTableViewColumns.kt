@@ -40,8 +40,7 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
         val modelPsiClass = getModelPsiClass(element, project) ?: return
 
         val dialog = ColumnsDialog(modelPsiClass)
-        dialog.show() // error IDEA 2018.2 (stacktrace AWT Event)
-        // invokeLater { }  variance
+        dialog.show() // error,  AWT events are not allowed inside write action
         // invokeLater { dialog.show() }
         if (dialog.isOK) {
             fun niceColumnName(it: PsiMember): String {

@@ -9,7 +9,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
 import org.jdom.Element
-import org.jetbrains.kotlin.idea.refactoring.toPsiFile
+import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.idea.search.projectScope
 import org.jetbrains.kotlin.psi.KtClass
 

@@ -9,14 +9,13 @@ import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.util.PsiTreeUtil
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
 import javafx.scene.Scene
 import javafx.scene.layout.StackPane
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
-import org.jetbrains.kotlin.idea.refactoring.toPsiFile
+import org.jetbrains.kotlin.idea.core.util.*
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import java.beans.PropertyChangeListener
@@ -48,7 +47,7 @@ class ViewEditor(val project: Project, val myFile: VirtualFile) : FileEditor {
         println(rootType)
 
         for (child in root!!.children) {
-            println("Child: " + child)
+            println("Child: $child")
 
             if (child is KtCallExpression) {
                 println("Reference element: " + child.reference?.element?.firstChild)
