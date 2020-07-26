@@ -2,6 +2,7 @@ package no.tornado.tornadofx.idea.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import no.tornado.tornadofx.idea.quickfixes.InvertVisibleHiddenWhenQuickfix
 import no.tornado.tornadofx.idea.util.getCalleeFQN
@@ -18,8 +19,14 @@ class VisibleHiddenWhenAnnotator : Annotator {
         if (isVisibleWhen || isHiddenWhen) {
             val arguments = element.valueArguments
             if (arguments.size == 1 && bindsToNot(arguments.first().text)) {
-                holder.createWeakWarningAnnotation(element, "Invert call")
-                    .registerFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
+                holder.newAnnotation(HighlightSeverity.WARNING, "Invert call")
+                    .range(element)
+                    .newFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
+                    .registerFix()
+                    .create()
+
+//                holder.createWeakWarningAnnotation(element, "Invert call")
+//                    .registerFix(InvertVisibleHiddenWhenQuickfix(element, isVisibleWhen = isVisibleWhen))
             }
         }
     }
