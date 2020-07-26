@@ -14,7 +14,7 @@ repositories {
 
 intellij {
     version '2020.1' // 2018.2 2018.3.6  2019.1.4, 2019.2, 2019.3.5 , 2020.1
-    plugins = ['Kotlin','properties', 'java'] //, 'java'] // 2019.2+
+    plugins = ['Kotlin','properties', 'java']
     patchPluginXml {
         untilBuild = "" // Be forward compatible
                         // sinceBuild is inferred from the version above
