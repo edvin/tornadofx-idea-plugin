@@ -7,6 +7,8 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.codeStyle.PackageEntry
+import com.jetbrains.rd.util.string.print
+import org.jetbrains.kotlin.daemon.common.experimental.log
 import org.jetbrains.kotlin.idea.formatter.kotlinCustomSettings
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 
@@ -46,6 +48,7 @@ class TornadoFXFacet(
                 settings.PACKAGES_TO_USE_STAR_IMPORTS.addEntry(PackageEntry(false, "tornadofx", false))
             }
         } catch (ignored: Exception) {
+            ignored.printStackTrace()
         }
     }
 }

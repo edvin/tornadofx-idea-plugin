@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.18</version>
+    <version>1.7.19</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -23,7 +23,7 @@
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.properties</depends>
     
-    <idea-version since-build="201" />
+    <idea-version since-build="202" />
 
     <extensions defaultExtensionNs="com.intellij">
 
