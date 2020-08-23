@@ -77,7 +77,7 @@
         <internalFileTemplate name="TornadoFX FXML View"/>
         <internalFileTemplate name="TornadoFX FXML ViewResource"/>
 
-        <applicationService serviceInterface="no.tornado.tornadofx.idea.TornadoFXSettings" serviceImplementation="no.tornado.tornadofx.idea.TornadoFXSettings"/>
+        <applicationService serviceImplementation="no.tornado.tornadofx.idea.TornadoFXSettings"/>
         <applicationConfigurable instance="no.tornado.tornadofx.idea.TornadoFXConfigurable" groupId="language" id="preferences.TornadoFX"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSColorAnnotator" order="first"/>
         <annotator language="kotlin" implementationClass="no.tornado.tornadofx.idea.annotator.CSSBoxAnnotator" order="first"/>
@@ -107,6 +107,7 @@
                 description="Generate a new TornadoFX View" icon="/icons/action.png">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="Kotlin.NewFile"/>
         </action>
+        <!--suppress PluginXmlCapitalization -->
         <action id="injectResource" class="no.tornado.tornadofx.idea.actions.InjectComponentAction" text="Inject TornadoFX Component"
                 description="Inject TornadoFX Component into the current Component" icon="/icons/action.png">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
