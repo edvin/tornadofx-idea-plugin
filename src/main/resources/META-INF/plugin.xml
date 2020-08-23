@@ -9,6 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.7.19 2020-08-23</h4>
+        <ul>
+            <li>Support kotlin 1.4</li>
+        </ul>
+
         <h4>1.7.17.1 2018-10-01</h4>
         <ul>
             <li>General bug fix and compatibility release</li>
