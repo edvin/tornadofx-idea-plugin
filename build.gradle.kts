@@ -1,6 +1,7 @@
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.intellij.tasks.PatchPluginXmlTask
+import org.jetbrains.intellij.tasks.PublishTask
 
 plugins {
     idea apply true
@@ -10,7 +11,10 @@ plugins {
 }
 
 group = "no.tornado"
-version = "1.7.20-1.4.0"
+version = "1.7.20"
+
+val publishUsername: String by rootProject.extra
+val publishPassword: String by rootProject.extra
 
 repositories {
     mavenCentral()
@@ -23,9 +27,12 @@ intellij {
 }
 
 tasks {
-//    withType<PatchPluginXmlTask> {
-//
-//    }
+    // withType<PatchPluginXmlTask> { }
+
+    withType<PublishTask> {
+        username(publishUsername)
+        password(publishPassword)
+    }
 
     withType<JavaCompile> {
         sourceCompatibility = "1.8"

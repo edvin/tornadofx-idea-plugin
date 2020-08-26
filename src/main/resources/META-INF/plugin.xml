@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>no.tornado.tornadofx.idea</id>
     <name>TornadoFX</name>
-    <version>1.7.19</version>
+    <version>1.7.20</version>
     <vendor email="es@syse.no" url="https://www.syse.no">SYSE</vendor>
     <description>Run configurations, templates, actions and intentions for TornadoFX.</description>
     <description><![CDATA[
@@ -9,7 +9,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <h4>1.7.20-1.4.0 2020-08-24</h4>
+        <h4>1.7.20 2020-08-24</h4>
         <ul>
             <li>Support kotlin 1.4</li>
         </ul>
