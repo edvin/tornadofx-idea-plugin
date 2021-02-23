@@ -4,14 +4,14 @@ import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.PublishTask
 
 plugins {
-    idea apply true
+    idea
     java
-    kotlin("jvm") version "1.4.0"
-    id("org.jetbrains.intellij") version "0.4.21"
+    kotlin("jvm") version "1.4.30"
+    id("org.jetbrains.intellij") version "0.7.2"
 }
 
 group = "no.tornado"
-version = "1.7.20"
+version = "1.7.20-1-dev"
 
 val publishUsername: String by rootProject.extra
 val publishPassword: String by rootProject.extra
@@ -21,9 +21,9 @@ repositories {
 }
 
 intellij {
-    version = "2020.2"
+    version = "2020.3.1"
     //updateSinceUntilBuild = false
-    setPlugins("java", "properties", "org.jetbrains.kotlin:1.4.0-release-IJ2020.2-1")
+    setPlugins("java", "properties", "Kotlin")
 }
 
 tasks {
@@ -35,12 +35,12 @@ tasks {
     }
 
     withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "11"
     }
 }
 
