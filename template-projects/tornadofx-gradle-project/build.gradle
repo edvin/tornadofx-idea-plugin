@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version "1.4.0"
+    id 'org.jetbrains.kotlin.jvm' version "1.4.32"
     id 'application'
 }
 group = 'com.test'
@@ -14,7 +14,6 @@ application {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "no.tornado:tornadofx:$tornadofx_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
 }
