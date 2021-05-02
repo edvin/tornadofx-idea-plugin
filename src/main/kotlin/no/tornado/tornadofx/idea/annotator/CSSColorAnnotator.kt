@@ -132,7 +132,7 @@ class CSSColorAnnotator : Annotator {
         val resolvedRef = element.mainReference.resolve()
 
         if( resolvedRef is KtProperty) {
-            val expr = resolvedRef.children.last();
+            val expr = resolvedRef.children.last()
             if (expr is KtExpression) {
                 handelProperty(
                         resolvedRef,

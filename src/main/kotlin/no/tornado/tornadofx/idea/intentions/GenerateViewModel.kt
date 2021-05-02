@@ -57,9 +57,9 @@ class GenerateViewModel : PsiElementBaseIntentionAction(), LowPriorityAction {
                 .filter { it.hasValOrVar() && !it.isVarArg && it.name != null }
                 .map(::PropDesc)
 
-            val properties = sourceClass.getBody()?.properties?.filterNot { it.name == null }?.filterNot { it.hasDelegate() }?.map(::PropDesc) ?: emptyList()
+            val properties = sourceClass.body?.properties?.filterNot { it.name == null }?.filterNot { it.hasDelegate() }?.map(::PropDesc) ?: emptyList()
 
-            val fxPropertyFunctions = sourceClass.getBody()?.declarations
+            val fxPropertyFunctions = sourceClass.body?.declarations
                 ?.filter { it is KtNamedFunction }
                 ?.filter { it.name?.endsWith("Property") ?: false }
                 ?.map { PropDesc(it as KtNamedFunction) }

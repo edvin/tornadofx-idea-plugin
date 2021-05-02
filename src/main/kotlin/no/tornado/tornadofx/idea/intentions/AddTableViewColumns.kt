@@ -131,13 +131,8 @@ class AddTableViewColumns : PsiElementBaseIntentionAction() {
         }
 
 
-        override fun createCenterPanel(): JComponent? {
+        override fun createCenterPanel(): JComponent {
             return component
-        }
-
-        override fun getOKAction(): Action {
-
-            return super.getOKAction()
         }
     }
 

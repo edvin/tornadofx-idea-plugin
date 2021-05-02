@@ -1,13 +1,13 @@
 package no.tornado.tornadofx.idea.dialog
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.psi.PsiFile
 import com.intellij.ui.components.JBTextField
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Insets
-import javax.swing.JComboBox
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -21,8 +21,8 @@ class ExtractStringToResourceDialog(
         private val okAction: (String, String, PsiFile) -> Unit
 ) : DialogWrapper(project) {
 
-    private val resourcePathComboBox = JComboBox<String>(resourcePathStrings).apply {
-        resourcePathStrings.maxBy { it.length }?.let {
+    private val resourcePathComboBox = ComboBox(resourcePathStrings).apply {
+        resourcePathStrings.maxByOrNull { it.length }?.let {
             prototypeDisplayValue = it
         }
     }
@@ -38,7 +38,7 @@ class ExtractStringToResourceDialog(
         init()
     }
 
-    override fun createCenterPanel(): JComponent? = JPanel(GridBagLayout()).apply {
+    override fun createCenterPanel(): JComponent = JPanel(GridBagLayout()).apply {
         addGrid(0, 0, JLabel("resource:"))
         addGrid(1, 0, resourcePathComboBox)
 

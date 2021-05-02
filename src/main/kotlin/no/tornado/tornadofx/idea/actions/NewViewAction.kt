@@ -132,7 +132,7 @@ class NewViewAction : AnAction() {
                     .createHtmlTextBalloonBuilder("TornadoFX was not found on your classpath. You must add it to reliably use the TornadoFX plugin.", MessageType.WARNING, null)
                     .setFadeoutTime(7500)
                     .createBalloon()
-                    .show(RelativePoint.getCenterOf(statusBar.component), Balloon.Position.atRight);
+                    .show(RelativePoint.getCenterOf(statusBar.component), Balloon.Position.atRight)
             return true
         } else {
             return layouts.findMethodsByName(builderName, true).isNotEmpty()

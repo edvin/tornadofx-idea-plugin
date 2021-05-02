@@ -20,7 +20,7 @@
         </ul>
     ]]>
     </change-notes>
-
+Pretty sure it's the same as #113. Or atleast very closely related. I really hope this gets resolved soon, I had to disable the plugin, now I can only wait.
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
 
@@ -28,7 +28,7 @@
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.properties</depends>
     
-    <idea-version since-build="202" />
+    <idea-version since-build="203" />
 
     <extensions defaultExtensionNs="com.intellij">
 

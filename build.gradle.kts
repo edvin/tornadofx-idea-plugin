@@ -21,7 +21,7 @@ repositories {
 }
 
 intellij {
-    version = "2020.3.1"
+    version = "2020.3.2"
     //updateSinceUntilBuild = false
     setPlugins("java", "properties", "Kotlin")
 }
@@ -41,6 +41,14 @@ tasks {
 
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "11"
+    }
+
+    runIde {
+        jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
+    }
+
+    buildSearchableOptions {
+        jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
     }
 }
 
