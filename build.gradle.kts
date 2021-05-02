@@ -1,4 +1,3 @@
-import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.PublishTask
@@ -6,12 +5,12 @@ import org.jetbrains.intellij.tasks.PublishTask
 plugins {
     idea
     java
-    kotlin("jvm") version "1.4.30"
-    id("org.jetbrains.intellij") version "0.7.2"
+    kotlin("jvm") version "1.4.32"
+    id("org.jetbrains.intellij") version "0.7.3"
 }
 
 group = "no.tornado"
-version = "1.7.20-1-dev"
+version = "1.7.20-1"
 
 val publishUsername: String by rootProject.extra
 val publishPassword: String by rootProject.extra
@@ -21,13 +20,17 @@ repositories {
 }
 
 intellij {
-    version = "2020.3.2"
+    version = "2021.1.1"
     //updateSinceUntilBuild = false
     setPlugins("java", "properties", "Kotlin")
 }
 
 tasks {
-    // withType<PatchPluginXmlTask> { }
+     withType<PatchPluginXmlTask> {
+         version(project.version)
+         sinceBuild("203")
+         untilBuild("")
+     }
 
     withType<PublishTask> {
         username(publishUsername)
