@@ -12,48 +12,46 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 
-class FXTools {
-    companion object {
-        fun isComponent(psiClass: PsiClass) = isType("tornadofx.Component", psiClass)
-        fun isFragment(psiClass: PsiClass) = isType("tornadofx.Fragment", psiClass)
-        fun isUIComponent(psiClass: PsiClass) = isType("tornadofx.UIComponent", psiClass)
-        fun isApp(psiClass: PsiClass) = isType("tornadofx.App", psiClass)
-        fun isView(psiClass: PsiClass) = isType("tornadofx.View", psiClass)
-        fun isStylesheet(psiClass: PsiClass) = isType("tornadofx.Stylesheet", psiClass)
+object FXTools {
+    fun isComponent(psiClass: PsiClass) = isType("tornadofx.Component", psiClass)
+    fun isFragment(psiClass: PsiClass) = isType("tornadofx.Fragment", psiClass)
+    fun isUIComponent(psiClass: PsiClass) = isType("tornadofx.UIComponent", psiClass)
+    fun isApp(psiClass: PsiClass) = isType("tornadofx.App", psiClass)
+    fun isView(psiClass: PsiClass) = isType("tornadofx.View", psiClass)
+    fun isStylesheet(psiClass: PsiClass) = isType("tornadofx.Stylesheet", psiClass)
 
-        fun isType(type: String, psiClass: PsiClass): Boolean {
-            for (supa in psiClass.supers)
-                if (type == supa.qualifiedName) {
-                    return true
-                } else {
-                    val superIs = isType(type, supa)
-                    if (superIs) return true
-                }
+    fun isType(type: String, psiClass: PsiClass): Boolean {
+        for (supa in psiClass.supers)
+            if (type == supa.qualifiedName) {
+                return true
+            } else {
+                val superIs = isType(type, supa)
+                if (superIs) return true
+            }
 
-            return false
-        }
-
-        fun isTornadoFXType(psiClass: PsiClass): Boolean {
-            for (supa in psiClass.supers)
-                if (supa.qualifiedName?.startsWith("tornadofx.") == true) {
-                    return true
-                } else {
-                    val superIs = isTornadoFXType(supa)
-                    if (superIs) return true
-                }
-
-            return false
-        }
-
-        fun containsTornadoFXImports(file: KtFile) = file.importList?.imports?.find {
-            it.importedFqName?.asString()?.contains("tornadofx") ?: false
-        } != null
-
-        fun psiClass(className: String, project: Project) =
-                JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
-
-        fun isJavaFXProperty(type: KotlinType?) = type?.supertypes()?.find { it.getJetTypeFqName(false) == "javafx.beans.property.Property" } != null
+        return false
     }
+
+    fun isTornadoFXType(psiClass: PsiClass): Boolean {
+        for (supa in psiClass.supers)
+            if (supa.qualifiedName?.startsWith("tornadofx.") == true) {
+                return true
+            } else {
+                val superIs = isTornadoFXType(supa)
+                if (superIs) return true
+            }
+
+        return false
+    }
+
+    fun containsTornadoFXImports(file: KtFile) = file.importList?.imports?.find {
+        it.importedFqName?.asString()?.contains("tornadofx") ?: false
+    } != null
+
+    fun psiClass(className: String, project: Project) =
+            JavaPsiFacade.getInstance(project).findClass(className, project.projectScope())
+
+    fun isJavaFXProperty(type: KotlinType?) = type?.supertypes()?.find { it.getJetTypeFqName(false) == "javafx.beans.property.Property" } != null
 
 }
 

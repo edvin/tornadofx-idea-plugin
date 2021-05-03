@@ -7,7 +7,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import no.tornado.tornadofx.idea.FXTools.Companion.isStylesheet
+import no.tornado.tornadofx.idea.FXTools.isStylesheet
 import no.tornado.tornadofx.idea.quickfixes.css.BoxQuickFix
 import org.jetbrains.kotlin.idea.core.quickfix.QuickFixUtil
 import org.jetbrains.kotlin.idea.references.KtInvokeFunctionReference

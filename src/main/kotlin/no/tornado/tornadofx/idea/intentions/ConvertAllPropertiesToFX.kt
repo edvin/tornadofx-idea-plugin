@@ -9,7 +9,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import no.tornado.tornadofx.idea.FXTools
-import no.tornado.tornadofx.idea.FXTools.Companion.isJavaFXProperty
+import no.tornado.tornadofx.idea.FXTools.isJavaFXProperty
 import no.tornado.tornadofx.idea.facet.TornadoFXFacet
 import no.tornado.tornadofx.idea.facet.TornadoFXFacetType
 import org.jetbrains.kotlin.idea.KotlinLanguage
