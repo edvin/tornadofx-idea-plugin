@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "no.tornado"
-version = "1.7.20-1"
+version = "1.7.20.1"
 
 val publishUsername: String by rootProject.extra
 val publishPassword: String by rootProject.extra
@@ -22,7 +22,7 @@ repositories {
 intellij {
     version = "2021.1.1"
     //updateSinceUntilBuild = false
-    setPlugins("java", "properties", "Kotlin")
+    setPlugins("java", "properties", "Kotlin", "com.intellij.javafx:1.0.3")
 }
 
 tasks {
