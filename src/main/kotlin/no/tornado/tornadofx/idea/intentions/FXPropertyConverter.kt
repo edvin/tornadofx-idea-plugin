@@ -156,7 +156,7 @@ class FXPropertyConverter : PsiElementBaseIntentionAction(), LowPriorityAction {
         fun createPropertyElements(factory: KtPsiFactory, paramName: String, returnType: KotlinType, ktClass: KtClass, value: String, importList: MutableSet<String>): Pair<PsiElement, PsiElement> {
             importList.addAll(listOf("tornadofx.property", "tornadofx.getProperty"))
 
-            return factory.createProperty("var $paramName by property<${returnType.nameIfStandardType ?: returnType.lowerIfFlexible() ?: returnType}>($value)") to
+            return factory.createProperty("var $paramName by property<${returnType.nameIfStandardType ?: returnType.lowerIfFlexible()}>($value)") to
                 factory.createFunction("fun ${paramName}Property() = getProperty(${ktClass.name}::$paramName)")
         }
 

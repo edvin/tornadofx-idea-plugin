@@ -12,5 +12,5 @@ class ErrorDialog(project: Project, private val error: String) : DialogWrapper(p
         init()
     }
 
-    override fun createCenterPanel(): JComponent? = JLabel(error)
+    override fun createCenterPanel(): JComponent = JLabel(error)
 }

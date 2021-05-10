@@ -8,7 +8,7 @@ import com.intellij.execution.configurations.runConfigurationType
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
-import no.tornado.tornadofx.idea.FXTools.Companion.isApp
+import no.tornado.tornadofx.idea.FXTools.isApp
 import no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.App
 import no.tornado.tornadofx.idea.configurations.TornadoFXConfiguration.RunType.View
 import no.tornado.tornadofx.idea.firstModuleWithTornadoFXLib

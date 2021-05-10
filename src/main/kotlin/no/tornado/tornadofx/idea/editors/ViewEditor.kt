@@ -78,26 +78,26 @@ class ViewEditor(val project: Project, val myFile: VirtualFile) : FileEditor {
     }
 
     override fun getComponent(): JComponent {
-        return panel;
+        return panel
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        return null;
+        return null
     }
 
     override fun deselectNotify() {
     }
 
     override fun getBackgroundHighlighter(): BackgroundEditorHighlighter? {
-        return null;
+        return null
     }
 
     override fun isValid(): Boolean {
-        return true;
+        return true
     }
 
     override fun isModified(): Boolean {
-        return false;
+        return false
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
@@ -111,7 +111,7 @@ class ViewEditor(val project: Project, val myFile: VirtualFile) : FileEditor {
     }
 
     override fun getCurrentLocation(): FileEditorLocation? {
-        return null;
+        return null
     }
 
     override fun removePropertyChangeListener(listener: PropertyChangeListener) {

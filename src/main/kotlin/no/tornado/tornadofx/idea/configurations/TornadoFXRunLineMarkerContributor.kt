@@ -25,7 +25,7 @@ class TornadoFXRunLineMarkerContributor : RunLineMarkerContributor() {
             if (isApp || isView) {
                 return Info(
                         PluginIcons.ACTION,
-                        Function<PsiElement, String> { "Run TornadoFX ${if (isApp) "Application" else "View"}" },
+                        { "Run TornadoFX ${if (isApp) "Application" else "View"}" },
                         *ExecutorAction.getActions(0)
                 )
             }

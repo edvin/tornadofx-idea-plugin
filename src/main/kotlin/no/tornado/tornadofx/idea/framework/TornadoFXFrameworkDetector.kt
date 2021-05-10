@@ -22,10 +22,10 @@ class TornadoFXFrameworkDetector : FacetBasedFrameworkDetector<TornadoFXFacet, T
     override fun getFacetType() = TornadoFXFacetType.INSTANCE
 
     override fun createSuitableFilePattern(): ElementPattern<FileContent> {
-        return FileContentPattern.fileContent().withName(StandardPatterns.string().endsWith(".kt"));
+        return FileContentPattern.fileContent().withName(StandardPatterns.string().endsWith(".kt"))
     }
 
-    override fun createConfiguration(files: MutableCollection<VirtualFile>?) = facetType.createDefaultConfiguration();
+    override fun createConfiguration(files: MutableCollection<VirtualFile>?) = facetType.createDefaultConfiguration()
 
     override fun getFileType(): KotlinFileType = KotlinFileType.INSTANCE
 

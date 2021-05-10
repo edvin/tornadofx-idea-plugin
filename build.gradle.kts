@@ -1,17 +1,16 @@
-import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.PublishTask
 
 plugins {
-    idea apply true
+    idea
     java
-    kotlin("jvm") version "1.4.0"
-    id("org.jetbrains.intellij") version "0.4.21"
+    kotlin("jvm") version "1.4.32"
+    id("org.jetbrains.intellij") version "0.7.3"
 }
 
 group = "no.tornado"
-version = "1.7.20"
+version = "1.7.20.1"
 
 val publishUsername: String by rootProject.extra
 val publishPassword: String by rootProject.extra
@@ -21,26 +20,38 @@ repositories {
 }
 
 intellij {
-    version = "2020.2"
+    version = "2021.1.1"
     //updateSinceUntilBuild = false
-    setPlugins("java", "properties", "org.jetbrains.kotlin:1.4.0-release-IJ2020.2-1")
+    setPlugins("java", "properties", "Kotlin", "com.intellij.javafx:1.0.3")
 }
 
 tasks {
-    // withType<PatchPluginXmlTask> { }
+    patchPluginXml {
+         version(project.version)
+         sinceBuild("203")
+         untilBuild("")
+     }
 
-    withType<PublishTask> {
+     publishPlugin {
         username(publishUsername)
         password(publishPassword)
     }
 
-    withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+    runIde {
+        jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
     }
+
+    buildSearchableOptions {
+        jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 

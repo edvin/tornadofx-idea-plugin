@@ -16,7 +16,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.EditorTextFieldWithBrowseButton
 import no.tornado.tornadofx.idea.FXTools
-import no.tornado.tornadofx.idea.FXTools.Companion.isComponent
+import no.tornado.tornadofx.idea.FXTools.isComponent
 import org.jetbrains.kotlin.idea.core.ShortenReferences
 import org.jetbrains.kotlin.idea.search.allScope
 import org.jetbrains.kotlin.idea.search.projectScope
@@ -72,7 +72,7 @@ class InjectComponentAction : AnAction() {
             return
         }
 
-        val psiFacade = JavaPsiFacade.getInstance(e.project)
+        val psiFacade = JavaPsiFacade.getInstance(e.project!!)
         val psiClass = psiFacade.findClass(ktClass.fqName.toString(), e.project!!.allScope())!!
 
         e.presentation.isEnabled = isComponent(psiClass)
