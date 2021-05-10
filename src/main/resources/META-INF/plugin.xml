@@ -9,6 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h4>1.7.20.1 2021-05-10</h4>
+        <ul>
+            <li>Support IDEA 2020.3</li>
+        </ul>
         <h4>1.7.20 2020-08-24</h4>
         <ul>
             <li>Support kotlin 1.4</li>

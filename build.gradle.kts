@@ -26,20 +26,15 @@ intellij {
 }
 
 tasks {
-     withType<PatchPluginXmlTask> {
+    patchPluginXml {
          version(project.version)
          sinceBuild("203")
          untilBuild("")
      }
 
-    withType<PublishTask> {
+     publishPlugin {
         username(publishUsername)
         password(publishPassword)
-    }
-
-    withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
     }
 
     withType<KotlinCompile> {
@@ -53,5 +48,10 @@ tasks {
     buildSearchableOptions {
         jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
